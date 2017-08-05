@@ -15,12 +15,12 @@ Compute articulation features from continuous speech.
 - 81 - 92. MFCCC in offset transitions (12 MFCC offset)
 - 93 - 104. First derivative of the MFCCs in offset transitions (12 DMFCC offset)
 - 105 - 116. Second derivative of the MFCCs in offset transitions (12 DMFCC offset)
-- 117. First formant Frequency
-- 118. First Derivative of the first formant frequency
-- 119. Second Derivative of the first formant frequency
-- 120. Second formant Frequency
-- 121. First derivative of the Second formant Frequency
-- 122. Second derivative of the Second formant Frequency
+- 117 First formant Frequency
+- 118 First Derivative of the first formant frequency
+- 119 Second Derivative of the first formant frequency
+- 120 Second formant Frequency
+- 121 First derivative of the Second formant Frequency
+- 122 Second derivative of the Second formant Frequency
 
 In addition, static (for all utterance) or dynamic (at-frame level) features can be computed:
 
