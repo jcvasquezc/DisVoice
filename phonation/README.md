@@ -56,6 +56,7 @@ Phonation analysis from continuous speech
 ![Image](images/phonation_continuous.png)
 ![Image](images/phonation_vowel.png)
 
+
 #### References
 
 [[1]](https://link.springer.com/article/10.1007%2Fs12559-017-9497-x) T. Arias-Vergara, J. C. Vásquez-Correa, J. R. Orozco-Arroyave, Parkinson’s Disease and Aging: Analysis of Their Effect in Phonation and Articulation of Speech, Cognitive computation, (2017).
