@@ -27,9 +27,9 @@ The static feaature vector is formed with 13 features and include
 
 The dynamic feature matrix is formed with 13 features computed for each voiced segment and contains:
 
-1. Duration of the voiced segment
-2-7. Coefficients of 5-degree Lagrange polynomial to model F0 contour
-8-13. Coefficients of 5-degree Lagrange polynomial to model energy contour
+- 1 Duration of the voiced segment
+- 2-7. Coefficients of 5-degree Lagrange polynomial to model F0 contour
+- 8-13. Coefficients of 5-degree Lagrange polynomial to model energy contour
 
 Dynamic prosody features are based on
 Najim Dehak, "Modeling Prosodic Features With Joint Factor Analysis for Speaker Verification", 2007
@@ -52,13 +52,14 @@ python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "feat
 #### Results:
 
 Prosody analysis from continuous speech static
-![Image](images/prosody1.png)
+![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody1.png?Raw=true)
 
 Prosody analysis from continuous speech dynamic
-![Image](images/prosody2.png)
+![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody2.png?raw=true)
 
 #### References
 
 [[1]](http://ieeexplore.ieee.org/abstract/document/4291597/). N., Dehak, P. Dumouchel, and P. Kenny. "Modeling prosodic features with joint factor analysis for speaker verification." IEEE Transactions on Audio, Speech, and Language Processing 15.7 (2007): 2095-2103.
+
 [[2]](http://www.sciencedirect.com/science/article/pii/S105120041730146X). J. R. Orozco-Arroyave, J. C. Vásquez-Correa et al. "NeuroSpeech: An open-source software for Parkinson's speech analysis." Digital Signal Processing (2017).
 
