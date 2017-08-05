@@ -1,7 +1,7 @@
 ## Articulation features
 
 ```sh
-aarticulation.py
+articulation.py
 ```
 Compute articulation features from continuous speech.
 
