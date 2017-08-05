@@ -1,4 +1,4 @@
-## Articulation features
+## Prosody features
 
 ```sh
 prosody.py
