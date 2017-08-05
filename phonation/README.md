@@ -53,7 +53,7 @@ Phonation analysis from a sustained vowel
 !![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/phonation_vowel.png?raw=true)
 
 Phonation analysis from continuous speech
-!![Image](images/phonation_continuous.png)
+!![Image](images/phonation_continuous.png?raw=true)
 
 
 #### References
