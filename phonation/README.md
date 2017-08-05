@@ -50,7 +50,7 @@ python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "fe
 #### Results:
 
 Phonation analysis from a sustained vowel
-!![Image](images/phonation_vowel.png)
+!![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/phonation_vowel.png?raw=true)
 
 Phonation analysis from continuous speech
 !![Image](images/phonation_continuous.png)
