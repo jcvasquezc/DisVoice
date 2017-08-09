@@ -37,6 +37,6 @@ def E_cont(seg,size_frameS,size_stepS,overlap):
 
 def logEnergy(sig):
     sig2=np.power(sig,2)
-    sumsig2=np.sum(sig2)
+    sumsig2=np.sum(np.absolute(sig2))/len(sig2)
     logE=np.log10(sumsig2)
     return logE
