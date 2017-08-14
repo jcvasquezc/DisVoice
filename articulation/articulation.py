@@ -124,7 +124,7 @@ def plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
     plt.show()
 
 
-def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,nB=22,nMFCC=12,minf0=60,maxf0=350, voice_bias=-0.2):
+def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,nB=22,nMFCC=12,minf0=60,maxf0=350, voice_bias=-0.2,len_thr_miliseconds=270.0):
 
     fs, data_audio=read(audio_filename)
     data_audio=data_audio-np.mean(data_audio)
@@ -164,7 +164,8 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     f0u=np.split(pos0, np.where(dpos0>1)[0])
 
     # TODO: Why 270???
-    thr_sil=int(270./step)
+
+    thr_sil=int(len_thr_miliseconds/step)
 
     sil_seg=[]
     for l in range(len(f0u)):
