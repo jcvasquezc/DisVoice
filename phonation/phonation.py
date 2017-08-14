@@ -136,7 +136,7 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
     F0z=F0[F0==0]
     totaldurU=len(F0z)
 
-    thresholdE=10*logEnergy(energy_thr_percent)
+    thresholdE=10*logEnergy([energy_thr_percent])
     degreeU=100*float(totaldurU)/len(F0)
     lnz=0
     for l in range(nF):
