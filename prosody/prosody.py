@@ -65,7 +65,62 @@ import scipy.stats as st
 sys.path.append('../')
 from utils import Hz2semitones
 
+def plot_pros(data_audio,fs,F0,seg_voiced,Ev,featvec,f0v):
+    plt.figure(1)
+    plt.subplot(211)
+    t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
+    if len(t)!=len(data_audio):
+        t=np.arange(1.0/fs, float(len(data_audio))/fs, 1.0/fs)
+    print(len(t), len(data_audio))
+    plt.plot(t, data_audio, 'k')
+    plt.ylabel('Amplitude')
+    plt.xlabel('Time (s)')
+    plt.xlim([0, t[-1]])
+    plt.grid(True)
+    plt.subplot(212)
+    fsp=len(F0)/t[-1]
+    print(fsp)
+    t2=np.arange(0.0, t[-1], 1.0/fsp)
+    print(len(t2), len(F0))
+    if len(t2)>len(F0):
+        t2=t2[:len(F0)]
+    elif len(F0)>len(t2):
+        F0=F0[:len(t2)]
+    plt.plot(t2, F0, color='k', linewidth=2.0)
+    plt.xlabel('Time (s)')
+    plt.ylabel('F0 (Hz)')
+    plt.ylim([0,np.max(F0)+10])
+    plt.xlim([0, t[-1]])
+    plt.grid(True)
+    plt.show()
 
+    plt.figure(2)
+
+    for j in range(len(seg_voiced)):
+        plt.subplot(3, len(seg_voiced), j+1)
+        t=np.arange(0, float(len(seg_voiced[j]))/fs, 1.0/fs)
+        plt.plot(t, seg_voiced[j], linewidth=2.0)
+
+        plt.subplot(3, len(seg_voiced), j+1+len(seg_voiced))
+        plt.plot(f0v[j], linewidth=2.0, label="real")
+        cf0=featvec[j][1:7]
+        p = np.poly1d(cf0)
+        estf0 = p(np.arange(len(f0v[j])))
+        plt.plot(estf0, linewidth=2.0, label="estimated")
+        if j==0:
+            plt.ylabel("F0 (Hz)")
+
+        plt.subplot(3, len(seg_voiced), j+1+2*len(seg_voiced))
+        plt.plot(Ev[j], linewidth=2.0, label="real")
+
+        cf0=featvec[j][8:]
+        p = np.poly1d(cf0)
+        estEv = p(np.arange(len(Ev[j])))
+        plt.plot(estEv, linewidth=2.0, label="estimated")
+        if j==0:
+            plt.ylabel("Energy")
+    plt.legend()
+    plt.show()
 
 def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025,P=5):
     """
@@ -144,61 +199,7 @@ def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, vo
 
 
     if flag_plots:
-        plt.figure(1)
-        plt.subplot(211)
-        t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
-        if len(t)!=len(data_audio):
-            t=np.arange(1.0/fs, float(len(data_audio))/fs, 1.0/fs)
-        print(len(t), len(data_audio))
-        plt.plot(t, data_audio, 'k')
-        plt.ylabel('Amplitude')
-        plt.xlabel('Time (s)')
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
-        plt.subplot(212)
-        fsp=len(F0)/t[-1]
-        print(fsp)
-        t2=np.arange(0.0, t[-1], 1.0/fsp)
-        print(len(t2), len(F0))
-        if len(t2)>len(F0):
-            t2=t2[:len(F0)]
-        elif len(F0)>len(t2):
-            F0=F0[:len(t2)]
-        plt.plot(t2, F0, color='k', linewidth=2.0)
-        plt.xlabel('Time (s)')
-        plt.ylabel('F0 (Hz)')
-        plt.ylim([0,np.max(F0)+10])
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
-        plt.show()
-
-        plt.figure(2)
-
-        for j in range(len(seg_voiced)):
-            plt.subplot(3, len(seg_voiced), j+1)
-            t=np.arange(0, float(len(seg_voiced[j]))/fs, 1.0/fs)
-            plt.plot(t, seg_voiced[j], linewidth=2.0)
-
-            plt.subplot(3, len(seg_voiced), j+1+len(seg_voiced))
-            plt.plot(f0v[j], linewidth=2.0, label="real")
-            cf0=featvec[j][1:7]
-            p = np.poly1d(cf0)
-            estf0 = p(np.arange(len(f0v[j])))
-            plt.plot(estf0, linewidth=2.0, label="estimated")
-            if j==0:
-                plt.ylabel("F0 (Hz)")
-
-            plt.subplot(3, len(seg_voiced), j+1+2*len(seg_voiced))
-            plt.plot(Ev[j], linewidth=2.0, label="real")
-
-            cf0=featvec[j][8:]
-            p = np.poly1d(cf0)
-            estEv = p(np.arange(len(Ev[j])))
-            plt.plot(estEv, linewidth=2.0, label="estimated")
-            if j==0:
-                plt.ylabel("Energy")
-        plt.legend()
-        plt.show()
+        plot_pros(data_audio,fs,F0,seg_voiced,Ev,featvec,f0v)
 
     return np.asarray(featvec)
 
