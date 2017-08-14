@@ -148,9 +148,10 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
 
     # TODO: Make parameters configurable. (If worth it)
     temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
-    filename='./tempForm'+temp_uuid+'.txt'
-    os.system('praat FormantsPraat.praat ' + audio_filename + ' ' + filename +' 5 5500 '+str(float(sizeframe)/2)+' '+str(float(step))) #formant extraction praat
-    [F1, F2]=decodeFormants(filename)
+    temp_filename='./tempForm'+temp_uuid+'.txt'
+    os.system('praat FormantsPraat.praat ' + audio_filename + ' ' + temp_filename +' 5 5500 '+str(float(sizeframe)/2)+' '+str(float(step))) #formant extraction praat
+    [F1, F2]=decodeFormants(temp_filename)
+    os.remove(temp_filename)
 
     if len(F0)<len(F1):
         F0=np.hstack((F0, np.zeros(len(F1)-len(F0))))
