@@ -74,20 +74,16 @@ from utils import Hz2semitones
 
 
 
-def articulation_continuous(audio, flag_plots):
+def articulation_continuous(audio, flag_plots,sizeframe=0.04,step=0.02,nB=22,nMFCC=12,minf0=60,maxf0=350, voice_bias=-0.2):
 
     fs, data_audio=read(audio)
-    sizeframe=0.04
-    step=0.02
-    nB=22
-    nMFCC=12
     data_audio=data_audio-np.mean(data_audio)
     data_audio=data_audio/float(np.max(np.abs(data_audio)))
     size_frameS=sizeframe*float(fs)
     size_stepS=step*float(fs)
     overlap=size_stepS/size_frameS
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=60, max=350, voice_bias=-0.2, otype='f0')
+    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
     segmentsOn=V_UV(F0, data_audio, fs, 'onset')
     segmentsOff=V_UV(F0, data_audio, fs, 'offset')
 
@@ -114,7 +110,7 @@ def articulation_continuous(audio, flag_plots):
     dpos0=np.hstack(([1],np.diff(pos0)))
     f0u=np.split(pos0, np.where(dpos0>1)[0])
 
-
+    # TODO: Why 270???
     thr_sil=int(270./step)
 
     sil_seg=[]
