@@ -67,27 +67,73 @@ import math
 import pysptk
 import scipy.stats as st
 from articulation_functions import V_UV, extractTrans, decodeFormants
+import uuid
 
 
 sys.path.append('../')
 from utils import Hz2semitones
 
+def plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
+    plt.figure(1)
+    plt.subplot(211)
+    t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
+    if len(t)>len(data_audio):
+        t=t[:len(data_audio)]
+    elif len(t)<len(data_audio):
+        data_audio=data_audio[:len(t)]
+    plt.plot(t, data_audio, 'k')
+    plt.ylabel('Amplitude', fontsize=14)
+    plt.xlim([0, t[-1]])
+    plt.grid(True)
+
+    plt.subplot(212)
+    fsp=int(len(F1)/t[-1])
+    t2=np.arange(0.0, t[-1], 1.0/fsp)
+    if len(t2)>len(F1):
+        t2=t2[:len(F1)]
+    elif len(F1)>len(t2):
+        F1=F1[:len(t2)]
+        F2=F2[:len(t2)]
+    plt.plot(t2, F1, color='k', linewidth=2.0, label='F1')
+    plt.plot(t2, F2, color='g', linewidth=2.0, label='F2')
+
+    plt.xlabel('Time (s)', fontsize=14)
+    plt.ylabel('Frequency (Hz)', fontsize=14)
+    plt.ylim([0,np.max(F2)+10])
+    plt.xlim([0, t2[-1]])
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+    plt.figure(2)
+    plt.title("Onset segments")
+    for j in range(len(segmentsOn)):
+        plt.subplot(int(np.sqrt(len(segmentsOn)))+1, len(segmentsOn)/int(np.sqrt(len(segmentsOn))), j+1)
+        t=np.arange(0, float(len(segmentsOn[j]))/fs, 1.0/fs)
+        plt.plot(t, segmentsOn[j], linewidth=2.0)
+
+    plt.show()
+
+    plt.figure(3)
+    plt.title("Offset segments")
+    for j in range(len(segmentsOff)):
+        plt.subplot(int(np.sqrt(len(segmentsOff)))+1, len(segmentsOff)/int(np.sqrt(len(segmentsOff))), j+1)
+        t=np.arange(0, float(len(segmentsOff[j]))/fs, 1.0/fs)
+        plt.plot(t, segmentsOff[j], linewidth=2.0)
+
+    plt.show()
 
 
-def articulation_continuous(audio, flag_plots):
+def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,nB=22,nMFCC=12,minf0=60,maxf0=350, voice_bias=-0.2,len_thr_miliseconds=270.0):
 
-    fs, data_audio=read(audio)
-    sizeframe=0.04
-    step=0.02
-    nB=22
-    nMFCC=12
+    fs, data_audio=read(audio_filename)
     data_audio=data_audio-np.mean(data_audio)
     data_audio=data_audio/float(np.max(np.abs(data_audio)))
     size_frameS=sizeframe*float(fs)
     size_stepS=step*float(fs)
     overlap=size_stepS/size_frameS
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=60, max=350, voice_bias=-0.2, otype='f0')
+    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
     segmentsOn=V_UV(F0, data_audio, fs, 'onset')
     segmentsOff=V_UV(F0, data_audio, fs, 'offset')
 
@@ -100,9 +146,12 @@ def articulation_continuous(audio, flag_plots):
     DMFCCoff=np.asarray([np.diff(MFCCoff[:,nf], n=1) for nf in range(MFCCoff.shape[1])]).T
     DDMFCCoff=np.asarray([np.diff(MFCCoff[:,nf], n=2) for nf in range(MFCCoff.shape[1])]).T
 
-
-    os.system('praat FormantsPraat.praat '+audio+' ./tempForm.txt 5 5500 '+str(float(sizeframe)/2)+' '+str(float(step))) #formant extraction praat
-    [F1, F2]=decodeFormants('./tempForm.txt')
+    # TODO: Make parameters configurable. (If worth it)
+    temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+    temp_filename='./tempForm'+temp_uuid+'.txt'
+    os.system('praat FormantsPraat.praat ' + audio_filename + ' ' + temp_filename +' 5 5500 '+str(float(sizeframe)/2)+' '+str(float(step))) #formant extraction praat
+    [F1, F2]=decodeFormants(temp_filename)
+    os.remove(temp_filename)
 
     if len(F0)<len(F1):
         F0=np.hstack((F0, np.zeros(len(F1)-len(F0))))
@@ -114,8 +163,9 @@ def articulation_continuous(audio, flag_plots):
     dpos0=np.hstack(([1],np.diff(pos0)))
     f0u=np.split(pos0, np.where(dpos0>1)[0])
 
+    # TODO: Why 270???
 
-    thr_sil=int(270./step)
+    thr_sil=int(len_thr_miliseconds/step)
 
     sil_seg=[]
     for l in range(len(f0u)):
@@ -134,54 +184,7 @@ def articulation_continuous(audio, flag_plots):
     DDF2=np.diff(F2, n=2)
 
     if flag_plots:
-        plt.figure(1)
-        plt.subplot(211)
-        t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
-        if len(t)>len(data_audio):
-            t=t[:len(data_audio)]
-        elif len(t)<len(data_audio):
-            data_audio=data_audio[:len(t)]
-        plt.plot(t, data_audio, 'k')
-        plt.ylabel('Amplitude', fontsize=14)
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
-
-        plt.subplot(212)
-        fsp=int(len(F1)/t[-1])
-        t2=np.arange(0.0, t[-1], 1.0/fsp)
-        if len(t2)>len(F1):
-            t2=t2[:len(F1)]
-        elif len(F1)>len(t2):
-            F1=F1[:len(t2)]
-            F2=F2[:len(t2)]
-        plt.plot(t2, F1, color='k', linewidth=2.0, label='F1')
-        plt.plot(t2, F2, color='g', linewidth=2.0, label='F2')
-
-        plt.xlabel('Time (s)', fontsize=14)
-        plt.ylabel('Frequency (Hz)', fontsize=14)
-        plt.ylim([0,np.max(F2)+10])
-        plt.xlim([0, t2[-1]])
-        plt.grid(True)
-        plt.legend()
-        plt.show()
-
-        plt.figure(2)
-        plt.title("Onset segments")
-        for j in range(len(segmentsOn)):
-            plt.subplot(int(np.sqrt(len(segmentsOn)))+1, len(segmentsOn)/int(np.sqrt(len(segmentsOn))), j+1)
-            t=np.arange(0, float(len(segmentsOn[j]))/fs, 1.0/fs)
-            plt.plot(t, segmentsOn[j], linewidth=2.0)
-
-        plt.show()
-
-        plt.figure(3)
-        plt.title("Offset segments")
-        for j in range(len(segmentsOff)):
-            plt.subplot(int(np.sqrt(len(segmentsOff)))+1, len(segmentsOff)/int(np.sqrt(len(segmentsOff))), j+1)
-            t=np.arange(0, float(len(segmentsOff[j]))/fs, 1.0/fs)
-            plt.plot(t, segmentsOff[j], linewidth=2.0)
-
-        plt.show()
+        plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff)
 
     return BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1nz, DF1, DDF1, F2nz, DF2, DDF2
 
