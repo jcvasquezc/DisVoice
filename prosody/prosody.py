@@ -67,7 +67,7 @@ from utils import Hz2semitones
 
 
 
-def prosody_dynamic(audio):
+def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025,P=5):
     """
     Based on:
     Najim Dehak, "Modeling Prosodic Features With Joint Factor Analysis for Speaker Verification", 2007
@@ -75,12 +75,12 @@ def prosody_dynamic(audio):
     fs, data_audio=read(audio)
     data_audio=data_audio-np.mean(data_audio)
     data_audio=data_audio/float(np.max(np.abs(data_audio)))
-    size_frameS=0.03*float(fs)
-    size_stepS=0.01*float(fs)
+    size_frameS=size_frame*float(fs)
+    size_stepS=size_step*float(fs)
     overlap=size_stepS/size_frameS
     nF=int((len(data_audio)/size_frameS/overlap))-1
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=60, max=350, voice_bias=-0.2, otype='f0')
+    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
 
     #Find pitch contour of EACH voiced segment
     pitchON = np.where(F0!=0)[0]
@@ -106,7 +106,7 @@ def prosody_dynamic(audio):
             tempvec.append(dur)
             #Pitch coefficients
             x = np.arange(0,len(temp))
-            z = np.poly1d(np.polyfit(x,temp,5))
+            z = np.poly1d(np.polyfit(x,temp,P))
             f0v.append(temp)
             #fitCoeff.append(z.coeffs)
             tempvec.extend(z.coeffs)
@@ -114,7 +114,7 @@ def prosody_dynamic(audio):
             temp = E_cont(VoicedSeg,size_frameS,size_stepS,overlap)
             Ev.append(temp)
             x = np.arange(0,len(temp))
-            z = np.poly1d(np.polyfit(x,temp,5))
+            z = np.poly1d(np.polyfit(x,temp,P))
             tempvec.extend(z.coeffs)
             featvec.append(tempvec)
         iniV= pitchON[indx+1]
@@ -131,12 +131,12 @@ def prosody_dynamic(audio):
         dur = len(VoicedSeg)/float(fs)
         tempvec.append(dur)
         x = np.arange(0,len(temp))
-        z = np.poly1d(np.polyfit(x,temp,5))
+        z = np.poly1d(np.polyfit(x,temp,P))
         tempvec.extend(z.coeffs)
         #Energy coefficients
         temp = E_cont(VoicedSeg,size_frameS,size_stepS,overlap)
         x = np.arange(0,len(temp))
-        z = np.poly1d(np.polyfit(x,temp,5))
+        z = np.poly1d(np.polyfit(x,temp,P))
         tempvec.extend(z.coeffs)
         #Compute duration
         featvec.append(tempvec)
