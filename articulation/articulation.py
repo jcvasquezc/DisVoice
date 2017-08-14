@@ -163,8 +163,6 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     dpos0=np.hstack(([1],np.diff(pos0)))
     f0u=np.split(pos0, np.where(dpos0>1)[0])
 
-    # TODO: Why 270???
-
     thr_sil=int(len_thr_miliseconds/step)
 
     sil_seg=[]

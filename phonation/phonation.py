@@ -65,19 +65,62 @@ import scipy.stats as st
 sys.path.append('../')
 from utils import Hz2semitones
 
+def plot_phon(data_audio,fs,F0,logE):
+    plt.figure(1)
+    plt.subplot(311)
+    t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
+    if len(t)>len(data_audio):
+        t=t[:len(data_audio)]
+    elif len(t)<len(data_audio):
+        data_audio=data_audio[:len(t)]
+    plt.plot(t, data_audio, 'k')
+    plt.ylabel('Amplitude', fontsize=14)
+    plt.xlabel('Time (s)', fontsize=14)
+    plt.xlim([0, t[-1]])
+    plt.grid(True)
 
+    plt.subplot(312)
+    fsp=int(len(F0)/t[-1])
+    t2=np.arange(0.0, t[-1], 1.0/fsp)
+    if len(t2)>len(F0):
+        t2=t2[:len(F0)]
+    elif len(F0)>len(t2):
+        F0=F0[:len(t2)]
 
-def phonationVowels(audio, flag_plots):
+    plt.plot(t2, F0, color='k', linewidth=2.0)
+    plt.xlabel('Time (s)', fontsize=14)
+    plt.ylabel('Frequency (Hz)', fontsize=14)
+    plt.ylim([0,np.max(F0)+10])
+    plt.xlim([0, t[-1]])
+    plt.grid(True)
+    #plt.show()
+    plt.subplot(313)
+    Esp=int(len(logE)/t[-1])
+    t2=np.arange(0.0, t[-1], 1.0/Esp)
+    if len(t2)>len(logE):
+        t2=t2[:len(logE)]
+    elif len(logE)>len(t2):
+        logE=logE[:len(t2)]
+
+    plt.plot(t2, logE, color='k', linewidth=2.0)
+    plt.xlabel('Time (s)', fontsize=14)
+    plt.ylabel('Energy (dB)', fontsize=14)
+    plt.ylim([0,np.max(logE)+10])
+    plt.xlim([0, t[-1]])
+    plt.grid(True)
+    plt.show()
+
+def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025):
 
 
     fs, data_audio=read(audio)
     data_audio=data_audio-np.mean(data_audio)
     data_audio=data_audio/float(np.max(np.abs(data_audio)))
-    size_frameS=0.04*float(fs)
-    size_stepS=0.02*float(fs)
+    size_frameS=size_frame*float(fs)
+    size_stepS=size_step*float(fs)
     overlap=size_stepS/size_frameS
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=60, max=350, voice_bias=-0.2, otype='f0')
+    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
     F0nz=F0[F0!=0]
     Jitter=jitter_env(F0nz, len(F0nz))
 
@@ -93,7 +136,7 @@ def phonationVowels(audio, flag_plots):
     F0z=F0[F0==0]
     totaldurU=len(F0z)
 
-    thresholdE=10*logEnergy(0.025)
+    thresholdE=10*logEnergy(energy_thr_percent)
     degreeU=100*float(totaldurU)/len(F0)
     lnz=0
     for l in range(nF):
@@ -102,11 +145,11 @@ def phonationVowels(audio, flag_plots):
         if F0[l]!=0:
             Amp.append(np.max(np.abs(data_frame)))
             logE.append(10*logEnergy(data_frame))
-            if lnz>=12:
+            if lnz>=12: # TODO:
                 amp_arr=np.asarray([Amp[j] for j in range(lnz-12, lnz)])
                 #print(amp_arr)
                 apq.append(APQ(amp_arr))
-            if lnz>=6:
+            if lnz>=6: # TODO:
                 f0arr=np.asarray([F0nz[j] for j in range(lnz-6, lnz)])
                 ppq.append(PPQ(1/f0arr))
             lnz=lnz+1
@@ -118,49 +161,7 @@ def phonationVowels(audio, flag_plots):
     F0semi=np.asarray([Hz2semitones(F0nz[l]) for l in range(len(F0nz))])
 
     if flag_plots:
-        plt.figure(1)
-        plt.subplot(311)
-        t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
-        if len(t)>len(data_audio):
-            t=t[:len(data_audio)]
-        elif len(t)<len(data_audio):
-            data_audio=data_audio[:len(t)]
-        plt.plot(t, data_audio, 'k')
-        plt.ylabel('Amplitude', fontsize=14)
-        plt.xlabel('Time (s)', fontsize=14)
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
-
-        plt.subplot(312)
-        fsp=int(len(F0)/t[-1])
-        t2=np.arange(0.0, t[-1], 1.0/fsp)
-        if len(t2)>len(F0):
-            t2=t2[:len(F0)]
-        elif len(F0)>len(t2):
-            F0=F0[:len(t2)]
-
-        plt.plot(t2, F0, color='k', linewidth=2.0)
-        plt.xlabel('Time (s)', fontsize=14)
-        plt.ylabel('Frequency (Hz)', fontsize=14)
-        plt.ylim([0,np.max(F0)+10])
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
-        #plt.show()
-        plt.subplot(313)
-        Esp=int(len(logE)/t[-1])
-        t2=np.arange(0.0, t[-1], 1.0/Esp)
-        if len(t2)>len(logE):
-            t2=t2[:len(logE)]
-        elif len(logE)>len(t2):
-            logE=logE[:len(t2)]
-
-        plt.plot(t2, logE, color='k', linewidth=2.0)
-        plt.xlabel('Time (s)', fontsize=14)
-        plt.ylabel('Energy (dB)', fontsize=14)
-        plt.ylim([0,np.max(logE)+10])
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
-        plt.show()
+        plot_phon(data_audio,fs,F0,logE)
 
     print("Jitter=", len(Jitter))
     print("Shimmer", len(Shimmer))
