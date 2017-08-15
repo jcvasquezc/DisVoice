@@ -254,21 +254,23 @@ if __name__=="__main__":
                 Features.append(feat_mat)
                 ID.append(IDs)
 
-    if kaldi_flag:
-        temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
-    	with open(temp_file,'wb') as f:
-    		for key in sorted(Features):
-    			write_mat(f, Features[key], key=key)
-    	ark_file=file_features.replace('.txt','')+'.ark'
-    	scp_file=file_features.replace('.txt','')+'.scp'
-    	os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
-        os.remove(temp_file)
-    else:
-        if flag_static=="static":
-            Features=np.asarray(Features)
-            np.savetxt(file_features, Features)
 
-        if flag_static=="dynamic":
+
+    if flag_static=="static":
+        Features=np.asarray(Features)
+        np.savetxt(file_features, Features)
+
+    if flag_static=="dynamic":
+        if kaldi_flag:
+            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+        	with open(temp_file,'wb') as f:
+        		for key in sorted(Features):
+        			write_mat(f, Features[key], key=key)
+        	ark_file=file_features.replace('.txt','')+'.ark'
+        	scp_file=file_features.replace('.txt','')+'.scp'
+        	os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
+            os.remove(temp_file)
+        else:
             Features=np.vstack(Features)
             np.savetxt(file_features, Features)
             ID=np.hstack(ID)
