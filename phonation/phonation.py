@@ -65,7 +65,7 @@ import uuid
 
 sys.path.append('../')
 from utils import Hz2semitones
-from kaldi_io import write_mat
+from kaldi_io import write_mat, write_vec_flt
 
 def plot_phon(data_audio,fs,F0,logE):
     plt.figure(1)
@@ -178,9 +178,32 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
 
 
 if __name__=="__main__":
-    # TODO: Parse argument kaldi_flag
-    kaldi_flag=True
-    if len(sys.argv)==5:
+    # TODO: Parse argument flag_kaldi
+    flag_kaldi=True
+    if len(sys.argv)==6:
+        audio=sys.argv[1]
+        file_features=sys.argv[2]
+        flag_static=sys.argv[3]
+        if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
+            flag_static=sys.argv[3]
+        else:
+            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            sys.exit()
+        if sys.argv[4]=="false" or sys.argv[4]=="False":
+            flag_plots=False
+        elif sys.argv[4]=="true" or sys.argv[4]=="True":
+            flag_plots=True
+        else:
+            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            sys.exit()
+        if sys.argv[5]=="true" or sys.argv[5]=="True":
+            flag_kaldi=True
+        elif sys.argv[5]=="false" or sys.argv[5]=="False":
+            flag_kaldi=False
+        else:
+            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            sys.exit()
+    elif len(sys.argv)==5:
         audio=sys.argv[1]
         file_features=sys.argv[2]
         flag_static=sys.argv[3]
@@ -222,7 +245,7 @@ if __name__=="__main__":
         hf=os.listdir(audio)
         hf.sort()
         nfiles=len(hf)
-    if kaldi_flag:
+    if flag_kaldi:
         Features={}
     else:
         Features=[]
@@ -238,7 +261,7 @@ if __name__=="__main__":
             Features_sk=[st.skew(DF0), st.skew(DDF0), st.skew(Jitter), st.skew(Shimmer), st.skew(apq), st.skew(ppq), st.skew(logE)]
             Features_ku=[st.kurtosis(DF0, fisher=False), st.kurtosis(DDF0, fisher=False), st.kurtosis(Jitter, fisher=False), st.kurtosis(Shimmer, fisher=False), st.kurtosis(apq, fisher=False), st.kurtosis(ppq, fisher=False), st.kurtosis(logE, fisher=False)]
             feat_vec=np.hstack(([degreeU], Features_mean, Features_std, Features_sk, Features_ku))
-            if kaldi_flag:
+            if flag_kaldi:
                 key=hf[k].replace('.wav', '')
                 Features[key]=feat_vec
             else:
@@ -247,7 +270,7 @@ if __name__=="__main__":
         if flag_static=="dynamic":
             feat_mat=np.vstack((DF0[11:], DDF0[10:], Jitter[12:], Shimmer[12:], apq, ppq[6:], logE[12:])).T
             IDs=np.ones(feat_mat.shape[0])*(k+1)
-            if kaldi_flag:
+            if flag_kaldi:
                 key=hf[k].replace('.wav', '')
                 Features[key]=feat_mat
             else:
@@ -257,18 +280,28 @@ if __name__=="__main__":
 
 
     if flag_static=="static":
-        Features=np.asarray(Features)
-        np.savetxt(file_features, Features)
+        if flag_kaldi:
+            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            with open(temp_file,'wb') as f:
+                for key in sorted(Features):
+                    write_vec_flt(f, Features[key], key=key)
+            ark_file=file_features.replace('.txt','')+'.ark'
+            scp_file=file_features.replace('.txt','')+'.scp'
+            os.system("copy-vector ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
+            os.remove(temp_file)
+        else:
+            Features=np.asarray(Features)
+            np.savetxt(file_features, Features)
 
     if flag_static=="dynamic":
-        if kaldi_flag:
+        if flag_kaldi:
             temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
-        	with open(temp_file,'wb') as f:
-        		for key in sorted(Features):
-        			write_mat(f, Features[key], key=key)
-        	ark_file=file_features.replace('.txt','')+'.ark'
-        	scp_file=file_features.replace('.txt','')+'.scp'
-        	os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
+            with open(temp_file,'wb') as f:
+                for key in sorted(Features):
+                    write_mat(f, Features[key], key=key)
+            ark_file=file_features.replace('.txt','')+'.ark'
+            scp_file=file_features.replace('.txt','')+'.scp'
+            os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
             os.remove(temp_file)
         else:
             Features=np.vstack(Features)
