@@ -179,7 +179,6 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
 
 if __name__=="__main__":
     # TODO: Parse argument flag_kaldi
-    flag_kaldi=True
     if len(sys.argv)==6:
         audio=sys.argv[1]
         file_features=sys.argv[2]
@@ -246,10 +245,11 @@ if __name__=="__main__":
         hf.sort()
         nfiles=len(hf)
     if flag_kaldi:
-        Features={}
+        Features={} # Kaldi Output requires a dictionary
     else:
-        Features=[]
+        Features=[] 
         ID=[]
+    # For every file in the audio folder
     for k in range(nfiles):
         audio_file=audio+hf[k]
         print("Processing audio "+str(k+1)+ " from " + str(nfiles)+ " " +audio_file)
@@ -276,9 +276,8 @@ if __name__=="__main__":
             else:
                 Features.append(feat_mat)
                 ID.append(IDs)
-
-
-
+    # Once the features of all files have been extracted save them
+    # TODO: Save them within the loop, waiting for them to finish will become an issue later
     if flag_static=="static":
         if flag_kaldi:
             temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
