@@ -72,6 +72,7 @@ import uuid
 
 sys.path.append('../')
 from utils import Hz2semitones
+from kaldi_io import write_mat, write_vec_flt
 
 def plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
     plt.figure(1)
@@ -188,8 +189,30 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
 
 
 if __name__=="__main__":
-
-    if len(sys.argv)==5:
+    if len(sys.argv)==6:
+        audio=sys.argv[1]
+        file_features=sys.argv[2]
+        flag_static=sys.argv[3]
+        if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
+            flag_static=sys.argv[3]
+        else:
+            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            sys.exit()
+        if sys.argv[4]=="false" or sys.argv[4]=="False":
+            flag_plots=False
+        elif sys.argv[4]=="true" or sys.argv[4]=="True":
+            flag_plots=True
+        else:
+            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            sys.exit()
+        if sys.argv[5]=="true" or sys.argv[5]=="True":
+            flag_kaldi=True
+        elif sys.argv[5]=="false" or sys.argv[5]=="False":
+            flag_kaldi=False
+        else:
+            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            sys.exit()
+    elif len(sys.argv)==5:
         audio=sys.argv[1]
         file_features=sys.argv[2]
         flag_static=sys.argv[3]
@@ -232,11 +255,16 @@ if __name__=="__main__":
         hf.sort()
         nfiles=len(hf)
 
-    FeaturesOnset=[]
-    IDon=[]
-    FeaturesOffset=[]
-    IDoff=[]
-    Features=[]
+    if flag_kaldi:
+        Features={} # Kaldi Output requires a dictionary
+        FeaturesOnset={}
+        FeaturesOffset={}
+    else:
+        FeaturesOnset=[]
+        IDon=[]
+        FeaturesOffset=[]
+        IDoff=[]
+        Features=[]
     for k in range(nfiles):
         audio_file=audio+hf[k]
         print("Processing audio "+str(k+1)+ " from " + str(nfiles)+ " " +audio_file)
@@ -249,34 +277,77 @@ if __name__=="__main__":
             Features_sk=np.hstack([st.skew(BBEon), st.skew(MFCCon), st.skew(DMFCCon), st.skew(DDMFCCon), st.skew(BBEoff), st.skew(MFCCoff), st.skew(DMFCCoff), st.skew(DDMFCCoff), st.skew(F1), st.skew(DF1), st.skew(DDF1), st.skew(F2), st.skew(DF2), st.skew(DDF2)])
             Features_ku=np.hstack([st.kurtosis(BBEon, fisher=False), st.kurtosis(MFCCon, fisher=False), st.kurtosis(DMFCCon, fisher=False), st.kurtosis(DDMFCCon, fisher=False), st.kurtosis(BBEoff, fisher=False), st.kurtosis(MFCCoff, fisher=False), st.kurtosis(DMFCCoff, fisher=False), st.kurtosis(DDMFCCoff, fisher=False), st.kurtosis(F1, fisher=False), st.kurtosis(DF1, fisher=False), st.kurtosis(DDF1, fisher=False), st.kurtosis(F2, fisher=False), st.kurtosis(DF2, fisher=False), st.kurtosis(DDF2, fisher=False)])
             feat_vec=np.hstack((Features_mean, Features_std, Features_sk, Features_ku))
-            Features.append(feat_vec)
+            if flag_kaldi:
+                key=hf[k].replace('.wav', '')
+                Features[key]=feat_vec
+            else:
+                Features.append(feat_vec)
 
 
         if flag_static=="dynamic":
             feat_onset=np.hstack((BBEon[2:,:], MFCCon[2:,:], DMFCCon[1:,:], DDMFCCon))
-            IDson=np.ones(feat_onset.shape[0])*(k+1)
-            FeaturesOnset.append(feat_onset)
-            IDon.append(IDson)
+
+            if flag_kaldi:
+                if feat_onset.shape[0] > 0:
+                    key=hf[k].replace('.wav', '')
+                    FeaturesOnset[key]=feat_onset
+            else:
+                IDson=np.ones(feat_onset.shape[0])*(k+1)
+                FeaturesOnset.append(feat_onset)
+                IDon.append(IDson)
             feat_offset=np.hstack((BBEoff[2:,:], MFCCoff[2:,:], DMFCCoff[1:,:], DDMFCCoff))
-            IDsoff=np.ones(feat_offset.shape[0])*(k+1)
-            FeaturesOffset.append(feat_offset)
-            IDoff.append(IDsoff)
+            if flag_kaldi:
+                if feat_offset.shape[0] > 0:
+                    key=hf[k].replace('.wav', '')
+                    FeaturesOffset[key]=feat_offset
+            else:
+                IDsoff=np.ones(feat_offset.shape[0])*(k+1)
+                FeaturesOffset.append(feat_offset)
+                IDoff.append(IDsoff)
 
     if flag_static=="static":
-        Features=np.asarray(Features)
-        print(Features.shape)
-        np.savetxt(file_features, Features)
+        if flag_kaldi:
+            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            with open(temp_file,'wb') as f:
+                for key in sorted(Features):
+                    write_vec_flt(f, Features[key], key=key)
+            ark_file=file_features.replace('.txt','')+'.ark'
+            scp_file=file_features.replace('.txt','')+'.scp'
+            os.system("copy-vector ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
+            os.remove(temp_file)
+        else:
+            Features=np.asarray(Features)
+            print(Features.shape)
+            np.savetxt(file_features, Features)
 
     if flag_static=="dynamic":
-        FeaturesOnset=np.vstack(FeaturesOnset)
-        print(FeaturesOnset.shape)
-        np.savetxt(file_features.replace('.txt', 'onset.txt'), FeaturesOnset)
-        FeaturesOffset=np.vstack(FeaturesOffset)
-        print(FeaturesOffset.shape)
-        np.savetxt(file_features.replace('.txt', 'offset.txt'), FeaturesOffset)
-        IDon=np.hstack(IDon)
-        print(IDon.shape)
-        IDoff=np.hstack(IDoff)
-        print(IDoff.shape)
-        np.savetxt(file_features.replace('.txt', 'IDonset.txt'), IDon, fmt='%i')
-        np.savetxt(file_features.replace('.txt', 'IDoffset.txt'), IDoff, fmt='%i')
+        if flag_kaldi:
+            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            with open(temp_file,'wb') as f:
+                for key in sorted(FeaturesOnset):
+                    write_mat(f, FeaturesOnset[key], key=key)
+            ark_file=file_features.replace('.txt','')+'_onset.ark'
+            scp_file=file_features.replace('.txt','')+'_onset.scp'
+            os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
+            # os.remove(temp_file)
+            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            with open(temp_file,'wb') as f:
+                for key in sorted(FeaturesOffset):
+                    write_mat(f, FeaturesOffset[key], key=key)
+            ark_file=file_features.replace('.txt','')+'_offset.ark'
+            scp_file=file_features.replace('.txt','')+'_offset.scp'
+            os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
+            os.remove(temp_file)
+        else:
+            FeaturesOnset=np.vstack(FeaturesOnset)
+            print(FeaturesOnset.shape)
+            np.savetxt(file_features.replace('.txt', 'onset.txt'), FeaturesOnset)
+            FeaturesOffset=np.vstack(FeaturesOffset)
+            print(FeaturesOffset.shape)
+            np.savetxt(file_features.replace('.txt', 'offset.txt'), FeaturesOffset)
+            IDon=np.hstack(IDon)
+            print(IDon.shape)
+            IDoff=np.hstack(IDoff)
+            print(IDoff.shape)
+            np.savetxt(file_features.replace('.txt', 'IDonset.txt'), IDon, fmt='%i')
+            np.savetxt(file_features.replace('.txt', 'IDoffset.txt'), IDoff, fmt='%i')
