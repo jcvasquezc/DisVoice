@@ -12,7 +12,7 @@ import os, re, gzip, struct
 if not 'KALDI_ROOT' in os.environ:
   # Default! To change run python with 'export KALDI_ROOT=/some_dir python'
   # TODO: change the path accordingly
-  os.environ['KALDI_ROOT']='/home/nicanor/Investigacion/kaldi'
+  os.environ['KALDI_ROOT']='../kaldi'
 
 # Add kaldi tools to path,
 os.environ['PATH'] = os.popen('echo $KALDI_ROOT/src/bin:$KALDI_ROOT/src/featbin/').readline().strip() + ':' + os.environ['PATH']
