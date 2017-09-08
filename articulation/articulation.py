@@ -125,7 +125,7 @@ def plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
     plt.show()
 
 
-def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,nB=22,nMFCC=12,minf0=60,maxf0=350, voice_bias=-0.2,len_thr_miliseconds=270.0):
+def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,nB=22,nMFCC=12,minf0=60,maxf0=350, voice_bias=-0.5,len_thr_miliseconds=270.0):
 
     fs, data_audio=read(audio_filename)
     data_audio=data_audio-np.mean(data_audio)
