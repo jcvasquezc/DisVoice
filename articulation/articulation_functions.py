@@ -4,9 +4,6 @@ import numpy as np
 import sys
 import pysptk
 
-sys.path.append('../')
-from utils import multi_find
-
 def bark(f):
 	x=(f*0.00076)
 	x2=(f/7500)**2
@@ -88,23 +85,7 @@ def fftsolp(x,nfft):
      return y
 
 
-def decodeFormants(fileTxt):
-    fid=open(fileTxt)
-    datam=fid.read()
-    end_line1=multi_find(datam, '\n')
-    F1=[]
-    F2=[]
-    ji=10
-    while (ji<len(end_line1)-1):
-        line1=datam[end_line1[ji]+1:end_line1[ji+1]]
-        cond=(line1=='3' or line1=='4' or line1=='5')
-        if (cond):
-            F1.append(float(datam[end_line1[ji+1]+1:end_line1[ji+2]]))
-            F2.append(float(datam[end_line1[ji+3]+1:end_line1[ji+4]]))
-        ji=ji+1
-    F1=np.asarray(F1)
-    F2=np.asarray(F2)
-    return F1, F2
+
 
 def extractTrans(segments, fs, size_frameS, size_stepS, nB=22, nMFCC=12, nfft=2048):
     frames=[]

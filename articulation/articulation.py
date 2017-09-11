@@ -66,13 +66,15 @@ import matplotlib.pyplot as plt
 import math
 import pysptk
 import scipy.stats as st
-from articulation_functions import V_UV, extractTrans, decodeFormants
+from articulation_functions import extractTrans
 import uuid
 
 
-sys.path.append('../')
-from utils import Hz2semitones
+sys.path.append('../kaldi-io')
 from kaldi_io import write_mat, write_vec_flt
+
+sys.path.append('../praat')
+import praat_functions
 
 def plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
     plt.figure(1)
@@ -134,9 +136,21 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     size_stepS=step*float(fs)
     overlap=size_stepS/size_frameS
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
-    segmentsOn=V_UV(F0, data_audio, fs, 'onset')
-    segmentsOff=V_UV(F0, data_audio, fs, 'offset')
+    # F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
+    temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+    temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
+    temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
+    praat_functions.praat_vuv(audio_filename, temp_filename_f0, temp_filename_vuv, time_stepF0=step, minf0=minf0, maxf0=maxf0)
+    F0,_=praat_functions.decodeF0(temp_filename_f0)
+    segmentsFull,segmentsOn,segmentsOff=praat_functions.read_textgrid_trans(temp_filename_vuv,data_audio,fs,sizeframe)
+    print len(segmentsFull)
+    print len(segmentsOn)
+    print len(segmentsOff)
+    os.remove(temp_filename_vuv)
+    os.remove(temp_filename_f0)
+    # segments= read_Textgrid(path_base+'vuv.txt', file_audio, win_trans)
+    # segmentsOn=V_UV(F0, data_audio, fs, 'onset')
+    # segmentsOff=V_UV(F0, data_audio, fs, 'offset')
 
     BBEon, MFCCon=extractTrans(segmentsOn, fs, size_frameS, size_stepS, nB, nMFCC)
     BBEoff, MFCCoff=extractTrans(segmentsOff, fs, size_frameS, size_stepS, nB, nMFCC)
@@ -149,9 +163,9 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
 
     # TODO: Make parameters configurable. (If worth it)
     temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
-    temp_filename='./tempForm'+temp_uuid+'.txt'
-    os.system('praat FormantsPraat.praat ' + audio_filename + ' ' + temp_filename +' 5 5500 '+str(float(sizeframe)/2)+' '+str(float(step))) #formant extraction praat
-    [F1, F2]=decodeFormants(temp_filename)
+    temp_filename='../tempfiles/tempFormants'+temp_uuid+'.txt'
+    praat_functions.praat_formants(audio_filename, temp_filename,sizeframe,step)
+    [F1, F2]=praat_functions.decodeFormants(temp_filename)
     os.remove(temp_filename)
 
     if len(F0)<len(F1):
@@ -228,6 +242,7 @@ if __name__=="__main__":
         else:
             print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
             sys.exit()
+        flag_kaldi=False
     elif len(sys.argv)==4:
         audio=sys.argv[1]
         file_features=sys.argv[2]
@@ -237,11 +252,13 @@ if __name__=="__main__":
             print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
             sys.exit()
         flag_plots=False
+        flag_kaldi=False
     elif len(sys.argv)==3:
         audio=sys.argv[1]
         file_features=sys.argv[2]
         flag_static="static"
         flag_plots=False
+        flag_kaldi=False
     elif len(sys.argv)<3:
         print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
         sys.exit()

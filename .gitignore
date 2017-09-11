@@ -2,3 +2,4 @@
 **/*.txt
 **/*.ark
 **/*.scp
+tempfiles/
