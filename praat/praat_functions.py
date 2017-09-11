@@ -35,19 +35,20 @@ def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 	segments=[]
 	segments_onset=[]
 	segments_offset=[]
-	prev_line=""
+	prev_trans=""
 	with open(file_textgrid) as fp:
 		for line in fp:
 			line = line.strip('\n')
 			if line=='"V"' or line == '"U"':
-				prev_trans=line
+
 				transVal=int(float(prev_line)*fs)-1
 				segment=data_audio[int(transVal-win_trans*fs):int(transVal+win_trans*fs)]
 				segments.append(segment)
-				if prev_trans=='"U"' or prev_trans=="":
+				if prev_trans=='"V"' or prev_trans=="":
 					segments_onset.append(segment)
-				elif prev_trans=='"V"':
+				elif prev_trans=='"U"':
 					segments_offset.append(segment)
+				prev_trans=line
 			prev_line=line
 	return segments,segments_onset,segments_offset
 
