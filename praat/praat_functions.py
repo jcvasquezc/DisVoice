@@ -40,7 +40,6 @@ def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 		for line in fp:
 			line = line.strip('\n')
 			if line=='"V"' or line == '"U"':
-
 				transVal=int(float(prev_line)*fs)-1
 				segment=data_audio[int(transVal-win_trans*fs):int(transVal+win_trans*fs)]
 				segments.append(segment)
@@ -52,11 +51,24 @@ def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 			prev_line=line
 	return segments,segments_onset,segments_offset
 
-def decodeF0(fileTxt):
+def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
+	"""
+	Reads the content of a pitch file created with praat_vuv function.
+	Optionally, it returns a
+	"""
 	pitch_data=np.loadtxt(fileTxt)
 	time_voiced=pitch_data[:,0] # First column is the time stamp vector
-	pitch=np.log(pitch_data[:,1]) # Second column
-	return pitch, time_voiced
+	pitch=pitch_data[:,1] # Second column
+	if len_signal>0:
+		n_frames=len_signal/time_stepF0
+		t=np.linspace(0.0,len_signal,n_frames)
+		pitch_zeros=np.zeros(int(n_frames))
+		for idx,time_p in enumerate(time_voiced):
+			argmin=np.argmin(np.abs(t-time_p))
+			pitch_zeros[argmin]=pitch[idx]
+		return pitch_zeros, t
+	else:
+		return pitch, time_voiced
 
 def decodeFormants(fileTxt):
     fid=open(fileTxt)
