@@ -69,7 +69,6 @@ import scipy.stats as st
 from articulation_functions import extractTrans, V_UV
 import uuid
 
-
 sys.path.append('../kaldi-io')
 from kaldi_io import write_mat, write_vec_flt
 
