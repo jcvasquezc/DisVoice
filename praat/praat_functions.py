@@ -118,7 +118,19 @@ def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 	"""
 	Reads the content of a pitch file created with praat_vuv function.
-	It can return just the contents of the file.
+	By default it will return the contents of the file in two arrays,
+	one for the actual values of pitch and the other with the time stamps.
+	Optionally the lenght of the signal and the time step of the pitch
+	values can be provided to return an array with the full pitch contour
+	for the signal, with padded zeros for unvoiced segments.
+	Parameters:
+		fileTxt: File with the pitch, which can be generated using the
+		 			function praat_vuv
+		len_signal: Lenght of the audio signal in
+		time_stepF0: The time step of pitch values. Optional.
+	Returns:
+		pitch: Numpy array with the values of the pitch.
+		time_voiced: time stamp for each pitch value.
 
 
 	"""
