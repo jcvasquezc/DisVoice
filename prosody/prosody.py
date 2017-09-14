@@ -124,7 +124,7 @@ def plot_pros(data_audio,fs,F0,seg_voiced,Ev,featvec,f0v):
     plt.legend()
     plt.show()
 
-def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025,P=5):
+def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025,P=5, pitch_method='praat'):
     """
     Based on:
     Najim Dehak, "Modeling Prosodic Features With Joint Factor Analysis for Speaker Verification", 2007
@@ -137,7 +137,16 @@ def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, vo
     overlap=size_stepS/size_frameS
     nF=int((len(data_audio)/size_frameS/overlap))-1
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
+    if pitch_method == 'praat':
+        temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+        temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
+        temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
+        praat_functions.praat_vuv(audio_filename, temp_filename_f0, temp_filename_vuv, time_stepF0=step, minf0=minf0, maxf0=maxf0)
+        F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),step)
+        os.remove(temp_filename_vuv)
+        os.remove(temp_filename_f0)
+    elif pitch_method == 'rapt':
+        F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
 
     #Find pitch contour of EACH voiced segment
     pitchON = np.where(F0!=0)[0]
