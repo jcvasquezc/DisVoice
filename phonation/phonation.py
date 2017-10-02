@@ -67,6 +67,9 @@ sys.path.append('../')
 from utils import Hz2semitones
 from kaldi_io import write_mat, write_vec_flt
 
+sys.path.append('../praat')
+import praat_functions
+
 def plot_phon(data_audio,fs,F0,logE):
     plt.figure(1)
     plt.subplot(311)
@@ -126,8 +129,8 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
         temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
         temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
-        praat_functions.praat_vuv(audio_filename, temp_filename_f0, temp_filename_vuv, time_stepF0=step, minf0=minf0, maxf0=maxf0)
-        F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),step)
+        praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
+        F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),size_step)
         os.remove(temp_filename_vuv)
         os.remove(temp_filename_f0)
     elif pitch_method == 'rapt':
@@ -271,8 +274,11 @@ if __name__=="__main__":
             Features_ku=[st.kurtosis(DF0, fisher=False), st.kurtosis(DDF0, fisher=False), st.kurtosis(Jitter, fisher=False), st.kurtosis(Shimmer, fisher=False), st.kurtosis(apq, fisher=False), st.kurtosis(ppq, fisher=False), st.kurtosis(logE, fisher=False)]
             feat_vec=np.hstack(([degreeU], Features_mean, Features_std, Features_sk, Features_ku))
             if flag_kaldi:
-                key=hf[k].replace('.wav', '')
-                Features[key]=feat_vec
+                if feat_vec.size>0:
+                    key=hf[k].replace('.wav', '')
+                    Features[key]=feat_vec
+                else:
+                    print "Problem with file: {}".format(key)
             else:
                 Features.append(feat_vec)
 
@@ -280,8 +286,11 @@ if __name__=="__main__":
             feat_mat=np.vstack((DF0[11:], DDF0[10:], Jitter[12:], Shimmer[12:], apq, ppq[6:], logE[12:])).T
             IDs=np.ones(feat_mat.shape[0])*(k+1)
             if flag_kaldi:
-                key=hf[k].replace('.wav', '')
-                Features[key]=feat_mat
+                if feat_mat.size>0:
+                    key=hf[k].replace('.wav', '')
+                    Features[key]=feat_mat
+                else:
+                    print "Problem with file: {}".format(key)
             else:
                 Features.append(feat_mat)
                 ID.append(IDs)

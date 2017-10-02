@@ -72,12 +72,12 @@ def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5
 	Returns:
 		Nothing
 	"""
-    command='praat ../praat/FormantsPraat.praat '
-    command+=audio_filename + ' '+results_filename+' '
-    command+=str(n_formants)+' '+ str(max_formant) + ' '
-    command+=str(float(sizeframe)/2)+' '
-    command+=str(float(step))
-    os.system(command) #formant extraction praat
+	command='praat ../praat/FormantsPraat.praat '
+	command+=audio_filename + ' '+results_filename+' '
+	command+=str(n_formants)+' '+ str(max_formant) + ' '
+	command+=str(float(sizeframe)/2)+' '
+	command+=str(float(step))
+	os.system(command) #formant extraction praat
 
 def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 	"""
@@ -131,19 +131,25 @@ def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 	Returns:
 		pitch: Numpy array with the values of the pitch.
 		time_voiced: time stamp for each pitch value.
-
-
 	"""
 	pitch_data=np.loadtxt(fileTxt)
-	time_voiced=pitch_data[:,0] # First column is the time stamp vector
-	pitch=pitch_data[:,1] # Second column
+	if len(pitch_data.shape)>1:
+		time_voiced=pitch_data[:,0] # First column is the time stamp vector
+		pitch=pitch_data[:,1] # Second column
+	elif len(pitch_data.shape)==1: # Only one point of data
+		time_voiced=pitch_data[0] # First datum is the time stamp
+		pitch=pitch_data[1] # Second datum is the pitch value
 	if len_signal>0:
 		n_frames=len_signal/time_stepF0
 		t=np.linspace(0.0,len_signal,n_frames)
 		pitch_zeros=np.zeros(int(n_frames))
-		for idx,time_p in enumerate(time_voiced):
-			argmin=np.argmin(np.abs(t-time_p))
-			pitch_zeros[argmin]=pitch[idx]
+		if len(pitch_data.shape)>1:
+			for idx,time_p in enumerate(time_voiced):
+				argmin=np.argmin(np.abs(t-time_p))
+				pitch_zeros[argmin]=pitch[idx]
+		else:
+			argmin=np.argmin(np.abs(t-time_voiced))
+			pitch_zeros[argmin]=pitch
 		return pitch_zeros, t
 	else:
 		return pitch, time_voiced
@@ -157,19 +163,19 @@ def decodeFormants(fileTxt):
 		F1: Numpy array containing the values for the first formant
 		F1: Numpy array containing the values for the second formant
 	"""
-    fid=open(fileTxt)
-    datam=fid.read()
-    end_line1=multi_find(datam, '\n')
-    F1=[]
-    F2=[]
-    ji=10
-    while (ji<len(end_line1)-1):
-        line1=datam[end_line1[ji]+1:end_line1[ji+1]]
-        cond=(line1=='3' or line1=='4' or line1=='5')
-        if (cond):
-            F1.append(float(datam[end_line1[ji+1]+1:end_line1[ji+2]]))
-            F2.append(float(datam[end_line1[ji+3]+1:end_line1[ji+4]]))
-        ji=ji+1
-    F1=np.asarray(F1)
-    F2=np.asarray(F2)
-    return F1, F2
+	fid=open(fileTxt)
+	datam=fid.read()
+	end_line1=multi_find(datam, '\n')
+	F1=[]
+	F2=[]
+	ji=10
+	while (ji<len(end_line1)-1):
+		line1=datam[end_line1[ji]+1:end_line1[ji+1]]
+		cond=(line1=='3' or line1=='4' or line1=='5')
+		if (cond):
+			F1.append(float(datam[end_line1[ji+1]+1:end_line1[ji+2]]))
+			F2.append(float(datam[end_line1[ji+3]+1:end_line1[ji+4]]))
+		ji=ji+1
+	F1=np.asarray(F1)
+	F2=np.asarray(F2)
+	return F1, F2

@@ -66,6 +66,8 @@ import uuid
 sys.path.append('../')
 from utils import Hz2semitones
 from kaldi_io import write_mat, write_vec_flt
+sys.path.append('../praat')
+import praat_functions
 
 def plot_pros(data_audio,fs,F0,seg_voiced,Ev,featvec,f0v):
     plt.figure(1)
@@ -141,8 +143,8 @@ def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, vo
         temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
         temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
-        praat_functions.praat_vuv(audio_filename, temp_filename_f0, temp_filename_vuv, time_stepF0=step, minf0=minf0, maxf0=maxf0)
-        F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),step)
+        praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
+        F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),size_step)
         os.remove(temp_filename_vuv)
         os.remove(temp_filename_f0)
     elif pitch_method == 'rapt':
@@ -396,6 +398,8 @@ if __name__=="__main__":
 
         if flag_static=="dynamic":
             profeats = prosody_dynamic(audio_file)
+            if profeats.size == 0:
+                continue
             if flag_kaldi:
                 key=hf[k].replace('.wav', '')
                 Features[key]=profeats
@@ -426,7 +430,12 @@ if __name__=="__main__":
             temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
             with open(temp_file,'wb') as f:
                 for key in sorted(Features):
-                    write_mat(f, Features[key], key=key)
+                    try:
+                        write_mat(f, Features[key], key=key)
+                    except Exception as e:
+                        print "Problem with key: {}. Shape of features is: {}".format(key,Features[key].shape)
+                        raise
+                        exit()
             ark_file=file_features.replace('.txt','')+'.ark'
             scp_file=file_features.replace('.txt','')+'.scp'
             os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
