@@ -30,12 +30,14 @@ Notes:
 
 1. In dynamic features the first 11 frames of each recording are not considered to be able to stack the APQ and PPQ descriptors with the remaining ones.
 
-2. The fundamental frequency is computed using the RAPT algorithm
+2. The fundamental frequency is computed using Praat.
+To use the RAPT algorithm change the "pitch method" variable in the function
+phonation_vowel
 
 
 Script is called as follows
 
-python phonation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]
+python phonation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)] [kaldi output (true or false) (default false)]
 
 examples:
 
@@ -43,11 +45,13 @@ python phonation.py "./001_a1_PCGITA.wav" "featuresAst.txt" "static" "true"
 python phonation.py "./001_a1_PCGITA.wav" "featuresAdyn.txt" "dynamic" "true"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAdynFolder.txt" "dynamic" "false"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAstatFolder.txt" "static" "false"
+python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAdynFolder.txt" "dynamic" "false" "true"
 
 python phonation.py "./001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
 python phonation.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
+python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "dynamice" "false" "true"
 
 """
 
@@ -190,7 +194,10 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
 
 
 if __name__=="__main__":
-    # TODO: Parse argument flag_kaldi
+    promtp=' <file_or_folder_audio> <file_features.txt> '
+    promtp+='[dynamic_or_static (default static)] '
+    promtp+='[plots (true or false) (default false)] '
+    promtp+='[kaldi output (true or false) (default false)]'
     if len(sys.argv)==6:
         audio=sys.argv[1]
         file_features=sys.argv[2]
@@ -198,21 +205,21 @@ if __name__=="__main__":
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         if sys.argv[4]=="false" or sys.argv[4]=="False":
             flag_plots=False
         elif sys.argv[4]=="true" or sys.argv[4]=="True":
             flag_plots=True
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         if sys.argv[5]=="true" or sys.argv[5]=="True":
             flag_kaldi=True
         elif sys.argv[5]=="false" or sys.argv[5]=="False":
             flag_kaldi=False
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
     elif len(sys.argv)==5:
         audio=sys.argv[1]
@@ -221,14 +228,14 @@ if __name__=="__main__":
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         if sys.argv[4]=="false" or sys.argv[4]=="False":
             flag_plots=False
         elif sys.argv[4]=="true" or sys.argv[4]=="True":
             flag_plots=True
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
     elif len(sys.argv)==4:
         audio=sys.argv[1]
@@ -236,7 +243,7 @@ if __name__=="__main__":
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         flag_plots=False
     elif len(sys.argv)==3:
@@ -245,7 +252,7 @@ if __name__=="__main__":
         flag_static="static"
         flag_plots=False
     elif len(sys.argv)<3:
-        print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+        print('python '+sys.argv[0]+promtp)
         sys.exit()
 
 

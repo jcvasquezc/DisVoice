@@ -3,3 +3,4 @@
 **/*.ark
 **/*.scp
 tempfiles/
+kaldi_io.py

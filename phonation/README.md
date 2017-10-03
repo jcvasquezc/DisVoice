@@ -29,10 +29,12 @@ Additionally, static (for all utterance) or dynamic (frame ny frame) features ca
 
 2. The fundamental frequency (F0) is computed using the RAPT algorithm
 
+3. When Kaldi output is set to "true" two files will be generated, the ".ark" with the data in binary format and the ".scp" Kaldi script file
+
 Script is called as follows
 
 ```sh
-python phonation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]
+python phonation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)] [kaldi output (true or false) (default false)]
 ```
 
 #### Examples:
@@ -41,11 +43,13 @@ python phonation.py "./001_a1_PCGITA.wav" "featuresAst.txt" "static" "true"
 python phonation.py "./001_a1_PCGITA.wav" "featuresAdyn.txt" "dynamic" "true"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAdynFolder.txt" "dynamic" "false"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAstatFolder.txt" "static" "false"
+python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAdynFolder.txt" "dynamic" "false" "true"
 
 python phonation.py "./001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
 python phonation.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
+python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "dynamice" "false" "true"
 ```
 #### Results:
 

@@ -40,7 +40,7 @@ Najim Dehak, "Modeling Prosodic Features With Joint Factor Analysis for Speaker 
 
 Script is called as follows
 
-python prosody.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]
+python prosody.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)] [kaldi output (true or false) (default false)]
 
 examples:
 
@@ -48,6 +48,7 @@ python prosody.py "./001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
 python prosody.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
 python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
 python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
+python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false" "true"
 
 """
 
@@ -311,7 +312,10 @@ def prosody_static(audio, flag_plots):
 
 
 if __name__=="__main__":
-
+    prompt=' <file_or_folder_audio> <file_features.txt> '
+    prompt+='[dynamic_or_static (default static)] '
+    prompt+='[plots (true or false) (default false)]'
+    prompt+='[kaldi output (true or false) (default false)]'
     if len(sys.argv)==6:
         audio=sys.argv[1]
         file_features=sys.argv[2]
@@ -319,7 +323,7 @@ if __name__=="__main__":
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+prompt)
             sys.exit()
         if sys.argv[4]=="false" or sys.argv[4]=="False":
             flag_plots=False
