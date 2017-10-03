@@ -16,7 +16,7 @@ To install the requeriments, please run
 install.sh
 ```
 
-For Kaldi output Kaldi must be installed beforehand and line 14:
+For Kaldi output Kaldi must be installed beforehand and the path at kaldi-io/kaldi-io.py:line 14:
 "os.environ['KALDI_ROOT']='/mnt/matylda5/iveselyk/Tools/kaldi-trunk'"
 should be changed to with path to the proper Kaldi root directory.
 
