@@ -30,9 +30,10 @@ Notes:
 
 1. In dynamic features the first 11 frames of each recording are not considered to be able to stack the APQ and PPQ descriptors with the remaining ones.
 
-2. The fundamental frequency is computed using Praat.
-To use the RAPT algorithm change the "pitch method" variable in the function
-phonation_vowel
+2. The fundamental frequency is computed using Praat. To use the RAPT algorithm change the "pitch method" variable in the function phonation_vowel.
+
+
+3. When Kaldi output is set to "true" two files will be generated, the ".ark" with the data in binary format and the ".scp" Kaldi script file.
 
 
 Script is called as follows
@@ -69,6 +70,7 @@ import uuid
 
 sys.path.append('../')
 from utils import Hz2semitones
+sys.path.append('../kaldi-io')
 from kaldi_io import write_mat, write_vec_flt
 
 sys.path.append('../praat')

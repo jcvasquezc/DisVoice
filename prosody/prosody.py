@@ -66,6 +66,7 @@ import uuid
 
 sys.path.append('../')
 from utils import Hz2semitones
+sys.path.append('../kaldi-io')
 from kaldi_io import write_mat, write_vec_flt
 sys.path.append('../praat')
 import praat_functions
