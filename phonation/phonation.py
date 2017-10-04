@@ -30,12 +30,15 @@ Notes:
 
 1. In dynamic features the first 11 frames of each recording are not considered to be able to stack the APQ and PPQ descriptors with the remaining ones.
 
-2. The fundamental frequency is computed using the RAPT algorithm
+2. The fundamental frequency is computed using Praat. To use the RAPT algorithm change the "pitch method" variable in the function phonation_vowel.
+
+
+3. When Kaldi output is set to "true" two files will be generated, the ".ark" with the data in binary format and the ".scp" Kaldi script file.
 
 
 Script is called as follows
 
-python phonation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]
+python phonation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)] [kaldi output (true or false) (default false)]
 
 examples:
 
@@ -43,11 +46,13 @@ python phonation.py "./001_a1_PCGITA.wav" "featuresAst.txt" "static" "true"
 python phonation.py "./001_a1_PCGITA.wav" "featuresAdyn.txt" "dynamic" "true"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAdynFolder.txt" "dynamic" "false"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAstatFolder.txt" "static" "false"
+python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAdynFolder.txt" "dynamic" "false" "true"
 
 python phonation.py "./001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
 python phonation.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
 python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
+python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "dynamice" "false" "true"
 
 """
 
@@ -65,7 +70,11 @@ import uuid
 
 sys.path.append('../')
 from utils import Hz2semitones
+sys.path.append('../kaldi-io')
 from kaldi_io import write_mat, write_vec_flt
+
+sys.path.append('../praat')
+import praat_functions
 
 def plot_phon(data_audio,fs,F0,logE):
     plt.figure(1)
@@ -112,7 +121,7 @@ def plot_phon(data_audio,fs,F0,logE):
     plt.grid(True)
     plt.show()
 
-def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025):
+def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025, pitch_method='praat'):
 
 
     fs, data_audio=read(audio)
@@ -122,7 +131,16 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
     size_stepS=size_step*float(fs)
     overlap=size_stepS/size_frameS
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-    F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
+    if pitch_method == 'praat':
+        temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+        temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
+        temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
+        praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
+        F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),size_step)
+        os.remove(temp_filename_vuv)
+        os.remove(temp_filename_f0)
+    elif pitch_method == 'rapt':
+        F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
     F0nz=F0[F0!=0]
     Jitter=jitter_env(F0nz, len(F0nz))
 
@@ -178,7 +196,10 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
 
 
 if __name__=="__main__":
-    # TODO: Parse argument flag_kaldi
+    promtp=' <file_or_folder_audio> <file_features.txt> '
+    promtp+='[dynamic_or_static (default static)] '
+    promtp+='[plots (true or false) (default false)] '
+    promtp+='[kaldi output (true or false) (default false)]'
     if len(sys.argv)==6:
         audio=sys.argv[1]
         file_features=sys.argv[2]
@@ -186,21 +207,21 @@ if __name__=="__main__":
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         if sys.argv[4]=="false" or sys.argv[4]=="False":
             flag_plots=False
         elif sys.argv[4]=="true" or sys.argv[4]=="True":
             flag_plots=True
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         if sys.argv[5]=="true" or sys.argv[5]=="True":
             flag_kaldi=True
         elif sys.argv[5]=="false" or sys.argv[5]=="False":
             flag_kaldi=False
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
     elif len(sys.argv)==5:
         audio=sys.argv[1]
@@ -209,14 +230,14 @@ if __name__=="__main__":
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         if sys.argv[4]=="false" or sys.argv[4]=="False":
             flag_plots=False
         elif sys.argv[4]=="true" or sys.argv[4]=="True":
             flag_plots=True
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
     elif len(sys.argv)==4:
         audio=sys.argv[1]
@@ -224,7 +245,7 @@ if __name__=="__main__":
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
-            print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+            print('python '+sys.argv[0]+promtp)
             sys.exit()
         flag_plots=False
     elif len(sys.argv)==3:
@@ -233,7 +254,7 @@ if __name__=="__main__":
         flag_static="static"
         flag_plots=False
     elif len(sys.argv)<3:
-        print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
+        print('python '+sys.argv[0]+promtp)
         sys.exit()
 
 
@@ -247,7 +268,7 @@ if __name__=="__main__":
     if flag_kaldi:
         Features={} # Kaldi Output requires a dictionary
     else:
-        Features=[] 
+        Features=[]
         ID=[]
     # For every file in the audio folder
     for k in range(nfiles):
@@ -262,8 +283,11 @@ if __name__=="__main__":
             Features_ku=[st.kurtosis(DF0, fisher=False), st.kurtosis(DDF0, fisher=False), st.kurtosis(Jitter, fisher=False), st.kurtosis(Shimmer, fisher=False), st.kurtosis(apq, fisher=False), st.kurtosis(ppq, fisher=False), st.kurtosis(logE, fisher=False)]
             feat_vec=np.hstack(([degreeU], Features_mean, Features_std, Features_sk, Features_ku))
             if flag_kaldi:
-                key=hf[k].replace('.wav', '')
-                Features[key]=feat_vec
+                if feat_vec.size>0:
+                    key=hf[k].replace('.wav', '')
+                    Features[key]=feat_vec
+                else:
+                    print "Problem with file: {}".format(key)
             else:
                 Features.append(feat_vec)
 
@@ -271,8 +295,11 @@ if __name__=="__main__":
             feat_mat=np.vstack((DF0[11:], DDF0[10:], Jitter[12:], Shimmer[12:], apq, ppq[6:], logE[12:])).T
             IDs=np.ones(feat_mat.shape[0])*(k+1)
             if flag_kaldi:
-                key=hf[k].replace('.wav', '')
-                Features[key]=feat_mat
+                if feat_mat.size>0:
+                    key=hf[k].replace('.wav', '')
+                    Features[key]=feat_mat
+                else:
+                    print "Problem with file: {}".format(key)
             else:
                 Features.append(feat_mat)
                 ID.append(IDs)

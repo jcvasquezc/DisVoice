@@ -7,14 +7,19 @@ For additional information please see phonation, articulaton, or prosody folders
 
 ### Requeriments
 
-- [Praat](http://www.fon.hum.uva.nl/praat/) - software for speech analysis. 
-- [Pysptk](http://pysptk.readthedocs.io/en/latest/) - python framework for speech analysis. 
+- [Praat](http://www.fon.hum.uva.nl/praat/) - software for speech analysis.
+- [Pysptk](http://pysptk.readthedocs.io/en/latest/) - python framework for speech analysis.
 
-To install the requeriments, please run 
+To install the requeriments, please run
 
 ```sh
 install.sh
 ```
+
+For Kaldi output Kaldi must be installed beforehand and the path at kaldi-io/kaldi-io.py:line 14:
+"os.environ['KALDI_ROOT']='/mnt/matylda5/iveselyk/Tools/kaldi-trunk'"
+should be changed to with path to the proper Kaldi root directory.
+
 
 ## Reference
 
@@ -26,4 +31,3 @@ License
 ----
 
 MIT
-

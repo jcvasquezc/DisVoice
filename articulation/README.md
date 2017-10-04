@@ -32,8 +32,9 @@ In addition, static (for all utterance) or dynamic (at-frame level) features can
 The first two frames of each recording are not considered for dynamic analysis to be able to stack the derivatives of MFCCs
 
 #### Notes:
-- The fundamental frequency is used to detect the transitions and it is computed using the RAPT algorithm
+- The fundamental frequency is used to detect the transitions and it is computed using Praat by default. To use the RAPT algorithm change the "pitch method" variable in the function articulation_continuous.
 - The formant frequencies are computed using Praat
+- When Kaldi output is set to "true" two files will be generated, the ".ark" with the data in binary format and the ".scp" Kaldi script file
 
 #### Running
 ```sh
@@ -45,8 +46,10 @@ python articulation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_st
 ```sh
 python articulation.py "./001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
 python articulation.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
+python articulation.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true" "true"
 python articulation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
 python articulation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
+python articulation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "dynamic" "false" "true"
 ```
 #### Results:
 
