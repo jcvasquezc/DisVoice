@@ -124,16 +124,18 @@ def plot_phon(data_audio,fs,F0,logE):
 def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025, pitch_method='praat'):
 
 
+
     fs, data_audio=read(audio)
     data_audio=data_audio-np.mean(data_audio)
     data_audio=data_audio/float(np.max(np.abs(data_audio)))
     size_frameS=size_frame*float(fs)
     size_stepS=size_step*float(fs)
     overlap=size_stepS/size_frameS
-    data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
     if pitch_method == 'praat':
         name_audio=audio.split('/')
         temp_uuid='phon'+name_audio[-1][0:-4]
+        if not os.path.exists('../tempfiles/'):
+            os.makedirs('../tempfiles/')
         temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
         praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
@@ -141,6 +143,7 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
         os.remove(temp_filename_vuv)
         os.remove(temp_filename_f0)
     elif pitch_method == 'rapt':
+        data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
         F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
     F0nz=F0[F0!=0]
     Jitter=jitter_env(F0nz, len(F0nz))
@@ -289,7 +292,7 @@ if __name__=="__main__":
                     key=hf[k].replace('.wav', '')
                     Features[key]=feat_vec
                 else:
-                    print "Problem with file: {}".format(key)
+                    print ("Problem with file: {}".format(key))
             else:
                 Features.append(feat_vec)
 
@@ -301,7 +304,7 @@ if __name__=="__main__":
                     key=hf[k].replace('.wav', '')
                     Features[key]=feat_mat
                 else:
-                    print "Problem with file: {}".format(key)
+                    print ("Problem with file: {}".format(key))
             else:
                 Features.append(feat_mat)
                 ID.append(IDs)
