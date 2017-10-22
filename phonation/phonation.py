@@ -132,7 +132,8 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
     overlap=size_stepS/size_frameS
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
     if pitch_method == 'praat':
-        temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+        name_audio=audio.split('/')
+        temp_uuid='phon'+name_audio[-1][0:-4]
         temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
         praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
@@ -203,7 +204,6 @@ if __name__=="__main__":
     if len(sys.argv)==6:
         audio=sys.argv[1]
         file_features=sys.argv[2]
-        flag_static=sys.argv[3]
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
@@ -224,9 +224,9 @@ if __name__=="__main__":
             print('python '+sys.argv[0]+promtp)
             sys.exit()
     elif len(sys.argv)==5:
+        flag_kaldi=False
         audio=sys.argv[1]
         file_features=sys.argv[2]
-        flag_static=sys.argv[3]
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
@@ -248,17 +248,19 @@ if __name__=="__main__":
             print('python '+sys.argv[0]+promtp)
             sys.exit()
         flag_plots=False
+        flag_kaldi=False
     elif len(sys.argv)==3:
         audio=sys.argv[1]
         file_features=sys.argv[2]
         flag_static="static"
         flag_plots=False
+        flag_kaldi=False
     elif len(sys.argv)<3:
         print('python '+sys.argv[0]+promtp)
         sys.exit()
 
 
-    if audio.find('.wav')!=-1:
+    if audio.find('.wav')!=-1 or audio.find('.WAV')!=-1:
         nfiles=1
         hf=['']
     else:
@@ -307,7 +309,7 @@ if __name__=="__main__":
     # TODO: Save them within the loop, waiting for them to finish will become an issue later
     if flag_static=="static":
         if flag_kaldi:
-            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            temp_file='temp_static'+file_features[:-4]+'.ark'
             with open(temp_file,'wb') as f:
                 for key in sorted(Features):
                     write_vec_flt(f, Features[key], key=key)
@@ -321,7 +323,7 @@ if __name__=="__main__":
 
     if flag_static=="dynamic":
         if flag_kaldi:
-            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            temp_file='temp_dynamic'+file_features[:-4]+'.ark'
             with open(temp_file,'wb') as f:
                 for key in sorted(Features):
                     write_mat(f, Features[key], key=key)
