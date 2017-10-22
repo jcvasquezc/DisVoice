@@ -153,7 +153,8 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     overlap=size_stepS/size_frameS
 
     if pitch_method == 'praat':
-        temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+        name_audio=audio_filename.split('/')
+        temp_uuid='phon'+name_audio[-1][0:-4]
         temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
         praat_functions.praat_vuv(audio_filename, temp_filename_f0, temp_filename_vuv, time_stepF0=step, minf0=minf0, maxf0=maxf0)
@@ -178,7 +179,8 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     DDMFCCoff=np.asarray([np.diff(MFCCoff[:,nf], n=2) for nf in range(MFCCoff.shape[1])]).T
 
     # TODO: Make parameters configurable. (If worth it)
-    temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+    name_audio=audio_filename.split('/')
+    temp_uuid='phon'+name_audio[-1][0:-4]
     temp_filename='../tempfiles/tempFormants'+temp_uuid+'.txt'
     praat_functions.praat_formants(audio_filename, temp_filename,sizeframe,step)
     [F1, F2]=praat_functions.decodeFormants(temp_filename)
@@ -226,7 +228,6 @@ if __name__=="__main__":
     if len(sys.argv)==6:
         audio=sys.argv[1]
         file_features=sys.argv[2]
-        flag_static=sys.argv[3]
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
@@ -249,7 +250,6 @@ if __name__=="__main__":
     elif len(sys.argv)==5:
         audio=sys.argv[1]
         file_features=sys.argv[2]
-        flag_static=sys.argv[3]
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
@@ -344,7 +344,7 @@ if __name__=="__main__":
 
     if flag_static=="static":
         if flag_kaldi:
-            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            temp_file='temp_static_art'+file_features[:-4]+'.ark'
             with open(temp_file,'wb') as f:
                 for key in sorted(Features):
                     write_vec_flt(f, Features[key], key=key)
@@ -359,7 +359,7 @@ if __name__=="__main__":
 
     if flag_static=="dynamic":
         if flag_kaldi:
-            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            temp_file='temp_dynamic_art'+file_features[:-4]+'.ark'
             with open(temp_file,'wb') as f:
                 for key in sorted(FeaturesOnset):
                     write_mat(f, FeaturesOnset[key], key=key)
@@ -367,7 +367,7 @@ if __name__=="__main__":
             scp_file=file_features.replace('.txt','')+'_onset.scp'
             os.system("copy-matrix ark:"+temp_file+" ark,scp:"+ark_file+','+scp_file)
             # os.remove(temp_file)
-            temp_file='temp'+str(uuid.uuid4().get_hex().upper()[0:6])+'.ark'
+            temp_file='temp_dynamic_art2'+file_features[:-4]+'.ark'
             with open(temp_file,'wb') as f:
                 for key in sorted(FeaturesOffset):
                     write_mat(f, FeaturesOffset[key], key=key)

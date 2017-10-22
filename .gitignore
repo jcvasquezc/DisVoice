@@ -3,3 +3,4 @@
 **/*.ark
 **/*.scp
 tempfiles/
+kaldi-io/
