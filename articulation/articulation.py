@@ -154,7 +154,7 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
 
     if pitch_method == 'praat':
         name_audio=audio_filename.split('/')
-        temp_uuid='phon'+name_audio[-1][0:-4]
+        temp_uuid='artic'+name_audio[-1][0:-4]
         temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
         praat_functions.praat_vuv(audio_filename, temp_filename_f0, temp_filename_vuv, time_stepF0=step, minf0=minf0, maxf0=maxf0)
@@ -180,7 +180,7 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
 
     # TODO: Make parameters configurable. (If worth it)
     name_audio=audio_filename.split('/')
-    temp_uuid='phon'+name_audio[-1][0:-4]
+    temp_uuid='artic'+name_audio[-1][0:-4]
     temp_filename='../tempfiles/tempFormants'+temp_uuid+'.txt'
     praat_functions.praat_formants(audio_filename, temp_filename,sizeframe,step)
     [F1, F2]=praat_functions.decodeFormants(temp_filename)

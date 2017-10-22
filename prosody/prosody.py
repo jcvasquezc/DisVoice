@@ -142,7 +142,8 @@ def prosody_dynamic(audio, size_frame=0.03,size_step=0.01,minf0=60,maxf0=350, vo
     nF=int((len(data_audio)/size_frameS/overlap))-1
     data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
     if pitch_method == 'praat':
-        temp_uuid=str(uuid.uuid4().get_hex().upper()[0:6])
+        name_audio=audio.split('/')
+        temp_uuid='pros'+name_audio[-1][0:-4]
         temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
         praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
@@ -320,7 +321,6 @@ if __name__=="__main__":
     if len(sys.argv)==6:
         audio=sys.argv[1]
         file_features=sys.argv[2]
-        flag_static=sys.argv[3]
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
@@ -344,6 +344,7 @@ if __name__=="__main__":
         audio=sys.argv[1]
         file_features=sys.argv[2]
         flag_static=sys.argv[3]
+        flag_kaldi=False
         if sys.argv[3]=="static" or sys.argv[3]=="dynamic":
             flag_static=sys.argv[3]
         else:
@@ -353,9 +354,11 @@ if __name__=="__main__":
             flag_plots=False
         elif sys.argv[4]=="true" or sys.argv[4]=="True":
             flag_plots=True
+
         else:
             print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
             sys.exit()
+
     elif len(sys.argv)==4:
         audio=sys.argv[1]
         file_features=sys.argv[2]
@@ -365,11 +368,14 @@ if __name__=="__main__":
             print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
             sys.exit()
         flag_plots=False
+        flag_kaldi=False
     elif len(sys.argv)==3:
         audio=sys.argv[1]
         file_features=sys.argv[2]
         flag_static="static"
         flag_plots=False
+        flag_kaldi=False
+
     elif len(sys.argv)<3:
         print('python '+sys.argv[0]+' <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]')
         sys.exit()
@@ -438,7 +444,7 @@ if __name__=="__main__":
                     try:
                         write_mat(f, Features[key], key=key)
                     except Exception as e:
-                        print "Problem with key: {}. Shape of features is: {}".format(key,Features[key].shape)
+                        print ("Problem with key: {}. Shape of features is: {}".format(key,Features[key].shape))
                         raise
                         exit()
             ark_file=file_features.replace('.txt','')+'.ark'
