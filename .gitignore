@@ -2,5 +2,4 @@
 **/*.txt
 **/*.ark
 **/*.scp
-tempfiles/
 kaldi-io/

@@ -74,8 +74,8 @@ import scipy.stats as st
 from articulation_functions import extractTrans, V_UV
 import uuid
 
-sys.path.append('../kaldi-io')
-from kaldi_io import write_mat, write_vec_flt
+#sys.path.append('../kaldi-io')
+#from kaldi_io import write_mat, write_vec_flt
 
 sys.path.append('../praat')
 import praat_functions
@@ -169,6 +169,7 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
         segmentsOn=V_UV(F0, data_audio, fs, 'onset')
         segmentsOff=V_UV(F0, data_audio, fs, 'offset')
 
+
     BBEon, MFCCon=extractTrans(segmentsOn, fs, size_frameS, size_stepS, nB, nMFCC)
     BBEoff, MFCCoff=extractTrans(segmentsOff, fs, size_frameS, size_stepS, nB, nMFCC)
 
@@ -216,6 +217,7 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
 
     if flag_plots:
         plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff)
+
 
     return BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1nz, DF1, DDF1, F2nz, DF2, DDF2
 
@@ -309,10 +311,40 @@ if __name__=="__main__":
         BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1, DF1, DDF1, F2, DF2, DDF2=articulation_continuous(audio_file, flag_plots)
 
         if flag_static=="static":
-            Features_mean=np.hstack([BBEon.mean(0), MFCCon.mean(0), DMFCCon.mean(0), DDMFCCon.mean(0), BBEoff.mean(0), MFCCoff.mean(0), DMFCCoff.mean(0), DDMFCCoff.mean(0), F1.mean(0), DF1.mean(0), DDF1.mean(0), F2.mean(0), DF2.mean(0), DDF2.mean(0)])
-            Features_std=np.hstack([BBEon.std(0), MFCCon.std(0), DMFCCon.std(0), DDMFCCon.std(0), BBEoff.std(0), MFCCoff.std(0), DMFCCoff.std(0), DDMFCCoff.std(0), F1.std(0), DF1.std(0), DDF1.std(0), F2.std(0), DF2.std(0), DDF2.std(0)])
-            Features_sk=np.hstack([st.skew(BBEon), st.skew(MFCCon), st.skew(DMFCCon), st.skew(DDMFCCon), st.skew(BBEoff), st.skew(MFCCoff), st.skew(DMFCCoff), st.skew(DDMFCCoff), st.skew(F1), st.skew(DF1), st.skew(DDF1), st.skew(F2), st.skew(DF2), st.skew(DDF2)])
-            Features_ku=np.hstack([st.kurtosis(BBEon, fisher=False), st.kurtosis(MFCCon, fisher=False), st.kurtosis(DMFCCon, fisher=False), st.kurtosis(DDMFCCon, fisher=False), st.kurtosis(BBEoff, fisher=False), st.kurtosis(MFCCoff, fisher=False), st.kurtosis(DMFCCoff, fisher=False), st.kurtosis(DDMFCCoff, fisher=False), st.kurtosis(F1, fisher=False), st.kurtosis(DF1, fisher=False), st.kurtosis(DDF1, fisher=False), st.kurtosis(F2, fisher=False), st.kurtosis(DF2, fisher=False), st.kurtosis(DDF2, fisher=False)])
+
+
+            Feat=[BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1, DF1, DDF1, F2, DF2, DDF2]
+
+            Nfr=[Feat[n].shape[0] for n in range(len(Feat))]
+
+            avgfeat=[]
+            stdfeat=[]
+            sk=[]
+            ku=[]
+            for n in range(len(Feat)):
+                Nfr=len(Feat[n].shape)
+                if Feat[n].shape[0]>1:
+                    avgfeat.append(Feat[n].mean(0))
+                    stdfeat.append(Feat[n].std(0))
+                    sk.append(st.skew(Feat[n]))
+                    ku.append(st.kurtosis(Feat[n], fisher=False))
+                elif Feat[n].shape[0]==1:
+                    avgfeat.append(Feat[n][0,:])
+                    stdfeat.append(np.zeros(Feat[n].shape[1]))
+                    sk.append(np.zeros(Feat[n].shape[1]))
+                    ku.append(np.zeros(Feat[n].shape[1]))
+                else:
+                    avgfeat.append(np.zeros(Feat[n].shape[1]))
+                    stdfeat.append(np.zeros(Feat[n].shape[1]))
+                    sk.append(np.zeros(Feat[n].shape[1]))
+                    ku.append(np.zeros(Feat[n].shape[1]))
+                #print(len(avgfeat[-1]))
+
+
+            Features_mean=np.hstack(avgfeat)
+            Features_std=np.hstack(stdfeat)
+            Features_sk=np.hstack(sk)
+            Features_ku=np.hstack(ku)
             feat_vec=np.hstack((Features_mean, Features_std, Features_sk, Features_ku))
             if flag_kaldi:
                 key=hf[k].replace('.wav', '')
@@ -354,7 +386,7 @@ if __name__=="__main__":
             os.remove(temp_file)
         else:
             Features=np.asarray(Features)
-            print(Features.shape)
+            print(file_features, Features.shape)
             np.savetxt(file_features, Features)
 
     if flag_static=="dynamic":
