@@ -253,7 +253,7 @@ def prosody_static(audio, flag_plots):
         data_frame=data_audio[int(l*size_stepS):int(l*size_stepS+size_frameS)]
         logE.append(logEnergy(data_frame))
     logE=np.asarray(logE)
-
+    print(sum(np.isnan(logE)))
     segmentsV=V_UV(F0, data_audio, fs, type_seg="Voiced", size_stepS=size_stepS)
     segmentsU=V_UV(F0, data_audio, fs, type_seg="Unvoiced", size_stepS=size_stepS)
 
@@ -320,7 +320,7 @@ def prosody_static(audio, flag_plots):
     F0std=np.std(F0[F0!=0])
     F0varsemi=Hz2semitones(F0std**2)
 
-    return F0, logE, np.mean(F0[F0!=0]), np.std(F0[F0!=0]), np.max(F0), 10*np.log10(np.mean(logE)), 10*np.log10(np.std(logE)), 10*np.log10(np.max(logE)), Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, F0varsemi
+    return F0, logE, np.mean(F0[F0!=0]), np.std(F0[F0!=0]), np.max(F0), np.mean(logE), np.std(logE), np.max(logE), Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, F0varsemi
 
 def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag_plots=False):
     fs, data_audio=read(audio)
@@ -358,12 +358,14 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
 
             if len(ubuffer)!=0:
                 samples = len(ubuffer)
-                t=float(samples/1/size_step)#unvoiced time based on F0 Fs and actual samples
+
+                t=float(samples*size_step)#unvoiced time based on F0 Fs and actual samples
                 #silence condition
                 if t>stol:
                     silencetimes.append(t)
                 else:
                     unvoicedtimes.append(t)
+
                 #clear the mess
                 ubuffer=[]
                 #final time for unvoiced
@@ -380,7 +382,7 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
             if(len(vbuffer)!=0):
                 #based on F0 Fs and in buffer length, actual time is calculated
                 samples = len(vbuffer)
-                t=float(samples/1/size_step)
+                t=float(samples*size_step)
                 #pick up voiced times
                 voicedtimes.append(t)
                 #voiced segment slope process
@@ -392,18 +394,28 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
                 #get slopes of voiced segments
 
                 pol=np.polyfit(xtemp_slope, tempslope,1)
-                slopes.append(pol[0])
+                if np.isnan(pol[0]):
+                    print("#################################")
+                    print("detected short voiced segment")
+                    #print(xtemp_slope, tempslope)
+                else:
+                    slopes.append(pol[0])
                 #slopes.append(np.average(np.diff(tempslope)) / np.average(np.diff(xtemp_slope)))
 
 
                 #clear the mess
 
                 vbuffer=[]
-                tempslope=[]
+
                 #final time of voiced segment
                 t_end_venergy=ttotal[i]
                 frameF0end=i
-                F0_rec[int(frameF0start):int(frameF0end)]=pol[0]*np.asarray(xtemp_slope)+pol[1]
+                if np.isnan(pol[0]):
+                    F0_rec[int(frameF0start):int(frameF0end)]=tempslope
+                else:
+                    F0_rec[int(frameF0start):int(frameF0end)]=pol[0]*np.asarray(xtemp_slope)+pol[1]
+
+                tempslope=[]
                 xtemp_slope=[]
                 startvoicedflag=True
                 #calculate how many segments are in voiced time on the original audio file, based on start-end time stamps
@@ -422,7 +434,9 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
 
     voicedtimes=np.array(voicedtimes)
     unvoicedtimes=np.array(unvoicedtimes)
+
     silencetimes=np.array(silencetimes)
+    #print(unvoicedtimes, silencetimes)
     uenergy=np.array(uenergy)
     venergy=np.array(venergy)
     """Measures"""
