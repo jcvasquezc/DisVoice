@@ -1,9 +1,9 @@
 
 # -*- coding: utf-8 -*-
 """
-Created on Jul 21 2017
+Created on Jul 21 2017, Modified Apr 10 2018.
 
-@author: J. C. Vasquez-Correa, T. Arias-Vergara
+@author: J. C. Vasquez-Correa, T. Arias-Vergara, J. S. Guerrero
 
 
 Compute prosody features from continuous speech based on duration, fundamental frequency and energy.
@@ -27,7 +27,20 @@ Static matrix is formed with 13 features and include
 11. Pause rate (number of pauses per second)
 12. Average duration of pauses
 13. Standard deviation of duration of pauses
-
+14. Average tilt of fundamental frequency
+15. Tilt regularity of fundamental frequency
+16. Mean square error of the reconstructed F0 with a  1-degree polynomial
+17. (Silence duration)/(Voiced+Unvoiced durations)
+18. (Voiced duration)/(Unvoiced durations)
+19. (Unvoiced duration)/(Voiced+Unvoiced durations)
+20. (Voiced duration)/(Voiced+Unvoiced durations)
+21. (Voiced duration)/(Silence durations)
+22. (Unvoiced duration)/(Silence durations)
+23. Unvoiced duration Regularity
+24. Unvoiced energy Regularity
+25. Voiced duration Regularity
+26. Voiced energy Regularity
+27. Pause duration Regularity
 
 Dynamic matrix is formed with 13 features computed for each voiced segment and contains
 
@@ -279,7 +292,6 @@ def prosody_static(audio, flag_plots):
         fsp=len(F0)/t[-1]
         print(fsp)
         t2=np.arange(0.0, t[-1], 1.0/fsp)
-        print(len(t2), len(F0))
         if len(t2)>len(F0):
             t2=t2[:len(F0)]
         elif len(F0)>len(t2):
@@ -297,11 +309,10 @@ def prosody_static(audio, flag_plots):
             t3=t3[:len(logE)]
         elif len(logE)>len(t3):
             logE=logE[:len(t3)]
-        print(len(t3), len(logE))
         plt.plot(t3, logE, color='k', linewidth=2.0)
         plt.xlabel('Time (s)')
-        plt.ylabel('Energy')
-        plt.ylim([0,np.max(logE)+5])
+        plt.ylabel('Energy (dB)')
+        #plt.ylim([0,np.max(logE)])
         plt.xlim([0, t[-1]])
         plt.grid(True)
         plt.show()
@@ -310,6 +321,161 @@ def prosody_static(audio, flag_plots):
     F0varsemi=Hz2semitones(F0std**2)
 
     return F0, logE, np.mean(F0[F0!=0]), np.std(F0[F0!=0]), np.max(F0), 10*np.log10(np.mean(logE)), 10*np.log10(np.std(logE)), 10*np.log10(np.max(logE)), Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, F0varsemi
+
+def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag_plots=False):
+    fs, data_audio=read(audio)
+    temp_filename_f0='../tempfiles/pitchtemp.txt'
+    temp_filename_vuv='../tempfiles/voicetemp.txt'
+
+    praat_functions.praat_vuv(audio,temp_filename_f0,temp_filename_vuv,time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
+    pitch_z,ttotal = praat_functions.decodeF0(temp_filename_f0,len(data_audio)/fs,size_step)
+
+    #Slopes
+    slopes=[]
+    #buffers for voiced and unvoiced segments
+    vbuffer=[]
+    ubuffer=[]
+    #energy for total voiced and unvoiced segments
+    venergy=[]
+    uenergy=[]
+    #arrays for time-storing
+    voicedtimes=[]
+    unvoicedtimes=[]
+    silencetimes=[]
+    #flag for starting point voiced time and unvoiced time
+    startvoicedflag=True
+    startUNvoicedflag=True
+    F0_rec=np.zeros(len(pitch_z))
+    for i in range(0,len(pitch_z)-1):
+        #condition for voiced segment
+        if pitch_z[i]>=minf0 and pitch_z[i]<=maxf0:
+            vbuffer.append(pitch_z[i])
+            #voiced segment starting time
+            if (startvoicedflag):
+                t_start_venergy=ttotal[i]
+                startvoicedflag=False
+                frameF0start=i
+
+            if len(ubuffer)!=0:
+                samples = len(ubuffer)
+                t=float(samples/1/size_step)#unvoiced time based on F0 Fs and actual samples
+                #silence condition
+                if t>stol:
+                    silencetimes.append(t)
+                else:
+                    unvoicedtimes.append(t)
+                #clear the mess
+                ubuffer=[]
+                #final time for unvoiced
+                t_end_uenergy=ttotal[i]
+                startUNvoicedflag=True
+                #calculate segments with obtained times
+                n_start_unvoiced=fs*t_start_uenergy
+                n_end_unvoiced=fs*t_end_uenergy
+                #energy of real audio segment based on fs and timestamp from F0
+                #store
+                uenergy.append(logEnergy(data_audio[int(n_start_unvoiced):int(n_end_unvoiced)]))
+        #start appending unvoiced segments
+        else:
+            if(len(vbuffer)!=0):
+                #based on F0 Fs and in buffer length, actual time is calculated
+                samples = len(vbuffer)
+                t=float(samples/1/size_step)
+                #pick up voiced times
+                voicedtimes.append(t)
+                #voiced segment slope process
+                #temporal x axis vector for slope calculation
+                xtemp_slope=[]
+                tempslope=np.array(vbuffer)
+                for j in range(0,len(vbuffer)):
+                    xtemp_slope.append(j)
+                #get slopes of voiced segments
+
+                pol=np.polyfit(xtemp_slope, tempslope,1)
+                slopes.append(pol[0])
+                #slopes.append(np.average(np.diff(tempslope)) / np.average(np.diff(xtemp_slope)))
+
+
+                #clear the mess
+
+                vbuffer=[]
+                tempslope=[]
+                #final time of voiced segment
+                t_end_venergy=ttotal[i]
+                frameF0end=i
+                F0_rec[int(frameF0start):int(frameF0end)]=pol[0]*np.asarray(xtemp_slope)+pol[1]
+                xtemp_slope=[]
+                startvoicedflag=True
+                #calculate how many segments are in voiced time on the original audio file, based on start-end time stamps
+                n_start_voiced=fs*t_start_venergy
+                n_end_voiced=fs*t_end_venergy
+                #calculate energy and make venergy append the result
+                venergy.append(logEnergy(data_audio[int(n_start_voiced):int(n_end_voiced)]))
+            else:
+                ubuffer.append(pitch_z[i])
+                #initial time of unvoiced segment
+                if (startUNvoicedflag):
+                    t_start_uenergy=ttotal[i]
+                    startUNvoicedflag=False
+
+
+
+    voicedtimes=np.array(voicedtimes)
+    unvoicedtimes=np.array(unvoicedtimes)
+    silencetimes=np.array(silencetimes)
+    uenergy=np.array(uenergy)
+    venergy=np.array(venergy)
+    """Measures"""
+    """Intonation"""
+    avgF0slopes=np.average(slopes)# 1. average F0 slope
+    stdF0slopes=np.std(slopes)# 2. std F0 slope
+    """Duration"""
+    if((silencetimes.size>0)):
+        SVU=(np.sum(silencetimes))/(np.sum(voicedtimes)+np.sum(unvoicedtimes))#  3.S/(V+U)
+    else:
+        SVU=0
+    VU=(np.sum(voicedtimes))/np.sum(unvoicedtimes)#  4.V/U
+    UVU=np.sum(unvoicedtimes)/(np.sum(voicedtimes)+np.sum(unvoicedtimes))#  5.U/(V+U)
+    VVU=np.sum(voicedtimes)/(np.sum(voicedtimes)+np.sum(unvoicedtimes))#  6.V/V+U
+    #si no hay silencios hay que prevenir dividir por cero
+    if((silencetimes.size>0)):
+        VS=np.sum(voicedtimes)/np.sum(silencetimes)# 7. V/S
+        US=np.sum(unvoicedtimes)/np.sum(silencetimes)# 8. U/S
+    else:
+        VS=0
+        US=0
+
+    URD=np.std(unvoicedtimes)# 9. (std U)
+    VRD=np.std(voicedtimes)# 10. (std V)
+
+    URE=np.std(uenergy) # 11. (std Energy U) wtf
+    VRE=np.std(venergy) # 12. (std Energy V)
+    MSEF0=np.mean((np.asarray(pitch_z)-np.asarray(F0_rec))**2)
+    if ((silencetimes.size>0)):# 13. (std S)
+        PR=np.std(silencetimes)
+    else:
+        PR=0
+
+    os.remove(temp_filename_f0)
+    os.remove(temp_filename_vuv)
+
+
+    if flag_plots:
+        plt.figure(1)
+        plt.plot(ttotal, pitch_z, label="F0 (Hz)", linewidth=2.0)
+        plt.plot(ttotal,F0_rec, label="Linear regresion F0", linewidth=2.0)
+        plt.text(min(ttotal), max(pitch_z)-5, "MSE="+str(np.round(MSEF0,3)))
+        plt.text(min(ttotal), max(pitch_z)-10, "Avg. tilt="+str(np.round(avgF0slopes,3)))
+        plt.text(min(ttotal), max(pitch_z)-15, "Std. tilt="+str(np.round(stdF0slopes,3)))
+        plt.xlabel("Time (s)")
+        plt.ylabel("Frequency (Hz)")
+        plt.legend()
+
+        plt.grid(True)
+        plt.show()
+
+
+    return avgF0slopes,stdF0slopes,MSEF0, SVU,VU,UVU,VVU,VS,US,URD,VRD,URE,VRE,PR
 
 
 
@@ -400,7 +566,8 @@ if __name__=="__main__":
 
         if flag_static=="static":
             F0, logE, mF0, sF0, mmF0, mlogE, slogE, mmlogE, Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, F0varsemi=prosody_static(audio_file, flag_plots)
-            feat_vec=[mF0, sF0, F0varsemi, mmF0, mlogE, slogE, mmlogE, Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs]
+            avgF0slopes, stdF0slopes, MSEF0, SVU , VU ,UVU ,VVU ,VS ,US ,URD,VRD ,URE,VRE ,PR = intonation_duration(audio_file, flag_plots=flag_plots)
+            feat_vec=[mF0, sF0, F0varsemi, mmF0, mlogE, slogE, mmlogE, Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, avgF0slopes, stdF0slopes, MSEF0, SVU , VU ,UVU ,VVU ,VS ,US ,URD,VRD ,URE,VRE ,PR]
             if flag_kaldi:
                 key=hf[k].replace('.wav', '')
                 Features[key]=np.asarray(feat_vec)

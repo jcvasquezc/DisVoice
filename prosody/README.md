@@ -19,10 +19,25 @@ The static feaature vector is formed with 13 features and include
 7. Maximum energy
 8. Voiced rate (number of voiced segments per second)
 9. Average duration of voiced segments
-10. Standard deviation of duratin of voiced segments
+10. Standard deviation of duration of voiced segments
 11. Pause rate (number of pauses per second)
 12. Average duration of pauses
 13. Standard deviation of duration of pauses
+ <br /> NEW MEASURES <br />
+14. Average tilt of fundamental frequency
+15. Tilt regularity of fundamental frequency
+16. Mean square error of the reconstructed F0 with a  1-degree polynomial
+17. (Silence duration)/(Voiced+Unvoiced durations)
+18. (Voiced duration)/(Unvoiced durations)
+19. (Unvoiced duration)/(Voiced+Unvoiced durations)
+20. (Voiced duration)/(Voiced+Unvoiced durations)
+21. (Voiced duration)/(Silence durations)
+22. (Unvoiced duration)/(Silence durations)
+23. Unvoiced duration Regularity
+24. Unvoiced energy Regularity
+25. Voiced duration Regularity
+26. Voiced energy Regularity
+27. Pause duration Regularity
 
 
 The dynamic feature matrix is formed with 13 features computed for each voiced segment and contains:
@@ -60,6 +75,9 @@ python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "feat
 
 Prosody analysis from continuous speech static
 ![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody1.png?Raw=true)
+
+![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody3.png?Raw=true)
+
 
 Prosody analysis from continuous speech dynamic
 ![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody2.png?raw=true)
