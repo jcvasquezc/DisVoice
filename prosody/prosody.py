@@ -41,6 +41,17 @@ Static matrix is formed with 13 features and include
 25. Voiced duration Regularity
 26. Voiced energy Regularity
 27. Pause duration Regularity
+28. Maximum duration of voiced segments
+29. Maximum duration of unvoiced segments
+30. Minimum duration of voiced segments
+31. Minimum duration of unvoiced segments
+32. rate (# of voiced segments) / (# of unvoiced segments)
+33. Average tilt of energy contour
+34. Regression coefficient between the energy contour and a linear regression
+35. Mean square error of the reconstructed energy contour with a  1-degree polynomial
+34. Regression coefficient between the F0 contour and a linear regression
+37. Average Delta energy within consecutive voiced segments
+38. Standard deviation of Delta energy within consecutive voiced segments
 
 Dynamic matrix is formed with 13 features computed for each voiced segment and contains
 
@@ -76,6 +87,8 @@ import pysptk
 from prosody_functions import V_UV, E_cont, logEnergy
 import scipy.stats as st
 import uuid
+from sklearn.metrics import mean_squared_error
+
 
 sys.path.append('../')
 from utils import Hz2semitones
@@ -345,6 +358,10 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
     #flag for starting point voiced time and unvoiced time
     startvoicedflag=True
     startUNvoicedflag=True
+    #flag to compare with last segment
+    recordneighbor=True
+    energydifflocalneighbors=[]
+
     F0_rec=np.zeros(len(pitch_z))
     for i in range(0,len(pitch_z)-1):
         #condition for voiced segment
@@ -423,6 +440,20 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
                 n_end_voiced=fs*t_end_venergy
                 #calculate energy and make venergy append the result
                 venergy.append(logEnergy(data_audio[int(n_start_voiced):int(n_end_voiced)]))
+
+
+                #store last element energy in neighbor, at next iteration calculate local  and operate
+                if recordneighbor:
+                    recordneighbor=False
+                    neighbor=logEnergy(data_audio[int(n_start_voiced):int(n_end_voiced)])
+                else:
+                    recordneighbor=True
+                    local=logEnergy(data_audio[int(n_start_voiced):int(n_end_voiced)])
+                    local=np.array(local)
+                    neighbor=np.array(neighbor)
+                    #diferencia de energia entre semgento actual y anterior ALV
+                    energydifflocalneighbors.append(abs(np.mean(local)-np.mean(neighbor)))
+
             else:
                 ubuffer.append(pitch_z[i])
                 #initial time of unvoiced segment
@@ -431,6 +462,35 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
                     startUNvoicedflag=False
 
 
+     #if last segment was not computed with the next one then
+     #compute it with the previous one
+    start=True
+    end=False
+     #record last segment
+    if recordneighbor==False:
+        for i in range(len(pitch_z)-1,0):
+            if pitch_z[i]>=minf0 and pitch_z[i]<=maxf0:
+                if start==True:
+                    startseg=i
+                    start=False
+            else:
+                if end==False:
+                    endseg=i
+                    end=True
+            if(end==True):
+               #retrieve from timestamp in F0 the actual time segments
+               startseg=fs*ttotal[startseg]
+               endseg=fs*ttotal[endseg]
+               #compute energy
+               lastseg=logEnergy(data_audio[int(startseg):int(endseg)])
+               #cast as array
+               local=np.array(lastseg)
+               neighbor=np.array(neighbor)
+               #take mean difference between them
+               energydifflocalneighbors.append(abs(np.mean(local)-np.mean(neighbor)))
+               break;
+
+    energydifflocalneighbors=np.array(energydifflocalneighbors)
 
     voicedtimes=np.array(voicedtimes)
     unvoicedtimes=np.array(unvoicedtimes)
@@ -451,7 +511,7 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
     VU=(np.sum(voicedtimes))/np.sum(unvoicedtimes)#  4.V/U
     UVU=np.sum(unvoicedtimes)/(np.sum(voicedtimes)+np.sum(unvoicedtimes))#  5.U/(V+U)
     VVU=np.sum(voicedtimes)/(np.sum(voicedtimes)+np.sum(unvoicedtimes))#  6.V/V+U
-    #si no hay silencios hay que prevenir dividir por cero
+
     if((silencetimes.size>0)):
         VS=np.sum(voicedtimes)/np.sum(silencetimes)# 7. V/S
         US=np.sum(unvoicedtimes)/np.sum(silencetimes)# 8. U/S
@@ -474,6 +534,26 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
     os.remove(temp_filename_vuv)
 
 
+
+    #nextmeasures
+    maxvoicedlen=np.max(voicedtimes)#max voiced duration
+    maxunvoicedlen=np.max(unvoicedtimes)#max unvoiced duration
+    minvoicedlen=np.min(voicedtimes)#min voiced duration
+    minunvoicedlen=np.min(unvoicedtimes)#min unvoiced duration
+    rvuv=len(voicedtimes)/len(unvoicedtimes) #ratio voiced unvoiced segments
+    #meansqrd error voiced energy segments and voiced energy segments regression coefficient
+    energyslope,intercept,RegCoefenergy,p_value,std_err=st.linregress(venergy,np.arange(len(venergy)))
+    t=np.arange(len(venergy))
+    energyslope1= np.polyval([energyslope,intercept],t)
+    msqerrenergy=mean_squared_error(energyslope1,venergy)
+    #mean sqrd error voiced f0 and f0 regression coefficient
+    pitch_znz=pitch_z[pitch_z!=minf0]
+    F0slope,intercept,RegCoeff0,p_value,std_err=st.linregress(pitch_znz,np.arange(len(pitch_znz)))
+    #neighbor segment measures
+    meanNeighborenergydiff=np.mean(energydifflocalneighbors)
+    stdNeighborenergydiff=np.std(energydifflocalneighbors)
+
+
     if flag_plots:
         plt.figure(1)
         plt.plot(ttotal, pitch_z, label="F0 (Hz)", linewidth=2.0)
@@ -481,6 +561,8 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
         plt.text(min(ttotal), max(pitch_z)-5, "MSE="+str(np.round(MSEF0,3)))
         plt.text(min(ttotal), max(pitch_z)-10, "Avg. tilt="+str(np.round(avgF0slopes,3)))
         plt.text(min(ttotal), max(pitch_z)-15, "Std. tilt="+str(np.round(stdF0slopes,3)))
+        plt.text(min(ttotal), max(pitch_z)-20, "R^2="+str(np.round(RegCoeff0,3)))
+
         plt.xlabel("Time (s)")
         plt.ylabel("Frequency (Hz)")
         plt.legend()
@@ -489,7 +571,7 @@ def intonation_duration(audio,size_step=0.01,minf0=60,maxf0=350,stol=0.150, flag
         plt.show()
 
 
-    return avgF0slopes,stdF0slopes,MSEF0, SVU,VU,UVU,VVU,VS,US,URD,VRD,URE,VRE,PR
+    return avgF0slopes,stdF0slopes,MSEF0, SVU,VU,UVU,VVU,VS,US,URD,VRD,URE,VRE,PR, maxvoicedlen,maxunvoicedlen,minvoicedlen,minunvoicedlen,rvuv,energyslope,RegCoefenergy,msqerrenergy,RegCoeff0,meanNeighborenergydiff,stdNeighborenergydiff
 
 
 
@@ -580,8 +662,8 @@ if __name__=="__main__":
 
         if flag_static=="static":
             F0, logE, mF0, sF0, mmF0, mlogE, slogE, mmlogE, Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, F0varsemi=prosody_static(audio_file, flag_plots)
-            avgF0slopes, stdF0slopes, MSEF0, SVU , VU ,UVU ,VVU ,VS ,US ,URD,VRD ,URE,VRE ,PR = intonation_duration(audio_file, flag_plots=flag_plots)
-            feat_vec=[mF0, sF0, F0varsemi, mmF0, mlogE, slogE, mmlogE, Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, avgF0slopes, stdF0slopes, MSEF0, SVU , VU ,UVU ,VVU ,VS ,US ,URD,VRD ,URE,VRE ,PR]
+            avgF0slopes,stdF0slopes,MSEF0, SVU,VU,UVU,VVU,VS,US,URD,VRD,URE,VRE,PR,maxvoicedlen,maxunvoicedlen,minvoicedlen,minunvoicedlen,rvuv,energyslope,RegCoefenergy,msqerrenergy,RegCoeff0,meanNeighborenergydiff,stdNeighborenergydiff  = intonation_duration(audio_file, flag_plots=flag_plots)
+            feat_vec=[mF0, sF0, F0varsemi, mmF0, mlogE, slogE, mmlogE, Vrate, avgdurv, stddurv, Silrate, avgdurs, stddurs, avgF0slopes, stdF0slopes, MSEF0, SVU , VU ,UVU ,VVU ,VS ,US ,URD,VRD ,URE,VRE ,PR, maxvoicedlen,maxunvoicedlen,minvoicedlen,minunvoicedlen,rvuv,energyslope,RegCoefenergy,msqerrenergy,RegCoeff0,meanNeighborenergydiff,stdNeighborenergydiff]
             if flag_kaldi:
                 key=hf[k].replace('.wav', '')
                 Features[key]=np.asarray(feat_vec)

@@ -38,6 +38,17 @@ The static feaature vector is formed with 13 features and include
 25. Voiced duration Regularity
 26. Voiced energy Regularity
 27. Pause duration Regularity
+28. Maximum duration of voiced segments
+29. Maximum duration of unvoiced segments
+30. Minimum duration of voiced segments
+31. Minimum duration of unvoiced segments
+32. rate (# of voiced segments) / (# of unvoiced segments)
+33. Average tilt of energy contour
+34. Regression coefficient between the energy contour and a linear regression
+35. Mean square error of the reconstructed energy contour with a  1-degree polynomial
+34. Regression coefficient between the F0 contour and a linear regression
+37. Average Delta energy within consecutive voiced segments
+38. Standard deviation of Delta energy within consecutive voiced segments
 
 
 The dynamic feature matrix is formed with 13 features computed for each voiced segment and contains:
