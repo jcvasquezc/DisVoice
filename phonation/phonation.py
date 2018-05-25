@@ -140,8 +140,8 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
         temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
         praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=size_step, minf0=minf0, maxf0=maxf0)
         F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),size_step)
-        os.remove(temp_filename_vuv)
-        os.remove(temp_filename_f0)
+        #os.remove(temp_filename_vuv)
+        #os.remove(temp_filename_f0)
     elif pitch_method == 'rapt':
         data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
         F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
@@ -177,6 +177,7 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
                 f0arr=np.asarray([F0nz[j] for j in range(lnz-6, lnz)])
                 ppq.append(PPQ(1/f0arr))
             lnz=lnz+1
+        print("frame "+str(l) +" from "+str(nF)+"-"*int(100*l/nF)+">"+str(int(100*(l+1)/nF))+"%", sep=' ', end='\r', flush=True)
 
     Shimmer=shimmer_env(Amp, len(Amp))
     apq=np.asarray(apq)
