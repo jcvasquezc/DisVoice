@@ -48,10 +48,13 @@ python glottal.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "glottalfe
 python glottal.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "glottalfeaturesAdynFolder.ark" "dynamic" "false" "true"
 """
 
+from __future__ import print_function
+
 
 from scipy.io.wavfile import read
 import os
 import sys
+sys.stdout.flush()
 import numpy as np
 import matplotlib.pyplot as plt
 import math
@@ -59,6 +62,7 @@ import pysptk
 import scipy.stats as st
 import uuid
 from peakdetect import peakdetect
+
 
 sys.path.append('../')
 from utils import Hz2semitones
@@ -169,7 +173,7 @@ def glottal_features(audio, flag_plots, size_frame=0.2, size_step=0.1):
         varH1H2t[l]=np.std(H1H2)
         avgHRFt[l]=np.mean(HRF)
         varHRFt[l]=np.std(HRF)
-        print("frame "+str(l) +" from "+str(nF)+"-"*int(100*l/nF)+">"+str(int(100*(l+1)/nF))+"%", sep=' ', end='\r', flush=True)
+        print("frame "+str(l) +" from "+str(nF)+"-"*int(100*l/nF)+">"+str(int(100*(l+1)/nF))+"%", sep=' ', end='\r')
         if flag_plots:
             plot_glottal(data_frame,fs,GCI, g_iaif, glottal, avgGCIt[l], varGCIt[l])
 

@@ -125,7 +125,8 @@ def SE_VQ_varF0(x,fs, pitch_method="RAPT", f0=[]):
 
 
     #Calculate LP-residual and extract N maxima per mean-based signal determined intervals
-    res = utils_gci.GetLPCresidual(x,winLen/1000*fs,winShift/1000*fs,LPC_ord, VUV_inter); # Get LP residual
+
+    res = utils_gci.GetLPCresidual(x,winLen*fs/1000,winShift*fs/1000,LPC_ord, VUV_inter); # Get LP residual
     rep = utils_gci.RCVD_reson_GCI(res,fs,F0mean) #Get resonator output
 
     MBS = utils_gci.get_MBS(x,fs,T0mean) # Extract mean based signal
@@ -233,18 +234,18 @@ def get_vq_params(gf, gfd, fs, GCI):
     # References
     #  [1] Alku, P., B ackstrom, T., and Vilkman, E. Normalized amplitude quotient
     #     for parameterization of the glottal flow. Journal of the Acoustical
-    #     Society of America, 112(2):701–710, 2002.
+    #     Society of America, 112(2):701-710, 2002.
     #  [2] Hacki, T. Klassifizierung von glottisdysfunktionen mit hilfe der
-    #     elektroglottographie. Folia Phoniatrica, pages 43–48, 1989.
+    #     elektroglottographie. Folia Phoniatrica, pages 43-48, 1989.
     #  [3] Alku, P., Strik, H., and Vilkman, E. Parabolic spectral parameter -
     #     A new method for quantification of the glottal flow. Speech
-    #     Communication, 22(1):67–79, 1997.
+    #     Communication, 22(1):67-79, 1997.
     #  [4] Hanson, H. M. Glottal characteristics of female speakers: Acoustic
     #     correlates. Journal of the Acoustical Society of America,
-    #     10(1):466–481, 1997.
+    #     10(1):466-481, 1997.
     #  [5] Childers, D. G. and Lee, C. K. Voice quality factors: Analysis,
     #     synthesis and perception. Journal of the Acoustical Society of
-    #     America, 90(5):2394–2410, 1991.
+    #     America, 90(5):2394-2410, 1991.
     #
     # Author
     #########################################################################

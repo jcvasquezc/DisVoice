@@ -133,8 +133,8 @@ def RCVD_reson_GCI(res,fs,F0mean):
 def zeroPhaseHPFilt(x,fs,f_p,f_s):
     Rp=0.5
     Rs=40
-    Wp=f_p/(fs/2)
-    Ws=f_s/(fs/2)
+    Wp=f_p/(fs/2.)
+    Ws=f_s/(fs/2.)
     [n,Wn] = buttord(Wp,Ws,Rp,Rs)
     [b,a]=butter(n,Wn,'high');
     y = filtfilt(b,a,x, padtype = 'odd', padlen=3*(max(len(b),len(a))-1))
