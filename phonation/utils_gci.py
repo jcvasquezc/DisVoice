@@ -95,19 +95,19 @@ def GetLPCresidual(wave,L,shift,order,VUV):
     start=0
     stop=int(start+L)
     res=np.zeros(len(wave))
-    LPCcoeff=np.zeros((order+1, int(len(wave)/shift)))
     n=0
     while stop<len(wave):
 
         if np.sum(VUV[start:stop])==len(VUV[start:stop]): # if it is avoiced segment
             segment=wave[start:stop]
             segment=segment*hann(len(segment))
-            A=pysptk.sptk.lpc(segment, order)
-            LPCcoeff[:,n]=A
-            inv=filtfilt(A,1,segment)
-            inv=inv*np.sqrt(np.sum(segment**2)/np.sum(inv**2))
-            res[start:stop]=inv
-
+            try:
+                A=pysptk.sptk.lpc(segment, order)
+                inv=filtfilt(A,1,segment)
+                inv=inv*np.sqrt(np.sum(segment**2)/np.sum(inv**2))
+                res[start:stop]=inv
+            except:
+                print("WARNING: LPCs cannot be extracted for the segment")
         start=int(start+shift)
         stop=int(stop+shift)
         n=n+1
@@ -434,7 +434,7 @@ def calc_residual(x,x_lpc,ord_lpc,GCI):
         else:
             T0_cur=GCI[n+1]-GCI[n]
 
-        if GCI[n]-T0_cur>0 and GCI[n]+T0_cur<=len(x):
+        if GCI[n]-T0_cur>0 and GCI[n]+T0_cur<=len(x) and T0_cur>0:
             start=int(GCI[n]-T0_cur)
             stop=int(GCI[n]+T0_cur)
 
@@ -462,7 +462,14 @@ def calc_residual(x,x_lpc,ord_lpc,GCI):
                 #print("Problem with IAIF filtering")
             residual_win=residual[0]*hamming(len(residual[0]))
 
+            try:
+                vector_res[start:stop]=vector_res[start:stop]+residual_win
+            except:
+                print(len(residual[0]), len(frame_res), start, stop, len(vector_res[start:stop]))
+                plt.plot(residual[0])
+                plt.plot(vector_res[start:stop], 'r')
+                plt.show()
 
-            vector_res[start:stop]=vector_res[start:stop]+residual_win
+
             #vector_glot[start:stop]=vector_glot[start:stop]+glottal
     return vector_res

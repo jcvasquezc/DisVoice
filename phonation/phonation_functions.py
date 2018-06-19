@@ -26,7 +26,7 @@ def jitter_env(vPPS, iNumPuntos):
     iDesplazamiento=iLongSec/iNumPuntos
 
 # average f0 of signal
-    rFoMed=np.mean(vPPS)
+    rFoMed=np.max(vPPS)
 
     for n in range(iNumPuntos-1):
         indice=int( iIndiceIni+n*iDesplazamiento )
@@ -69,7 +69,7 @@ def shimmer_env(vPPS, iNumPuntos):
     iDesplazamiento=iLongSec/iNumPuntos
 
 # average f0 of signal
-    rFoMed=np.mean(vPPS)
+    rFoMed=np.max(vPPS)
 
     for n in range(iNumPuntos-1):
         indice=int( iIndiceIni+n*iDesplazamiento )

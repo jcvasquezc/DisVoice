@@ -147,7 +147,7 @@ def glottal_features(audio, flag_plots, size_frame=0.2, size_step=0.1):
             startf0=startf0+stepf0
             stopf0=stopf0+stepf0
             rmwin.append(l)
-            print("frame "+str(l) +" from "+str(nF)+"-"*int(100*l/nF)+">"+str(int(100*(l+1)/nF))+"%", sep=' ', end='\r', flush=True)
+            print("frame "+str(l) +" from "+str(nF)+"-"*int(100*l/nF)+">"+str(int(100*(l+1)/nF))+"%", sep=' ', end='\r')
 
             continue
         GCI=SE_VQ_varF0(data_frame,fs, f0=f0_frame)

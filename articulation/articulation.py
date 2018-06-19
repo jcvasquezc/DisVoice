@@ -73,11 +73,13 @@ import pysptk
 import scipy.stats as st
 from articulation_functions import extractTrans, V_UV
 import uuid
-
+path_app = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(path_app+'/../')
 #sys.path.append('../kaldi-io')
 #from kaldi_io import write_mat, write_vec_flt
 
-sys.path.append('../praat')
+sys.path.append(path_app+'/../praat')
+
 import praat_functions
 
 def plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
@@ -155,8 +157,8 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     if pitch_method == 'praat':
         name_audio=audio_filename.split('/')
         temp_uuid='artic'+name_audio[-1][0:-4]
-        temp_filename_vuv='../tempfiles/tempVUV'+temp_uuid+'.txt'
-        temp_filename_f0='../tempfiles/tempF0'+temp_uuid+'.txt'
+        temp_filename_vuv=path_app+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
+        temp_filename_f0=path_app+'/../tempfiles/tempF0'+temp_uuid+'.txt'
         praat_functions.praat_vuv(audio_filename, temp_filename_f0, temp_filename_vuv, time_stepF0=step, minf0=minf0, maxf0=maxf0)
         F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),step)
         segmentsFull,segmentsOn,segmentsOff=praat_functions.read_textgrid_trans(temp_filename_vuv,data_audio,fs,sizeframe)
@@ -165,7 +167,7 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     elif pitch_method == 'rapt':
         data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
         F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=minf0, max=maxf0, voice_bias=voice_bias, otype='f0')
-        segments= read_Textgrid(path_base+'vuv.txt', file_audio, win_trans)
+
         segmentsOn=V_UV(F0, data_audio, fs, 'onset')
         segmentsOff=V_UV(F0, data_audio, fs, 'offset')
 
@@ -182,8 +184,8 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
     # TODO: Make parameters configurable. (If worth it)
     name_audio=audio_filename.split('/')
     temp_uuid='artic'+name_audio[-1][0:-4]
-    temp_filename='../tempfiles/tempFormants'+temp_uuid+'.txt'
-    praat_functions.praat_formants(audio_filename, temp_filename,sizeframe,step)
+    temp_filename=path_app+'/../tempfiles/tempFormants'+temp_uuid+'.txt'
+    praat_functions.praat_formants(audio_filename, temp_filename,sizeframe,step, path_praat_script=path_app+"/../praat/")
     [F1, F2]=praat_functions.decodeFormants(temp_filename)
     os.remove(temp_filename)
 

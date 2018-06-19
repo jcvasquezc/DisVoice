@@ -19,7 +19,7 @@ def multi_find(s, r):
                 i = i + 1
     return(_complete)
 
-def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0=600, maxVUVPeriod=0.02, averageVUVPeriod=0.01):
+def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0=600, maxVUVPeriod=0.02, averageVUVPeriod=0.01, path_praat_script="../praat"):
 	"""
 	Function that runs vuv_praat script to obtain pitch and voicing decisions for a wav file.
 	It will write its results into two text files, one for the pitch and another
@@ -43,13 +43,13 @@ def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0
 	Returns:
 		Nothing
 	"""
-	command='praat ../praat/vuv_praat.praat '
+	command='praat '+path_praat_script+'/vuv_praat.praat '
 	command+=audio_filaname+' '+resultsp +' '+  resultst+' '
 	command+=str(minf0)+' '+str(maxf0)+' '
 	command+=str(time_stepF0)+' '+str(maxVUVPeriod)+' '+str(averageVUVPeriod)
 	os.system(command)
 
-def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5, max_formant=5500):
+def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5, max_formant=5500, path_praat_script="../praat"):
 	"""
 	Function that runs vuv_praat script to obtain the formants for a wav file.
 	It will write its results into a text file.
@@ -72,7 +72,7 @@ def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5
 	Returns:
 		Nothing
 	"""
-	command='praat ../praat/FormantsPraat.praat '
+	command='praat '+path_praat_script+'/FormantsPraat.praat '
 	command+=audio_filename + ' '+results_filename+' '
 	command+=str(n_formants)+' '+ str(max_formant) + ' '
 	command+=str(float(sizeframe)/2)+' '
