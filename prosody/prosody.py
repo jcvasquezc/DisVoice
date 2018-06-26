@@ -271,6 +271,7 @@ def prosody_static(audio, flag_plots):
         data_frame=data_audio[int(l*size_stepS):int(l*size_stepS+size_frameS)]
         logE.append(logEnergy(data_frame))
     logE=np.asarray(logE)
+    print(np.unique(F0))
     segmentsV=V_UV(F0, data_audio, fs, type_seg="Voiced", size_stepS=size_stepS)
     segmentsU=V_UV(F0, data_audio, fs, type_seg="Unvoiced", size_stepS=size_stepS)
 
