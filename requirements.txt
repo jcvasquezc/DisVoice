@@ -1,0 +1,13 @@
+playsound==1.2.2
+dash_html_components==0.7.0
+pysptk==0.1.7
+plotly==2.0.15
+sounddevice==0.3.11
+scipy==1.0.0
+pandas==0.22.0
+easygui==0.98.1
+dash_core_components==0.12.5
+matplotlib==2.2.2
+dash==0.18.3
+numpy==1.14.0
+scikit_learn==0.19.1
