@@ -47,6 +47,7 @@ def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0
 	command+=audio_filaname+' '+resultsp +' '+  resultst+' '
 	command+=str(minf0)+' '+str(maxf0)+' '
 	command+=str(time_stepF0)+' '+str(maxVUVPeriod)+' '+str(averageVUVPeriod)
+
 	os.system(command)
 
 def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5, max_formant=5500, path_praat_script="../praat"):

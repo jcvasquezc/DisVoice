@@ -63,6 +63,7 @@ import pysptk
 from phonation_functions import jitter_env, logEnergy, shimmer_env, APQ, PPQ
 import scipy.stats as st
 import uuid
+import pandas as pd
 
 path_app = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(path_app+'/../')
@@ -74,48 +75,33 @@ sys.path.append(path_app+'/../praat')
 import praat_functions
 
 def plot_phon(data_audio,fs,F0,logE):
-    plt.figure(1)
-    plt.subplot(311)
-    t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
-    if len(t)>len(data_audio):
-        t=t[:len(data_audio)]
-    elif len(t)<len(data_audio):
-        data_audio=data_audio[:len(t)]
-    plt.plot(t, data_audio, 'k')
-    plt.ylabel('Amplitude', fontsize=14)
-    plt.xlabel('Time (s)', fontsize=14)
-    plt.xlim([0, t[-1]])
+    plt.figure(figsize=(6,6))
+    plt.subplot(211)
+    ax1=plt.gca()
+    t=np.arange(len(data_audio))/float(fs)
+    ax1.plot(t, data_audio, 'k', label="speech signal", alpha=0.8)
+    ax1.set_ylabel('Amplitude', fontsize=12)
+    ax1.set_xlabel('Time (s)', fontsize=12)
+    ax1.set_xlim([0, t[-1]])
+    plt.grid(True)
+    ax2 = ax1.twinx()
+    fsp=len(F0)/t[-1]
+    t2=np.arange(len(F0))/fsp
+    ax2.plot(t2, F0, 'r', linewidth=2,label="F0")
+    ax2.set_ylabel('Fundamental Frequency (Hz)', color='r', fontsize=12)
+    ax2.tick_params('y', colors='r')
+
     plt.grid(True)
 
-    plt.subplot(312)
-    fsp=int(len(F0)/t[-1])
-    t2=np.arange(0.0, t[-1], 1.0/fsp)
-    if len(t2)>len(F0):
-        t2=t2[:len(F0)]
-    elif len(F0)>len(t2):
-        F0=F0[:len(t2)]
-
-    plt.plot(t2, F0, color='k', linewidth=2.0)
-    plt.xlabel('Time (s)', fontsize=14)
-    plt.ylabel('Frequency (Hz)', fontsize=14)
-    plt.ylim([0,np.max(F0)+10])
-    plt.xlim([0, t[-1]])
-    plt.grid(True)
-    #plt.show()
-    plt.subplot(313)
-    Esp=int(len(logE)/t[-1])
-    t2=np.arange(0.0, t[-1], 1.0/Esp)
-    if len(t2)>len(logE):
-        t2=t2[:len(logE)]
-    elif len(logE)>len(t2):
-        logE=logE[:len(t2)]
-
+    plt.subplot(212)
+    Esp=len(logE)/t[-1]
+    t2=np.arange(len(logE))/float(Esp)
     plt.plot(t2, logE, color='k', linewidth=2.0)
     plt.xlabel('Time (s)', fontsize=14)
     plt.ylabel('Energy (dB)', fontsize=14)
-    plt.ylim([0,np.max(logE)+10])
     plt.xlim([0, t[-1]])
     plt.grid(True)
+    plt.tight_layout()
     plt.show()
 
 def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,maxf0=350, voice_bias=-0.2,energy_thr_percent=0.025, pitch_method='praat'):
@@ -176,11 +162,17 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
             lnz=lnz+1
         print("frame "+str(l) +" from "+str(nF)+"-"*int(100*l/nF)+">"+str(int(100*(l+1)/nF))+"%", sep=' ', end='\r', flush=True)
 
+
     Shimmer=shimmer_env(Amp, len(Amp))
     apq=np.asarray(apq)
     ppq=np.asarray(ppq)
     logE=np.asarray(logE)
     F0semi=np.asarray([Hz2semitones(F0nz[l]) for l in range(len(F0nz))])
+
+
+    if len(apq)==0:
+        print("warning, there is not enough long voiced segments to compute the APQ, in this case APQ=shimmer")
+        apq=Shimmer
 
     if flag_plots:
         plot_phon(data_audio,fs,F0,logE)
@@ -193,6 +185,9 @@ def phonationVowels(audio, flag_plots, size_frame=0.04,size_step=0.02,minf0=60,m
     print("DDF0", len(DDF0))
     print("Energy", len(logE))
     print("degree unvoiced",degreeU)
+
+
+
 
     return F0, DF0, DDF0, F0semi, Jitter, Shimmer, apq, ppq, logE, degreeU
 
@@ -320,7 +315,30 @@ if __name__=="__main__":
             os.remove(temp_file)
         else:
             Features=np.asarray(Features)
-            np.savetxt(file_features, Features)
+            if file_features.find('.txt')>=0:
+                
+                np.savetxt(file_features, Features)
+            elif file_features.find('.csv')>=0:
+
+                feat_names=["DF0", "DDF0", "F0semi", "Jitter", "Shimmer", "apq", "ppq", "logE"]
+                stat=["mean", "std", "skew", "kurt"]
+
+                feat_names_all=[]
+                for k in stat:
+                    for j in feat_names:
+                        feat_names_all.append(k+"_"+j)
+
+                df={}
+                df["ID"]=hf
+
+                for k in range(1,Features.shape[1]):
+                    df[feat_names_all[k]]=Features[:,k]
+
+                df["degreeU"]=Features[:,0]
+
+                df=pd.DataFrame(df) 
+                df.to_csv(file_features)
+
 
     if flag_static=="dynamic":
         if flag_kaldi:

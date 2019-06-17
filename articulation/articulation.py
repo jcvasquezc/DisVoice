@@ -68,15 +68,17 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
 import math
 import pysptk
 import scipy.stats as st
 from articulation_functions import extractTrans, V_UV
 import uuid
+import pandas as pd
+
+
 path_app = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(path_app+'/../')
-#sys.path.append('../kaldi-io')
-#from kaldi_io import write_mat, write_vec_flt
 
 sys.path.append(path_app+'/../praat')
 
@@ -124,30 +126,50 @@ def plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
     plt.xlim([0, t2[-1]])
     plt.grid(True)
     plt.legend()
+    plt.tight_layout()    
     plt.show()
+    plt.close()
 
-    plt.figure(2)
-    plt.title("Onset segments")
+
+
     for j in range(len(segmentsOn)):
-        plt.subplot(int(np.sqrt(len(segmentsOn)))+1, len(segmentsOn)/int(np.sqrt(len(segmentsOn))), j+1)
-        t=np.arange(0, float(len(segmentsOn[j]))/fs, 1.0/fs)
-        plt.plot(t, segmentsOn[j], linewidth=2.0)
+        f, (a0, a1) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [1,3]}, sharex=True, figsize=(5,4))
+        t=np.arange(len(segmentsOn[j]))/fs
+        a0.plot(t[0:640], segmentsOn[j][0:640], color='k', label="unvoiced")
+        a0.plot(t[640:], segmentsOn[j][640:], color='k', alpha=0.5, label="voiced")
+        a0.grid()
+        a0.legend(loc=2, ncol=2 )
+        spec, freqs, t, im=plt.specgram(segmentsOn[j], NFFT=128, Fs=fs, window=mlab.window_hanning, noverlap=100, detrend=mlab.detrend_mean)
+        a1.imshow(np.log10(np.abs(np.flipud(spec))), extent=[0, .08, 1, 4000], aspect='auto', cmap=plt.cm.jet,
+                vmax=np.log10(np.abs(spec).max()), vmin=np.log10(np.abs(spec).min()), interpolation="bilinear")
+        a1.set_ylabel('Frequency (Hz)', fontsize=12)
+        a1.set_xlabel('Time (s)', fontsize=12)
+        plt.tight_layout()
+        plt.show()
 
-    plt.show()
 
-    plt.figure(3)
-    plt.title("Offset segments")
+
     for j in range(len(segmentsOff)):
-        plt.subplot(int(np.sqrt(len(segmentsOff)))+1, len(segmentsOff)/int(np.sqrt(len(segmentsOff))), j+1)
-        t=np.arange(0, float(len(segmentsOff[j]))/fs, 1.0/fs)
-        plt.plot(t, segmentsOff[j], linewidth=2.0)
+        f, (a0, a1) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [1,3]}, sharex=True, figsize=(5,4))
+        t=np.arange(len(segmentsOff[j]))/fs
+        a0.plot(t[0:640], segmentsOff[j][0:640], color='k', label="voiced")
+        a0.plot(t[640:], segmentsOff[j][640:], color='k', alpha=0.5, label="unvoiced")
+        a0.grid()
+        a0.legend(loc=1, ncol=2 )
+        spec, freqs, t, im=plt.specgram(segmentsOff[j], NFFT=128, Fs=fs, window=mlab.window_hanning, noverlap=100, detrend=mlab.detrend_mean)
+        a1.imshow(np.log10(np.abs(np.flipud(spec))), extent=[0, .08, 1, 4000], aspect='auto', cmap=plt.cm.jet,
+                vmax=np.log10(np.abs(spec).max()), vmin=np.log10(np.abs(spec).min()), interpolation="bilinear")
+        a1.set_ylabel('Frequency (Hz)', fontsize=12)
+        a1.set_xlabel('Time (s)', fontsize=12)
+        plt.tight_layout()
+        plt.show()
 
-    plt.show()
 
 
 def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,nB=22,nMFCC=12,minf0=60,maxf0=350, voice_bias=-0.5,len_thr_miliseconds=270.0, pitch_method='praat'):
 
     fs, data_audio=read(audio_filename)
+
     data_audio=data_audio-np.mean(data_audio)
     data_audio=data_audio/float(np.max(np.abs(data_audio)))
     size_frameS=sizeframe*float(fs)
@@ -195,6 +217,7 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
         F1=np.hstack((F1, np.zeros(len(F0)-len(F1))))
         F2=np.hstack((F2, np.zeros(len(F0)-len(F2))))
 
+
     pos0=np.where(F0==0)[0]
     dpos0=np.hstack(([1],np.diff(pos0)))
     f0u=np.split(pos0, np.where(dpos0>1)[0])
@@ -219,6 +242,19 @@ def articulation_continuous(audio_filename, flag_plots,sizeframe=0.04,step=0.02,
 
     if flag_plots:
         plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff)
+
+    if len(F1nz)==0:
+        F1nz=np.zeros((0,1))
+    if len(F2nz)==0:
+        F2nz=np.zeros((0,1))
+    if len(DF1)==0:
+        DF1=np.zeros((0,1))
+    if len(DDF1)==0:
+        DDF1=np.zeros((0,1))
+    if len(DF2)==0:
+        DF2=np.zeros((0,1))
+    if len(DDF2)==0:
+        DDF2=np.zeros((0,1))
 
 
     return BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1nz, DF1, DDF1, F2nz, DF2, DDF2
@@ -312,6 +348,8 @@ if __name__=="__main__":
 
         BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1, DF1, DDF1, F2, DF2, DDF2=articulation_continuous(audio_file, flag_plots)
 
+
+
         if flag_static=="static":
 
 
@@ -336,6 +374,7 @@ if __name__=="__main__":
                     sk.append(np.zeros(Feat[n].shape[1]))
                     ku.append(np.zeros(Feat[n].shape[1]))
                 else:
+                    print(Feat[n].shape)
                     avgfeat.append(np.zeros(Feat[n].shape[1]))
                     stdfeat.append(np.zeros(Feat[n].shape[1]))
                     sk.append(np.zeros(Feat[n].shape[1]))
@@ -357,6 +396,10 @@ if __name__=="__main__":
 
         if flag_static=="dynamic":
             feat_onset=np.hstack((BBEon[2:,:], MFCCon[2:,:], DMFCCon[1:,:], DDMFCCon))
+            print(feat_onset.shape)
+
+            if feat_onset.shape[0]==0:
+                feat_onset=np.zeros((1,58))
 
             if flag_kaldi:
                 if feat_onset.shape[0] > 0:
@@ -367,6 +410,9 @@ if __name__=="__main__":
                 FeaturesOnset.append(feat_onset)
                 IDon.append(IDson)
             feat_offset=np.hstack((BBEoff[2:,:], MFCCoff[2:,:], DMFCCoff[1:,:], DDMFCCoff))
+            if feat_offset.shape[0]==0:
+                feat_offset=np.zeros((1,58))
+
             if flag_kaldi:
                 if feat_offset.shape[0] > 0:
                     key=hf[k].replace('.wav', '')
@@ -388,8 +434,38 @@ if __name__=="__main__":
             os.remove(temp_file)
         else:
             Features=np.asarray(Features)
-            print(file_features, Features.shape)
-            np.savetxt(file_features, Features)
+            if file_features.find('.txt')>=0:
+
+                print(file_features, Features.shape)
+                np.savetxt(file_features, Features)
+            elif file_features.find('.csv')>=0:
+                feat_names=["BBEon_"+str(j) for j in range(1,23)]
+                feat_names+=["MFCCon_"+str(j) for j in range(1,13)]
+                feat_names+=["DMFCCon_"+str(j) for j in range(1,13)]
+                feat_names+=["DDMFCCon_"+str(j) for j in range(1,13)]
+                feat_names+=["BBEoff_"+str(j) for j in range(1,23)]
+                feat_names+=["MFCCoff_"+str(j) for j in range(1,13)]
+                feat_names+=["DMFCCoff_"+str(j) for j in range(1,13)]
+                feat_names+=["DDMFCCoff_"+str(j) for j in range(1,13)]
+                feat_names+=["F1", "DF1", "DDF1", "F2", "DF2", "DDF2"]
+
+                statistics=["avg", "std", "skew", "kurt"]
+
+                feat_names_all=[]
+                for k in statistics:
+                    for j in feat_names:
+                        feat_names_all.append(k+"_"+j)
+
+
+                df={}
+                df["ID"]=hf
+
+                for k in range(Features.shape[1]):
+                    df[feat_names_all[k]]=Features[:,k]
+
+                df=pd.DataFrame(df) 
+                df.to_csv(file_features)
+
 
     if flag_static=="dynamic":
         if flag_kaldi:

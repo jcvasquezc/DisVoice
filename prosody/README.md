@@ -10,45 +10,44 @@ Static or dynamic features can be computed:
 
 The static feaature vector is formed with 13 features and include
 
-1. Average fundamental frequency in voiced segments
-2. Standard deviation of fundamental frequency in Hz
-3. Variablity of fundamental frequency in semitones
-4. Maximum of the fundamental frequency in Hz
-5. Average energy in dB
-6. Standard deviation of energy in dB
-7. Maximum energy
-8. Voiced rate (number of voiced segments per second)
-9. Average duration of voiced segments
-10. Standard deviation of duration of voiced segments
-11. Pause rate (number of pauses per second)
-12. Average duration of pauses
-13. Standard deviation of duration of pauses
- <br /> NEW MEASURES <br />
-14. Average tilt of fundamental frequency
-15. Tilt regularity of fundamental frequency
-16. Mean square error of the reconstructed F0 with a  1-degree polynomial
-17. (Silence duration)/(Voiced+Unvoiced durations)
-18. (Voiced duration)/(Unvoiced durations)
-19. (Unvoiced duration)/(Voiced+Unvoiced durations)
-20. (Voiced duration)/(Voiced+Unvoiced durations)
-21. (Voiced duration)/(Silence durations)
-22. (Unvoiced duration)/(Silence durations)
-23. Unvoiced duration Regularity
-24. Unvoiced energy Regularity
-25. Voiced duration Regularity
-26. Voiced energy Regularity
-27. Pause duration Regularity
-28. Maximum duration of voiced segments
-29. Maximum duration of unvoiced segments
-30. Minimum duration of voiced segments
-31. Minimum duration of unvoiced segments
-32. rate (# of voiced segments) / (# of unvoiced segments)
-33. Average tilt of energy contour
-34. Regression coefficient between the energy contour and a linear regression
-35. Mean square error of the reconstructed energy contour with a  1-degree polynomial
-34. Regression coefficient between the F0 contour and a linear regression
-37. Average Delta energy within consecutive voiced segments
-38. Standard deviation of Delta energy within consecutive voiced segments
+
+Compute prosody features from continuous speech based on duration, fundamental frequency and energy.
+
+Static or dynamic matrices can be computed:
+
+Static matrix is formed with 103 features and include
+
+Num     Feature                                                          Description
+--------------------------------------------------------------------------------------------------------------------------
+                                Features based on F0
+---------------------------------------------------------------------------------------------------------------------------
+1-6     F0-contour                                                       Avg., Std., Max., Min., Skewness, Kurtosis
+7-12    Tilt of a linear estimation of F0 for each voiced segment        Avg., Std., Max., Min., Skewness, Kurtosis
+13-18   MSE of a linear estimation of F0 for each voiced segment         Avg., Std., Max., Min., Skewness, Kurtosis
+19-24   F0 on the first voiced segment                                   Avg., Std., Max., Min., Skewness, Kurtosis
+25-30   F0 on the last voiced segment                                    Avg., Std., Max., Min., Skewness, Kurtosis
+--------------------------------------------------------------------------------------------------------------------------
+                                Features based on energy
+---------------------------------------------------------------------------------------------------------------------------
+31-34   energy-contour for voiced segments                               Avg., Std., Skewness, Kurtosis
+35-38   Tilt of a linear estimation of energy contour for V segments     Avg., Std., Skewness, Kurtosis
+39-42   MSE of a linear estimation of energy contour for V segment       Avg., Std., Skewness, Kurtosis
+43-48   energy on the first voiced segment                               Avg., Std., Max., Min., Skewness, Kurtosis
+49-54   energy on the last voiced segment                                Avg., Std., Max., Min., Skewness, Kurtosis
+55-58   energy-contour for unvoiced segments                             Avg., Std., Skewness, Kurtosis
+59-62   Tilt of a linear estimation of energy contour for U segments     Avg., Std., Skewness, Kurtosis
+63-66   MSE of a linear estimation of energy contour for U segments      Avg., Std., Skewness, Kurtosis
+67-72   energy on the first unvoiced segment                             Avg., Std., Max., Min., Skewness, Kurtosis
+73-78   energy on the last unvoiced segment                              Avg., Std., Max., Min., Skewness, Kurtosis
+--------------------------------------------------------------------------------------------------------------------------
+                                Features based on duration
+---------------------------------------------------------------------------------------------------------------------------
+79      Voiced rate                                                      Number of voiced segments per second
+80-85   Duration of Voiced                                               Avg., Std., Max., Min., Skewness, Kurtosis
+86-91   Duration of Unvoiced                                             Avg., Std., Max., Min., Skewness, Kurtosis
+92-97   Duration of Pauses                                               Avg., Std., Max., Min., Skewness, Kurtosis
+98-103  Duration ratios                                                  Pause/(Voiced+Unvoiced), Pause/Unvoiced, Unvoiced/(Voiced+Unvoiced),
+                                                                         Voiced/(Voiced+Unvoiced), Voiced/Puase, Unvoiced/Pause
 
 
 The dynamic feature matrix is formed with 13 features computed for each voiced segment and contains:
