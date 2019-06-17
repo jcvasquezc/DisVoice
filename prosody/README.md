@@ -22,30 +22,49 @@ Num     Feature                                                          Descrip
                                 Features based on F0
 ---------------------------------------------------------------------------------------------------------------------------
 1-6     F0-contour                                                       Avg., Std., Max., Min., Skewness, Kurtosis
+
 7-12    Tilt of a linear estimation of F0 for each voiced segment        Avg., Std., Max., Min., Skewness, Kurtosis
+
 13-18   MSE of a linear estimation of F0 for each voiced segment         Avg., Std., Max., Min., Skewness, Kurtosis
+
 19-24   F0 on the first voiced segment                                   Avg., Std., Max., Min., Skewness, Kurtosis
+
 25-30   F0 on the last voiced segment                                    Avg., Std., Max., Min., Skewness, Kurtosis
+
 --------------------------------------------------------------------------------------------------------------------------
                                 Features based on energy
 ---------------------------------------------------------------------------------------------------------------------------
 31-34   energy-contour for voiced segments                               Avg., Std., Skewness, Kurtosis
+
 35-38   Tilt of a linear estimation of energy contour for V segments     Avg., Std., Skewness, Kurtosis
+
 39-42   MSE of a linear estimation of energy contour for V segment       Avg., Std., Skewness, Kurtosis
+
 43-48   energy on the first voiced segment                               Avg., Std., Max., Min., Skewness, Kurtosis
+
 49-54   energy on the last voiced segment                                Avg., Std., Max., Min., Skewness, Kurtosis
+
 55-58   energy-contour for unvoiced segments                             Avg., Std., Skewness, Kurtosis
+
 59-62   Tilt of a linear estimation of energy contour for U segments     Avg., Std., Skewness, Kurtosis
+
 63-66   MSE of a linear estimation of energy contour for U segments      Avg., Std., Skewness, Kurtosis
+
 67-72   energy on the first unvoiced segment                             Avg., Std., Max., Min., Skewness, Kurtosis
+
 73-78   energy on the last unvoiced segment                              Avg., Std., Max., Min., Skewness, Kurtosis
+
 --------------------------------------------------------------------------------------------------------------------------
                                 Features based on duration
 ---------------------------------------------------------------------------------------------------------------------------
 79      Voiced rate                                                      Number of voiced segments per second
+
 80-85   Duration of Voiced                                               Avg., Std., Max., Min., Skewness, Kurtosis
+
 86-91   Duration of Unvoiced                                             Avg., Std., Max., Min., Skewness, Kurtosis
+
 92-97   Duration of Pauses                                               Avg., Std., Max., Min., Skewness, Kurtosis
+
 98-103  Duration ratios                                                  Pause/(Voiced+Unvoiced), Pause/Unvoiced, Unvoiced/(Voiced+Unvoiced),
                                                                          Voiced/(Voiced+Unvoiced), Voiced/Puase, Unvoiced/Pause
 
