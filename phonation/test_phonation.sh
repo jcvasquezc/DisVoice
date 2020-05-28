@@ -1,11 +1,15 @@
 
-dir2=$(pwd)
-python phonation.py $dir2"/001_a1_PCGITA.wav" "featuresAst.txt" "static" "true"
-python phonation.py $dir2"/001_a1_PCGITA.wav" "featuresAdyn.txt" "dynamic" "true"
-#python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAdynFolder.txt" "dynamic" "false"
-#python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Ah/" "featuresAstatFolder.txt" "static" "false"
 
-python phonation.py $dir2"/001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
-python phonation.py $dir2"/001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
-#python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
-#python phonation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
+python phonation.py "../audios/001_a1_PCGITA.wav" "phonationfeaturesAst.txt" "true" "true" "txt"
+python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUst.csv" "true" "true" "csv"
+python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUdyn.pt" "false" "true" "torch"
+
+python phonation.py "../audios/" "phonationfeaturesst.txt" "true" "false" "txt"
+python phonation.py "../audios/" "phonationfeaturesst.csv" "true" "false" "csv"
+python phonation.py "../audios/" "phonationfeaturesdyn.pt" "false" "false" "torch"
+
+KALDI_ROOT=/home/camilo/Camilo/codes/kaldi-master2
+export PATH=$PATH:$KALDI_ROOT/src/featbin/
+python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUdyn" "false" "false" "kaldi"
+
+python phonation.py "../audios/" "phonationfeaturesdyn" "false" "false" "kaldi"
