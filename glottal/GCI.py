@@ -4,13 +4,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-import glottal.utils_gci
 import pysptk
 
 from scipy.io.wavfile import write
 from scipy.integrate import cumtrapz
-from glottal.peakdetect import peakdetect
-import glottal.utils_gci as utils_gci
+try:
+    from .peakdetect import peakdetect
+    from .utils_gci import *
+except:
+    from peakdetect import peakdetect
+    from utils_gci import *
 
 def SE_VQ_varF0(x,fs, f0=[]):
     """
@@ -79,7 +82,7 @@ def SE_VQ_varF0(x,fs, f0=[]):
     VUV_inter[np.where(VUV_inter>0.5)[0]]=1
     VUV_inter[np.where(VUV_inter<=0.5)[0]]=0
 
-    f0_int, f0_samp=utils_gci.create_continuous_smooth_f0(f0,VUV,x)
+    f0_int, f0_samp=create_continuous_smooth_f0(f0,VUV,x)
 
     T0mean = fs/f0_samp
     winLen = 25 # window length in ms
@@ -95,16 +98,16 @@ def SE_VQ_varF0(x,fs, f0=[]):
 
     #Calculate LP-residual and extract N maxima per mean-based signal determined intervals
 
-    res = utils_gci.GetLPCresidual(x,winLen*fs/1000,winShift*fs/1000,LPC_ord, VUV_inter) # Get LP residual
-    rep = utils_gci.RCVD_reson_GCI(res,fs,F0mean) #Get resonator output
+    res = GetLPCresidual(x,winLen*fs/1000,winShift*fs/1000,LPC_ord, VUV_inter) # Get LP residual
+    rep = RCVD_reson_GCI(res,fs,F0mean) #Get resonator output
 
-    MBS = utils_gci.get_MBS(x,fs,T0mean) # Extract mean based signal
+    MBS = get_MBS(x,fs,T0mean) # Extract mean based signal
 
-    interval = utils_gci.get_MBS_GCI_intervals(MBS,fs,T0mean,F0max) # Define search intervals
+    interval = get_MBS_GCI_intervals(MBS,fs,T0mean,F0max) # Define search intervals
 
-    [GCI_N,GCI_relAmp] = utils_gci.search_res_interval_peaks(res,interval,Ncand, VUV_inter) # Find residual peaks
+    [GCI_N,GCI_relAmp] = search_res_interval_peaks(res,interval,Ncand, VUV_inter) # Find residual peaks
 
-    GCI = utils_gci.RESON_dyProg_mat(GCI_relAmp,GCI_N,F0mean,x,fs,trans_wgt,relAmp_wgt, plots=False) # Do dynamic programming
+    GCI = RESON_dyProg_mat(GCI_relAmp,GCI_N,F0mean,x,fs,trans_wgt,relAmp_wgt, plots=False) # Do dynamic programming
 
     return GCI
 
@@ -136,12 +139,12 @@ def IAIF(x,fs,GCI):
     # ------------------------------------------------
     # emphasise high-frequencies of speech signal (LPC order 1) - PART 2 & 3
     ord_lpc1=1
-    x_emph=utils_gci.calc_residual(x_filt,x_filt,ord_lpc1,GCI)
+    x_emph=calc_residual(x_filt,x_filt,ord_lpc1,GCI)
 
     # ------------------------------------------------
     # first estimation of the glottal source derivative - PART 4 & 5
     ord_lpc2=p
-    residual1=utils_gci.calc_residual(x_filt,x_filt,ord_lpc2,GCI)
+    residual1=calc_residual(x_filt,x_filt,ord_lpc2,GCI)
 
     # integration of the glottal source derivative to calculate the glottal
     # source pulse - PART 6 (cancelling lip radiation)
@@ -150,14 +153,14 @@ def IAIF(x,fs,GCI):
     # elimination of the source effect from the speech spectrum - PART 7 & 8
 
     ord_lpc3=4
-    vt_signal=utils_gci.calc_residual(x_filt,ug1,ord_lpc3,GCI)
+    vt_signal=calc_residual(x_filt,ug1,ord_lpc3,GCI)
 
     # ------------------------------------------------
     # second estimation of the glottal source signal - PART 9 & 10
     ug2=cumtrapz(vt_signal)
 
     ord_lpc4=p
-    residual2=utils_gci.calc_residual(x_filt,vt_signal,ord_lpc4,GCI)
+    residual2=calc_residual(x_filt,vt_signal,ord_lpc4,GCI)
     return residual2
 
 

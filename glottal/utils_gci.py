@@ -2,7 +2,11 @@
 import numpy as np
 import pysptk
 import matplotlib.pyplot as plt
-from glottal.peakdetect import peakdetect
+try:
+    from .peakdetect import peakdetect
+except:
+    from peakdetect import peakdetect
+
 from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
 from scipy.linalg import toeplitz

@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-from glottal import *
 
 
+__all__=['glottal', 'peakdetect', 'GCI', 'utils_gci']
