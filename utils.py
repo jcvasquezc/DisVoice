@@ -8,17 +8,49 @@ Created on Jul 21 2017
 
 
 import numpy as np
+import scipy.stats as st
+import kaldi_io
 
-def Hz2semitones(freq):
-    A4=440.
-    C0=A4*2**(-4.75)
-    if freq>0:
-        h=12*np.log2(freq/C0)
-        octave=h//12.
-        return h+octave
-    else:
-        return C0
 
+
+def dynamic2static(feat):
+
+    me=np.mean(feat,0)
+
+    std=np.std(feat,0)
+    sk=st.skew(feat)
+    ku=st.kurtosis(feat)
+
+    return np.hstack((me,std,sk,ku))
+
+def dynamic2statict(feat):
+
+    me=[]
+    std=[]
+    sk=[]
+    ku=[]
+    for k in feat:
+        me.append(np.mean(k,0))
+        std.append(np.std(k,0))
+        sk.append(st.skew(k))
+        ku.append(st.kurtosis(k))
+
+    return np.hstack((me,std,sk,ku))
+
+def get_dict(feat_mat, IDs):
+    uniqueids=np.unique(IDs)
+    df={}
+    for k in uniqueids:
+        p=np.where(IDs==k)[0]
+        featid=feat_mat[p,:]
+        df[str(k)]=featid
+    return df
+
+def save_dict_kaldimat(dict_feat, temp_file):
+    ark_scp_output='ark:| copy-feats --compress=true ark:- ark,scp:'+temp_file+'.ark,'+temp_file+'.scp'
+    with kaldi_io.open_or_fd(ark_scp_output,'wb') as f:
+        for key,mat in dict_feat.items(): 
+            kaldi_io.write_mat(f, mat, key=key)
 
 def multi_find(s, r):
     s_len = len(s)
@@ -34,3 +66,5 @@ def multi_find(s, r):
             else:
                 i = i + 1
     return(_complete)
+
+
