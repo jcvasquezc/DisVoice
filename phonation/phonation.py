@@ -4,9 +4,7 @@
 Created on Jul 21 2017
 
 @author: J. C. Vasquez-Correa
-
 """
-
 
 from scipy.io.wavfile import read
 import os
@@ -138,7 +136,7 @@ class Phonation:
         >>> features1=phonation.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
         >>> features2=phonation.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
         >>> features3=phonation.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
-        >>> features4=phonation.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
+        >>> phonation.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
         """
         fs, data_audio=read(audio)
         data_audio=data_audio-np.mean(data_audio)
@@ -149,10 +147,10 @@ class Phonation:
         if self.pitch_method == 'praat':
             name_audio=audio.split('/')
             temp_uuid='phon'+name_audio[-1][0:-4]
-            if not os.path.exists(self.PATH+'../tempfiles/'):
-                os.makedirs(self.PATH+'../tempfiles/')
-            temp_filename_vuv=self.PATH+'../tempfiles/tempVUV'+temp_uuid+'.txt'
-            temp_filename_f0=self.PATH+'../tempfiles/tempF0'+temp_uuid+'.txt'
+            if not os.path.exists(self.PATH+'/../tempfiles/'):
+                os.makedirs(self.PATH+'/../tempfiles/')
+            temp_filename_vuv=self.PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
+            temp_filename_f0=self.PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
             praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=self.size_step, minf0=self.minf0, maxf0=self.maxf0)
             F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),self.size_step)
             os.remove(temp_filename_vuv)
@@ -179,7 +177,7 @@ class Phonation:
             energy=10*logEnergy(data_frame)
             if F0[l]!=0:
                 Amp.append(np.max(np.abs(data_frame)))
-                logE.append(10*logEnergy(data_frame))
+                logE.append(energy)
                 if lnz>=12: # TODO:
                     amp_arr=np.asarray([Amp[j] for j in range(lnz-12, lnz)])
                     #print(amp_arr)
@@ -260,7 +258,7 @@ class Phonation:
         >>> features1=phonation.extract_features_path(path_audio, static=True, plots=False, fmt="npy")
         >>> features2=phonation.extract_features_path(path_audio, static=True, plots=False, fmt="csv")
         >>> features3=phonation.extract_features_path(path_audio, static=False, plots=True, fmt="torch")
-        >>> features4=phonation.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
+        >>> phonation.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
         """
         hf=os.listdir(path_audio)
         hf.sort()

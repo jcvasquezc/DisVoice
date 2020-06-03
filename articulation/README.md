@@ -26,36 +26,66 @@ In addition, static (for all utterance) or dynamic (at-frame level) features can
 
 - The static feature vector is formed with 488 features (122 descriptors) x (4 functionals: mean, std, skewness, kurtosis)
 
-- For the dynamic analysis, two matrices are created both for onset and offset based features
--- Dynamic matrices are formed with the 58 descriptors (22 BBEs, 12 MFCC, 12DMFCC, 12 DDMFCC ) computed for frames of 40 ms.
+- The dynamic matrix contains 58 descriptors (22 BBEs, 12 MFCC, 12DMFCC, 12 DDMFCC ) computed for frames of 40 ms of onset segments.
 
 The first two frames of each recording are not considered for dynamic analysis to be able to stack the derivatives of MFCCs
 
 #### Notes:
-- The fundamental frequency is used to detect the transitions and it is computed using Praat by default. To use the RAPT algorithm change the "pitch method" variable in the function articulation_continuous.
-- The formant frequencies are computed using Praat
-- When Kaldi output is set to "true" two files will be generated, the ".ark" with the data in binary format and the ".scp" Kaldi script file
+1. The fundamental frequency is computed the PRAAT algorithm. To use the RAPT method,  change the "self.pitch method" variable in the class constructor.
+
+2. The formant frequencies are computed using Praat
+
 
 #### Running
+Script is called as follows
+
 ```sh
-python articulation.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)]
+python articulation.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
 ```
 
 #### Examples:
 
+Extract features in the command line
 ```sh
-python articulation.py "./001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
-python articulation.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
-python articulation.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true" "true"
-python articulation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
-python articulation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
-python articulation.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "dynamic" "false" "true"
+
+python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulationfeaturesAst.txt" "true" "true" "txt"
+python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulationfeaturesUst.csv" "true" "true" "csv"
+python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulationfeaturesUdyn.pt" "false" "true" "torch"
+
+python articulation.py "../audios/" "articulationfeaturesst.txt" "true" "false" "txt"
+python articulation.py "../audios/" "articulationfeaturesst.csv" "true" "false" "csv"
+python articulation.py "../audios/" "articulationfeaturesdyn.pt" "false" "false" "torch"
+python articulation.py "../audios/" "articulationfeaturesdyn.csv" "false" "false" "csv"
+
+KALDI_ROOT=/home/camilo/Camilo/codes/kaldi-master2
+export PATH=$PATH:$KALDI_ROOT/src/featbin/
+python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulationfeaturesUdyn" "false" "false" "kaldi"
+
+python articulation.py "../audios/" "articulationfeaturesdyn" "false" "false" "kaldi"
 ```
+
+Extract features directly in Python
+```
+from articulation import Articulation
+articulation=Articulation()
+file_audio="../audios/001_ddk1_PCGITA.wav"
+features1=articulation.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
+features2=articulation.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
+features3=articulation.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
+articulation.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
+```
+
+[Jupyter notebook](https://github.com/jcvasquezc/DisVoice/blob/master/notebooks_examples/articulation_features.ipynb)
+
 #### Results:
 
 Articulation analysis from continuous speech
 ![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/articulation_continuousFormants.png?raw=True)
 
+
+![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/articulation_transition.png?raw=True)
+
+
 #### References
 
-[[1]](http://ieeexplore.ieee.org/abstract/document/7472927/) J. R. Orozco-Arroyave, J. C. Vásquez-Correa, et, al. Towards an automatic monitoring of the neurological state of Parkinson's patients from speech. In IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), (2016)
+[[1]](https://www5.informatik.uni-erlangen.de/Forschung/Publikationen/2018/Vasquez-Correa18-TAA.pdf) Vásquez-Correa, J. C., et al. "Towards an automatic evaluation of the dysarthria level of patients with Parkinson's disease." Journal of communication disorders 76 (2018): 21-36.

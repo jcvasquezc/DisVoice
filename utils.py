@@ -34,8 +34,33 @@ def dynamic2statict(feat):
         std.append(np.std(k,0))
         sk.append(st.skew(k))
         ku.append(st.kurtosis(k))
-
     return np.hstack((me,std,sk,ku))
+
+
+def dynamic2statict_artic(feat):
+
+    me=[]
+    std=[]
+    sk=[]
+    ku=[]
+    for k in feat:
+        if k.shape[0]>1:
+            me.append(np.mean(k,0))
+            std.append(np.std(k,0))
+            sk.append(st.skew(k))
+            ku.append(st.kurtosis(k))
+        elif k.shape[0]==1:
+            me.append(k[0,:])
+            std.append(np.zeros(k.shape[1]))
+            sk.append(np.zeros(k.shape[1]))
+            ku.append(np.zeros(k.shape[1]))
+        else:
+            me.append(np.zeros(k.shape[1]))
+            std.append(np.zeros(k.shape[1]))
+            sk.append(np.zeros(k.shape[1]))
+            ku.append(np.zeros(k.shape[1]))
+
+    return np.hstack((np.hstack(me),np.hstack(std),np.hstack(sk),np.hstack(ku)))
 
 def get_dict(feat_mat, IDs):
     uniqueids=np.unique(IDs)

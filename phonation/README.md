@@ -32,6 +32,7 @@ Additionally, static (for all utterance) or dynamic (frame by frame) features ca
 
 2. The fundamental frequency is computed the RAPT algorithm. To use the PRAAT method,  change the "self.pitch method" variable in the class constructor.
 
+#### Running
 
 Script is called as follows
 
@@ -40,6 +41,10 @@ python phonation.py <file_or_folder_audio> <file_features> <static (true or fals
 ```
 
 #### Examples:
+
+Extract features in the command line
+
+
 ```sh
 python phonation.py "../audios/001_a1_PCGITA.wav" "glottalfeaturesAst.txt" "true" "true" "txt"
 python phonation.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.csv" "true" "true" "csv"
@@ -54,6 +59,19 @@ export PATH=$PATH:$KALDI_ROOT/src/featbin/
 python phonation.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUdyn" "false" "false" "kaldi"
 
 python phonation.py "../audios/" "glottalfeaturesdyn" "false" "false" "kaldi"
+```
+
+Extract features directly in Python
+
+
+```
+from phonation import Phonation
+phonation=Phonation()
+file_audio="../audios/001_a1_PCGITA.wav"
+features1=phonation.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
+features2=phonation.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
+features3=phonation.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
+phonation.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
 ```
 
 [Jupyter notebook](https://github.com/jcvasquezc/DisVoice/blob/master/notebooks_examples/phonation_features.ipynb)

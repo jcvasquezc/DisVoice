@@ -193,7 +193,7 @@ class Glottal:
         >>> features1=glottal.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
         >>> features2=glottal.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
         >>> features3=glottal.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
-        >>> features4=glottal.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
+        >>> glottal.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
         """
         if audio.find('.wav')==-1 and audio.find('.WAV')==-1:
             raise ValueError(audio+" is not a valid wav file")
@@ -323,7 +323,7 @@ class Glottal:
         >>> features1=glottal.extract_features_path(path_audio, static=True, plots=False, fmt="npy")
         >>> features2=glottal.extract_features_path(path_audio, static=True, plots=False, fmt="csv")
         >>> features3=glottal.extract_features_path(path_audio, static=False, plots=True, fmt="torch")
-        >>> features4=glottal.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
+        >>> glottal.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
         """
         hf=os.listdir(path_audio)
         hf.sort()
