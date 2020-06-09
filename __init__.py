@@ -2,4 +2,4 @@
 
 
 
-__all__=['glottal', 'phonation']
+__all__=['glottal', 'phonation', 'articulation']

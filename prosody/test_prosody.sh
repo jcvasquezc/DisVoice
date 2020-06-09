@@ -1,5 +1,14 @@
-dir2=$(pwd)
-python prosody.py  $dir2"/001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
-python prosody.py  $dir2"/001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
-#python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
-#python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesDDKst.txt" "true" "true" "txt"
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesDDKst.csv" "true" "true" "csv"
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesDDKdyn.pt" "false" "true" "torch"
+
+python prosody.py "../audios/" "prosodyfeaturesst.txt" "true" "false" "txt"
+python prosody.py "../audios/" "prosodyfeaturesst.csv" "true" "false" "csv"
+python prosody.py "../audios/" "prosodyfeaturesdyn.pt" "false" "false" "torch"
+python prosody.py "../audios/" "prosodyfeaturesdyn.csv" "false" "false" "csv"
+
+KALDI_ROOT=/home/camilo/Camilo/codes/kaldi-master2
+export PATH=$PATH:$KALDI_ROOT/src/featbin/
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesDDKdyn" "false" "false" "kaldi"
+
+python prosody.py "../audios/" "prosodyfeaturesdyn" "false" "false" "kaldi"

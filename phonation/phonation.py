@@ -24,7 +24,7 @@ import uuid
 import pandas as pd
 path_app = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(path_app+'/../')
-from utils import dynamic2statict
+from utils import dynamic2statict, save_dict_kaldimat
 import praat.praat_functions as praat_functions
 from script_mananger import script_manager
 import torch

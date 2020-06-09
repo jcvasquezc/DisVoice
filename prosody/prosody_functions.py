@@ -19,7 +19,7 @@ def F0feat(F0):
         mse=[]
         F0nzlist=np.split(F0, np.where(F0 == 0)[0]+1)
         F0nzlist=[F0nzlist[j] for j in range(len(F0nzlist) ) if len(F0nzlist[j])>1]
-        F0nzlist=[F0nzlist[j][:-1] if j<len(F0nzlist)-1 else F0nzlist[j] for j in  range(len(F0nzlist) )]
+        F0nzlist=[F0nzlist[j][:-1] for j in  range(len(F0nzlist) )]
         for k in range(len(F0nzlist)):
             if len(F0nzlist[k])>1:
                 t=np.arange(len(F0nzlist[k]))*tsf0
@@ -29,6 +29,7 @@ def F0feat(F0):
                     f0rec=t*pol[0]+pol[1]
                     msef0t=mean_squared_error(F0nzlist[k],f0rec)
                     mse.append(msef0t)
+
         tiltmean=np.mean(np.asarray(tilt))
         msemean=np.mean(np.asarray(mse))
         tiltstd=np.std(np.asarray(tilt))
@@ -258,10 +259,9 @@ def energy_feat(segments, fs, size_frameS, size_stepS):
 def dur_seg(segments, fs):
     dur=[]
     for j in range(len(segments)):
-        dur.append(len(segments)/fs)
+        dur.append(len(segments[j])/fs)
     dur=np.asarray(dur)
     if len(dur)>1:
-
         return np.asarray([np.mean(dur), np.std(dur), st.skew(dur), st.kurtosis(dur), np.max(dur), np.min(dur)])
     else:
         return np.zeros(6)
@@ -338,3 +338,6 @@ def logEnergy(sig):
         logE=-1e30
 
     return logE
+
+
+

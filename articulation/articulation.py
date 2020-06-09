@@ -29,7 +29,7 @@ sys.path.append(path_app+'/../')
 import praat.praat_functions as praat_functions
 from script_mananger import script_manager
 
-from utils import dynamic2statict_artic
+from utils import dynamic2statict_artic, save_dict_kaldimat, get_dict
 
 
 
@@ -91,7 +91,7 @@ class Articulation:
         self.nMFCC=12
         self.minf0=60
         self.maxf0=350
-        self.voice_bias=-0.5
+        self.voice_bias=-0.2
         self.len_thr_miliseconds=270.0
         self.PATH = os.path.dirname(os.path.abspath(__file__))
         self.head=["BBEon_"+str(j) for j in range(1,23)]
@@ -103,10 +103,10 @@ class Articulation:
         self.head+=["DMFCCoff_"+str(j) for j in range(1,13)]
         self.head+=["DDMFCCoff_"+str(j) for j in range(1,13)]
         self.head+=["F1", "DF1", "DDF1", "F2", "DF2", "DDF2"]
-        self.headd=["BBEon_"+str(j) for j in range(1,23)]
-        self.headd+=["MFCCon_"+str(j) for j in range(1,13)]
-        self.headd+=["DMFCCon_"+str(j) for j in range(1,13)]
-        self.headd+=["DDMFCCon_"+str(j) for j in range(1,13)]
+        self.head_dyn=["BBEon_"+str(j) for j in range(1,23)]
+        self.head_dyn+=["MFCCon_"+str(j) for j in range(1,13)]
+        self.head_dyn+=["DMFCCon_"+str(j) for j in range(1,13)]
+        self.head_dyn+=["DDMFCCon_"+str(j) for j in range(1,13)]
 
     def plot_art(self, data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
         """Plots of the articulation features
@@ -117,7 +117,7 @@ class Articulation:
         :param F2: contour of the 2nd formant
         :param segmentsOn: list with the onset segments
         :param segmentsOff: list with the offset segments
-        :returns: plots of the phonation features.
+        :returns: plots of the articulation features.
         """
         plt.figure(1)
         plt.subplot(311)
@@ -345,7 +345,7 @@ class Articulation:
                 return pd.DataFrame(df)
             else:
                 df={}
-                for e, k in enumerate(self.headd):
+                for e, k in enumerate(self.head_dyn):
                     df[k]=feat_mat[:,e]
                 return pd.DataFrame(df)
         elif fmt=="torch":
@@ -365,7 +365,7 @@ class Articulation:
 
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
-        """Extract the articullation features for audios inside a path
+        """Extract the articulation features for audios inside a path
         :param path_audio: directory with (.wav) audio files inside, sampled at 16 kHz
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features
@@ -413,7 +413,7 @@ class Articulation:
                     df[k]=Features[:,e]
             else:
                 df={}
-                for e, k in enumerate(self.headd):
+                for e, k in enumerate(self.head_dyn):
                     df[k]=Features[:,e]
             df["id"]=ids
             return pd.DataFrame(df)

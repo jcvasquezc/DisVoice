@@ -8,13 +8,6 @@ Compute prosody features from continuous speech based on duration, fundamental f
 
 Static or dynamic features can be computed:
 
-The static feaature vector is formed with 13 features and include
-
-
-Compute prosody features from continuous speech based on duration, fundamental frequency and energy.
-
-Static or dynamic matrices can be computed:
-
 Static matrix is formed with 103 features and include
 
 Num     Feature                                                          Description
@@ -68,6 +61,8 @@ Num     Feature                                                          Descrip
 98-103  Duration ratios                                                  Pause/(Voiced+Unvoiced), Pause/Unvoiced, Unvoiced/(Voiced+Unvoiced),
                                                                          Voiced/(Voiced+Unvoiced), Voiced/Puase, Unvoiced/Pause
 
+---------------------------------------------------------------------------------------------------------------------------
+
 
 The dynamic feature matrix is formed with 13 features computed for each voiced segment and contains:
 
@@ -80,25 +75,49 @@ Najim Dehak, "Modeling Prosodic Features With Joint Factor Analysis for Speaker 
 
 ### Notes:
 
-1. The fundamental frequency is computed using Praat. To use the RAPT algorithm change the "pitch method" variable in the function phonation_vowel.
+1. The fundamental frequency is computed the PRAAT algorithm. To use the RAPT method,  change the "self.pitch method" variable in the class constructor.
 
 2. When Kaldi output is set to "true" two files will be generated, the ".ark" with the data in binary format and the ".scp" Kaldi script file
 
 ### Runing
 Script is called as follows
 ```sh
-python prosody.py <file_or_folder_audio> <file_features.txt> [dynamic_or_static (default static)] [plots (true or false) (default false)] [kaldi output (true or false) (default false)]
+python prosody.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
 ```
+
 
 ### Examples:
+Extract features in the command line
 ```sh
-python prosody.py "./001_ddk1_PCGITA.wav" "featuresDDKst.txt" "static" "true"
-python prosody.py "./001_ddk1_PCGITA.wav" "featuresDDKdyn.txt" "dynamic" "true"
-python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false"
-python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKstatFolder.txt" "static" "false"
-python prosody.py "/home/camilo/Camilo/data/BDKayElemetrics/Norm/Rainbow/" "featuresDDKdynFolder.txt" "dynamic" "false" "true"
 
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesAst.txt" "true" "true" "txt"
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesUst.csv" "true" "true" "csv"
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesUdyn.pt" "false" "true" "torch"
+
+python prosody.py "../audios/" "prosodyfeaturesst.txt" "true" "false" "txt"
+python prosody.py "../audios/" "prosodyfeaturesst.csv" "true" "false" "csv"
+python prosody.py "../audios/" "prosodyfeaturesdyn.pt" "false" "false" "torch"
+python prosody.py "../audios/" "prosodyfeaturesdyn.csv" "false" "false" "csv"
+
+KALDI_ROOT=/home/camilo/Camilo/codes/kaldi-master2
+export PATH=$PATH:$KALDI_ROOT/src/featbin/
+python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesUdyn" "false" "false" "kaldi"
+
+python prosody.py "../audios/" "prosodyfeaturesdyn" "false" "false" "kaldi"
 ```
+
+Extract features directly in Python
+```
+from prosody import Prosody
+prosody=Prosody()
+file_audio="../audios/001_ddk1_PCGITA.wav"
+features1=prosody.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
+features2=prosody.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
+features3=prosody.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
+prosody.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
+```
+
+[Jupyter notebook](https://github.com/jcvasquezc/DisVoice/blob/master/notebooks_examples/prosody_features.ipynb)
 
 #### Results:
 
@@ -107,9 +126,6 @@ Prosody analysis from continuous speech static
 
 ![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody3.png?Raw=true)
 
-
-Prosody analysis from continuous speech dynamic
-![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody2.png?raw=true)
 
 #### References
 
