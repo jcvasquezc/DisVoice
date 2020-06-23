@@ -330,8 +330,10 @@ def E_cont(seg,size_frameS,size_stepS,overlap):
     return loge
 
 def logEnergy(sig):
+    if len(sig)==0:
+        return -1e30
     sig2=np.power(sig,2)
-    sumsig2=np.sum(np.absolute(sig2))/len(sig2)
+    sumsig2=np.sum(np.abs(sig2))/len(sig2)
 
     logE=10*np.log10(sumsig2)
     if np.isnan(logE) or np.isinf(logE):

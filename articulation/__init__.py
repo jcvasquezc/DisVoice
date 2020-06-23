@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-__all__=['phonation']
+__all__=['articulation']

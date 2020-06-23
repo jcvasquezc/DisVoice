@@ -122,9 +122,9 @@ prosody.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi"
 #### Results:
 
 Prosody analysis from continuous speech static
-![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody1.png?Raw=true)
+![Image](https://raw.githubusercontent.com/jcvasquezc/DisVoice/master/images/prosody1.png)
 
-![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/prosody3.png?Raw=true)
+![Image](https://raw.githubusercontent.com/jcvasquezc/DisVoice/master/images/prosody3.png)
 
 
 #### References
