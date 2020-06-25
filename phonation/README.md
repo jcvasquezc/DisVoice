@@ -46,19 +46,19 @@ Extract features in the command line
 
 
 ```sh
-python phonation.py "../audios/001_a1_PCGITA.wav" "glottalfeaturesAst.txt" "true" "true" "txt"
-python phonation.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.csv" "true" "true" "csv"
-python phonation.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUdyn.pt" "false" "true" "torch"
+python phonation.py "../audios/001_a1_PCGITA.wav" "phonationfeaturesAst.txt" "true" "true" "txt"
+python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUst.csv" "true" "true" "csv"
+python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUdyn.pt" "false" "true" "torch"
 
-python phonation.py "../audios/" "glottalfeaturesst.txt" "true" "false" "txt"
-python phonation.py "../audios/" "glottalfeaturesst.csv" "true" "false" "csv"
-python phonation.py "../audios/" "glottalfeaturesdyn.pt" "false" "false" "torch"
+python phonation.py "../audios/" "phonationfeaturesst.txt" "true" "false" "txt"
+python phonation.py "../audios/" "phonationfeaturesst.csv" "true" "false" "csv"
+python phonation.py "../audios/" "phonationfeaturesdyn.pt" "false" "false" "torch"
 
 KALDI_ROOT=/home/camilo/Camilo/codes/kaldi-master2
 export PATH=$PATH:$KALDI_ROOT/src/featbin/
-python phonation.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUdyn" "false" "false" "kaldi"
+python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUdyn" "false" "false" "kaldi"
 
-python phonation.py "../audios/" "glottalfeaturesdyn" "false" "false" "kaldi"
+python phonation.py "../audios/" "phonationfeaturesdyn" "false" "false" "kaldi"
 ```
 
 Extract features directly in Python
@@ -88,3 +88,4 @@ Phonation analysis from continuous speech
 #### References
 
 [[1]](https://link.springer.com/article/10.1007%2Fs12559-017-9497-x) T. Arias-Vergara, J. C. Vásquez-Correa, J. R. Orozco-Arroyave, Parkinson’s Disease and Aging: Analysis of Their Effect in Phonation and Articulation of Speech, Cognitive computation, (2017).
+

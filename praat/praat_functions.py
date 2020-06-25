@@ -23,27 +23,20 @@ def multi_find(s, r):
 
 def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0=600, maxVUVPeriod=0.02, averageVUVPeriod=0.01):
 	"""
-	Function that runs vuv_praat script to obtain pitch and voicing decisions for a wav file.
-	It will write its results into two text files, one for the pitch and another
+	runs vuv_praat script to obtain pitch and voicing decisions for a wav file.
+	It writes the results into two text files, one for the pitch and another
 	for the voicing decisions. These results can then be read using the function
 	read_textgrid_trans and decodeF0
 
-	Parameters:
-		audio_filaname: Full path to the wav file
-		resultsp: Full path to the resulting file with the pitch
-		resultst: Full path to the resulting file with the
-					voiced/unvoiced decisions
-		time_stepF0: time step to compute the pitch, default value is 0 and
-		 				Praat will use 0.75 / minf0
-		minf0: minimum frequency for the pitch in Hz, default is 75Hz
-		maxf0: maximum frequency for the pitch in Hz, default is 600
-		maxVUVPeriod: maximum interval that considered part of a larger
-		 				voiced interval, default 0.02
-		averageVUVPeriod, half of this value will be taken to be the
-		 					amount to which a voiced interval will extend
-							beyond its initial and final points, default is 0.01
-	Returns:
-		Nothing
+	:param audio_filaname: Full path to the wav file
+	:param resultsp: Full path to the resulting file with the pitch
+	:param resultst: Full path to the resulting file with the voiced/unvoiced decisions
+	:param time_stepF0: time step to compute the pitch, default value is 0 and Praat will use 0.75 / minf0
+	:param minf0: minimum frequency for the pitch in Hz, default is 75Hz
+	:param maxf0: maximum frequency for the pitch in Hz, default is 600
+	:param maxVUVPeriod: maximum interval that considered part of a larger voiced interval, default 0.02
+	:param averageVUVPeriod: half of this value will be taken to be the amount to which a voiced interval will extend 							beyond its initial and final points, default is 0.01
+	:returns: nothing
 	"""
 	command='praat '+path_praat_script+'/vuv_praat.praat '
 	command+=audio_filaname+' '+resultsp +' '+  resultst+' '
@@ -54,26 +47,17 @@ def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0
 
 def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5, max_formant=5500):
 	"""
-	Function that runs vuv_praat script to obtain the formants for a wav file.
-	It will write its results into a text file.
+	runs FormantsPraat script to obtain the formants for a wav file.
+	It writes the results into a text file.
 	These results can then be read using the function decodeFormants.
 
-	Parameters:
-		audio_filaname: Full path to the wav file, string
-		results_filename: Full path to the resulting file with the formants
-		resultst: Full path to the resulting file with the
-					voiced/unvoiced decisions
-		time_stepF0: time step to compute the pitch, default value is 0 and
-		 				Praat will use 0.75 / minf0
-		minf0: minimum frequency for the pitch in Hz, default is 75Hz
-		maxf0: maximum frequency for the pitch in Hz, default is 600
-		maxVUVPeriod: maximum interval that considered part of a larger
-		 				voiced interval, default 0.02
-		averageVUVPeriod, half of this value will be taken to be the
-		 					amount to which a voiced interval will extend
-							beyond its initial and final points, default is 0.01
-	Returns:
-		Nothing
+	:param audio_filaname: Full path to the wav file, string
+	:param results_filename: Full path to the resulting file with the formants
+	:param sizeframe: window size 
+	:param step: time step to compute formants
+	:param n_formants: number of formants to look for
+	:param max_formant: maximum frequencyof formants to look for
+	:returns: nothing
 	"""
 	command='praat '+path_praat_script+'/FormantsPraat.praat '
 	command+=audio_filename + ' '+results_filename+' '
@@ -88,16 +72,14 @@ def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 	decisions then finds the onsets (unvoiced -> voiced) and
 	offsets (voiced -> unvoiced) and then reads the audio data to returns
 	lists of segments of lenght win_trans around these transitions.
-	Parameters:
-		file_textgrid: The text file with the text grid with voicing decisions.
-		data_audio: the audio signal.
-		fs: sampling frequency of the audio signal.
-		win_trans: the transition window lenght, default 0.04
-	Returns:
-		segments: List with both onset and offset transition segments.
-		segments_onset: List with onset transition segments
-		segments_offset: List with offset transition segments
 
+	:param file_textgrid: The text file with the text grid with voicing decisions.
+	:param data_audio: the audio signal.
+	:param fs: sampling frequency of the audio signal.
+	:param win_trans: the transition window lenght, default 0.04
+	:returns segments: List with both onset and offset transition segments.
+	:returns segments_onset: List with onset transition segments
+	:returns segments_offset: List with offset transition segments
 	"""
 	segments=[]
 	segments_onset=[]
@@ -127,14 +109,12 @@ def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 	Optionally the lenght of the signal and the time step of the pitch
 	values can be provided to return an array with the full pitch contour
 	for the signal, with padded zeros for unvoiced segments.
-	Parameters:
-		fileTxt: File with the pitch, which can be generated using the
-		 			function praat_vuv
-		len_signal: Lenght of the audio signal in
-		time_stepF0: The time step of pitch values. Optional.
-	Returns:
-		pitch: Numpy array with the values of the pitch.
-		time_voiced: time stamp for each pitch value.
+
+	:param fileTxt: File with the pitch, which can be generated using the function praat_vuv
+	:param len_signal: Lenght of the audio signal in
+	:param time_stepF0: The time step of pitch values. Optional.
+	:returns pitch: Numpy array with the values of the pitch.
+	:returns time_voiced: time stamp for each pitch value.
 	"""
 	if os.stat(fileTxt).st_size==0:
 		return np.array([0]), np.array([0])
@@ -162,12 +142,11 @@ def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 
 def decodeFormants(fileTxt):
 	"""
-	Parameters:
-		fileTxt: File with the formants, which can be generated using the
+	Read the praat textgrid file for formants and return the array
+	:param fileTxt: File with the formants, which can be generated using the
 		 			function praat_formants
-	Returns:
-		F1: Numpy array containing the values for the first formant
-		F1: Numpy array containing the values for the second formant
+	:returns F1: Numpy array containing the values for the first formant
+	:returns F2: Numpy array containing the values for the second formant
 	"""
 	fid=open(fileTxt)
 	datam=fid.read()

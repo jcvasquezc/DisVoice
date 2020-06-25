@@ -124,6 +124,7 @@ class Phonation:
 
     def extract_features_file(self, audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the phonation features from an audio file
+        
         :param audio: .wav audio file.
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features
@@ -243,6 +244,8 @@ class Phonation:
                 name_all=audio.split('/')
                 dictX={name_all[-1]:feat_mat}
                 save_dict_kaldimat(dictX, kaldi_file)
+        else:
+            raise ValueError(fmt+" is not supported")
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the phonation features for audios inside a path
@@ -304,7 +307,8 @@ class Phonation:
             else:
                 dictX=get_dict(Features, ids)
                 save_dict_kaldimat(dictX, kaldi_file)
-
+        else:
+            raise ValueError(fmt+" is not supported")
 
 if __name__=="__main__":
 

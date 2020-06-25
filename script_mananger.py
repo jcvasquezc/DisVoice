@@ -31,9 +31,9 @@ def script_manager(args, feature_method):
         else:
             features=feature_method.extract_features_file(audio, static=static, plots=plots, fmt=fmt)
             if fmt=="npy":
-                np.save(file_features, np.hstack(features))
+                np.save(file_features, features)
             elif fmt=="txt":
-                np.savetxt(file_features, np.hstack(features))
+                np.savetxt(file_features, features)
             elif fmt=="csv":
                 features.to_csv(file_features)
             elif fmt=="torch":
