@@ -64,6 +64,7 @@ class Phonological:
         for j in self.head_dyn:
             for l in self.statistics:
                 self.head_st.append(j+"_"+l)
+        self.phon=Phonet(["all"])
 
     def extract_features_file(self, audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the phonological features from an audio file
@@ -83,8 +84,8 @@ class Phonological:
         >>> phonological.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
         """
 
-        phon=Phonet(["all"])
-        df=phon.get_PLLR(audio, plot_flag=plots)
+        
+        df=self.phon.get_PLLR(audio, plot_flag=plots)
 
         keys=df.keys().tolist()
         keys.remove('time')

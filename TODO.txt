@@ -1,3 +1,0 @@
-add intelligibility features
-add phonological features
-update and add more figures for phonation, articulation, and prosody

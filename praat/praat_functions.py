@@ -42,7 +42,6 @@ def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0
 	command+=audio_filaname+' '+resultsp +' '+  resultst+' '
 	command+=str(minf0)+' '+str(maxf0)+' '
 	command+=str(time_stepF0)+' '+str(maxVUVPeriod)+' '+str(averageVUVPeriod)
-
 	os.system(command)
 
 def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5, max_formant=5500):
@@ -143,6 +142,7 @@ def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 def decodeFormants(fileTxt):
 	"""
 	Read the praat textgrid file for formants and return the array
+	
 	:param fileTxt: File with the formants, which can be generated using the
 		 			function praat_formants
 	:returns F1: Numpy array containing the values for the first formant
