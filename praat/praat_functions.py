@@ -125,7 +125,7 @@ def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 		time_voiced=pitch_data[0] # First datum is the time stamp
 		pitch=pitch_data[1] # Second datum is the pitch value
 	if len_signal>0:
-		n_frames=len_signal/time_stepF0
+		n_frames=int(len_signal/time_stepF0)
 		t=np.linspace(0.0,len_signal,n_frames)
 		pitch_zeros=np.zeros(int(n_frames))
 		if len(pitch_data.shape)>1:

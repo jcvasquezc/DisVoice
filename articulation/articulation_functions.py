@@ -22,7 +22,7 @@ def barke(x,Fs, nfft=2048, nB=25):
 		"""
 		eps = 1e-30
 		y = fftsolp(x,nfft)
-		f = (Fs/2)*(np.linspace(0,1,nfft/2+1))
+		f = (Fs/2)*(np.linspace(0,1,int(nfft/2+1)))
 		barkScale = bark(f)
 		barkIndices = []
 		for i in range (0,len(barkScale)):
