@@ -6,9 +6,6 @@ Created on Jul 21 2017, Modified Apr 10 2018.
 @author: J. C. Vasquez-Correa, T. Arias-Vergara, J. S. Guerrero
 """
 
-
-
-
 from scipy.io.wavfile import read
 import os
 import sys
@@ -42,43 +39,53 @@ class Prosody:
     Static or dynamic matrices can be computed:
     Static matrix is formed with 103 features and include
 
-    Num     Feature                                                          Description
-    --------------------------------------------------------------------------------------------------------------------------
-                                    Features based on F0
-    ---------------------------------------------------------------------------------------------------------------------------
-    1-6     F0-contour                                                       Avg., Std., Max., Min., Skewness, Kurtosis
-    7-12    Tilt of a linear estimation of F0 for each voiced segment        Avg., Std., Max., Min., Skewness, Kurtosis
-    13-18   MSE of a linear estimation of F0 for each voiced segment         Avg., Std., Max., Min., Skewness, Kurtosis
-    19-24   F0 on the first voiced segment                                   Avg., Std., Max., Min., Skewness, Kurtosis
-    25-30   F0 on the last voiced segment                                    Avg., Std., Max., Min., Skewness, Kurtosis
-    --------------------------------------------------------------------------------------------------------------------------
-                                    Features based on energy
-    ---------------------------------------------------------------------------------------------------------------------------
-    31-34   energy-contour for voiced segments                               Avg., Std., Skewness, Kurtosis
-    35-38   Tilt of a linear estimation of energy contour for V segments     Avg., Std., Skewness, Kurtosis
-    39-42   MSE of a linear estimation of energy contour for V segment       Avg., Std., Skewness, Kurtosis
-    43-48   energy on the first voiced segment                               Avg., Std., Max., Min., Skewness, Kurtosis
-    49-54   energy on the last voiced segment                                Avg., Std., Max., Min., Skewness, Kurtosis
-    55-58   energy-contour for unvoiced segments                             Avg., Std., Skewness, Kurtosis
-    59-62   Tilt of a linear estimation of energy contour for U segments     Avg., Std., Skewness, Kurtosis
-    63-66   MSE of a linear estimation of energy contour for U segments      Avg., Std., Skewness, Kurtosis
-    67-72   energy on the first unvoiced segment                             Avg., Std., Max., Min., Skewness, Kurtosis
-    73-78   energy on the last unvoiced segment                              Avg., Std., Max., Min., Skewness, Kurtosis
-    --------------------------------------------------------------------------------------------------------------------------
-                                    Features based on duration
-    ---------------------------------------------------------------------------------------------------------------------------
-    79      Voiced rate                                                      Number of voiced segments per second
-    80-85   Duration of Voiced                                               Avg., Std., Max., Min., Skewness, Kurtosis
-    86-91   Duration of Unvoiced                                             Avg., Std., Max., Min., Skewness, Kurtosis
-    92-97   Duration of Pauses                                               Avg., Std., Max., Min., Skewness, Kurtosis
-    98-103  Duration ratios                                                  Pause/(Voiced+Unvoiced), Pause/Unvoiced, Unvoiced/(Voiced+Unvoiced),
-                                                                            Voiced/(Voiced+Unvoiced), Voiced/Puase, Unvoiced/Pause
+    1-6     F0-contour:                                                       Avg., Std., Max., Min., Skewness, Kurtosis
+
+    7-12    Tilt of a linear estimation of F0 for each voiced segment:        Avg., Std., Max., Min., Skewness, Kurtosis
+
+    13-18   MSE of a linear estimation of F0 for each voiced segment:         Avg., Std., Max., Min., Skewness, Kurtosis
+
+    19-24   F0 on the first voiced segment:                                   Avg., Std., Max., Min., Skewness, Kurtosis
+
+    25-30   F0 on the last voiced segment:                                    Avg., Std., Max., Min., Skewness, Kurtosis
+
+    31-34   energy-contour for voiced segments:                               Avg., Std., Skewness, Kurtosis
+
+    35-38   Tilt of a linear estimation of energy contour for V segments:     Avg., Std., Skewness, Kurtosis
+
+    39-42   MSE of a linear estimation of energy contour for V segment:       Avg., Std., Skewness, Kurtosis
+
+    43-48   energy on the first voiced segment:                               Avg., Std., Max., Min., Skewness, Kurtosis
+
+    49-54   energy on the last voiced segment:                                Avg., Std., Max., Min., Skewness, Kurtosis
+
+    55-58   energy-contour for unvoiced segments:                             Avg., Std., Skewness, Kurtosis
+
+    59-62   Tilt of a linear estimation of energy contour for U segments:     Avg., Std., Skewness, Kurtosis
+
+    63-66   MSE of a linear estimation of energy contour for U segments:      Avg., Std., Skewness, Kurtosis
+
+    67-72   energy on the first unvoiced segment:                             Avg., Std., Max., Min., Skewness, Kurtosis
+
+    73-78   energy on the last unvoiced segment:                              Avg., Std., Max., Min., Skewness, Kurtosis
+
+    79      Voiced rate:                                                      Number of voiced segments per second
+
+    80-85   Duration of Voiced:                                               Avg., Std., Max., Min., Skewness, Kurtosis
+
+    86-91   Duration of Unvoiced:                                             Avg., Std., Max., Min., Skewness, Kurtosis
+
+    92-97   Duration of Pauses:                                               Avg., Std., Max., Min., Skewness, Kurtosis
+
+    98-103  Duration ratios:                                                 Pause/(Voiced+Unvoiced), Pause/Unvoiced, Unvoiced/(Voiced+Unvoiced),Voiced/(Voiced+Unvoiced), Voiced/Puase, Unvoiced/Pause
 
     Dynamic matrix is formed with 13 features computed for each voiced segment and contains
 
 
     1-6. Coefficients of 5-degree Lagrange polynomial to model F0 contour
+
     7-12. Coefficients of 5-degree Lagrange polynomial to model energy contour
+
     13. Duration of the voiced segment
 
     Dynamic prosody features are based on
@@ -86,18 +93,34 @@ class Prosody:
 
     Script is called as follows
 
-    python prosody.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
+    >>> python prosody.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
 
-    Examples:
+    Examples command line:
 
-    python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesAst.txt" "true" "true" "txt"
-    python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesUst.csv" "true" "true" "csv"
-    python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesUdyn.pt" "false" "true" "torch"
+    >>> python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesAst.txt" "true" "true" "txt"
+    >>> python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesUst.csv" "true" "true" "csv"
+    >>> python prosody.py "../audios/001_ddk1_PCGITA.wav" "prosodyfeaturesUdyn.pt" "false" "true" "torch"
 
-    python prosody.py "../audios/" "prosodyfeaturesst.txt" "true" "false" "txt"
-    python prosody.py "../audios/" "prosodyfeaturesst.csv" "true" "false" "csv"
-    python prosody.py "../audios/" "prosodyfeaturesdyn.pt" "false" "false" "torch"
-    python prosody.py "../audios/" "prosodyfeaturesdyn.csv" "false" "false" "csv"
+    >>> python prosody.py "../audios/" "prosodyfeaturesst.txt" "true" "false" "txt"
+    >>> python prosody.py "../audios/" "prosodyfeaturesst.csv" "true" "false" "csv"
+    >>> python prosody.py "../audios/" "prosodyfeaturesdyn.pt" "false" "false" "torch"
+    >>> python prosody.py "../audios/" "prosodyfeaturesdyn.csv" "false" "false" "csv"
+
+    Examples directly in Python
+
+    >>> prosody=Prosody()
+    >>> file_audio="../audios/001_ddk1_PCGITA.wav"
+    >>> features1=prosody.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
+    >>> features2=prosody.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
+    >>> features3=prosody.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
+    >>> prosody.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
+
+    >>> path_audio="../audios/"
+    >>> features1=prosody.extract_features_path(path_audio, static=True, plots=False, fmt="npy")
+    >>> features2=prosody.extract_features_path(path_audio, static=True, plots=False, fmt="csv")
+    >>> features3=prosody.extract_features_path(path_audio, static=False, plots=True, fmt="torch")
+    >>> prosody.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
+
     """
 
     def __init__(self):
@@ -143,6 +166,7 @@ class Prosody:
 
     def plot_pros(self, data_audio,fs,F0,segmentsV, segmentsU, F0_features):
         """Plots of the prosody features
+
         :param data_audio: speech signal.
         :param fs: sampling frequency
         :param F0: contour of the fundamental frequency
@@ -219,6 +243,7 @@ class Prosody:
         :param fmt: format to return the features (npy, dataframe, torch, kaldi)
         :param kaldi_file: file to store kaldi features, only valid when fmt=="kaldi"
         :returns: features computed from the audio file.
+
         >>> prosody=Prosody()
         >>> file_audio="../audios/001_ddk1_PCGITA.wav"
         >>> features1=prosody.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
@@ -267,12 +292,15 @@ class Prosody:
 
     def prosody_static(self, audio, plots):
         """Extract the static prosody features from an audio file
+
         :param audio: .wav audio file.
         :param plots: timeshift to extract the features
         :returns: array with the 103 prosody features
+
         >>> prosody=Prosody()
         >>> file_audio="../audios/001_ddk1_PCGITA.wav"
         >>> features=prosody.prosody_static(file_audio, plots=True)
+
         """
         fs, data_audio=read(audio)
         data_audio=data_audio-np.mean(data_audio)
@@ -326,12 +354,14 @@ class Prosody:
 
     def prosody_dynamic(self,audio):
         """Extract the dynamic prosody features from an audio file
+
         :param audio: .wav audio file.
-        :returns: array (N,13) with the prosody features extracted from an audio file. 
-        N= number of voiced segments
+        :returns: array (N,13) with the prosody features extracted from an audio file.  N= number of voiced segments
+
         >>> prosody=Prosody()
         >>> file_audio="../audios/001_ddk1_PCGITA.wav"
         >>> features=prosody.prosody_dynamic(file_audio)
+
         """
         fs, data_audio=read(audio)
         data_audio=data_audio-np.mean(data_audio)
@@ -422,6 +452,7 @@ class Prosody:
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the prosody features for audios inside a path
+
         :param path_audio: directory with (.wav) audio files inside, sampled at 16 kHz
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features

@@ -38,12 +38,19 @@ class Phonation:
     For continuous speech, the features are computed over voiced segments
 
     Seven descriptors are computed:
+
     1. First derivative of the fundamental Frequency
+
     2. Second derivative of the fundamental Frequency
+
     3. Jitter
+
     4. Shimmer
+
     5. Amplitude perturbation quotient
+
     6. Pitch perturbation quotient
+
     7. Logaritmic Energy
 
     Static or dynamic matrices can be computed:
@@ -59,17 +66,31 @@ class Phonation:
 
     Script is called as follows
 
-    python phonation.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
+    >>> python phonation.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
 
-    examples:
+    Examples command line:
 
-    python phonation.py "../audios/001_a1_PCGITA.wav" "phonationfeaturesAst.txt" "true" "true" "txt"
-    python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUst.csv" "true" "true" "csv"
-    python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUdyn.pt" "false" "true" "torch"
+    >>> python phonation.py "../audios/001_a1_PCGITA.wav" "phonationfeaturesAst.txt" "true" "true" "txt"
+    >>> python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUst.csv" "true" "true" "csv"
+    >>> python phonation.py "../audios/098_u1_PCGITA.wav" "phonationfeaturesUdyn.pt" "false" "true" "torch"
 
-    python phonation.py "../audios/" "phonationfeaturesst.txt" "true" "false" "txt"
-    python phonation.py "../audios/" "phonationfeaturesst.csv" "true" "false" "csv"
-    python phonation.py "../audios/" "phonationfeaturesdyn.pt" "false" "false" "torch"
+    >>> python phonation.py "../audios/" "phonationfeaturesst.txt" "true" "false" "txt"
+    >>> python phonation.py "../audios/" "phonationfeaturesst.csv" "true" "false" "csv"
+    >>> python phonation.py "../audios/" "phonationfeaturesdyn.pt" "false" "false" "torch"
+
+    Examples directly in Python
+
+    >>> from disvoice.phonation import Phonation
+    >>> phonation=Phonation()
+    >>> file_audio="../audios/001_a1_PCGITA.wav"
+    >>> features=phonation.extract_features_file(file_audio, static, plots=True, fmt="numpy")
+    >>> features2=phonation.extract_features_file(file_audio, static, plots=True, fmt="dataframe")
+    >>> features3=phonation.extract_features_file(file_audio, dynamic, plots=True, fmt="torch")
+    
+    >>> path_audios="../audios/"
+    >>> features1=phonation.extract_features_path(path_audios, static, plots=False, fmt="numpy")
+    >>> features2=phonation.extract_features_path(path_audios, static, plots=False, fmt="torch")
+    >>> features3=phonation.extract_features_path(path_audios, static, plots=False, fmt="dataframe")
 
     """
     def __init__(self):
@@ -87,6 +108,7 @@ class Phonation:
 
     def plot_phon(self, data_audio,fs,F0,logE):
         """Plots of the phonation features
+
         :param data_audio: speech signal.
         :param fs: sampling frequency
         :param F0: contour of the fundamental frequency
@@ -249,6 +271,7 @@ class Phonation:
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the phonation features for audios inside a path
+        
         :param path_audio: directory with (.wav) audio files inside, sampled at 16 kHz
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features

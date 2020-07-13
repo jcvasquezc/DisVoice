@@ -42,18 +42,31 @@ class Articulation:
     122 descriptors are computed:
 
     1-22. Bark band energies in onset transitions (22 BBE).
+
     23-34. Mel frequency cepstral coefficients in onset transitions (12 MFCC onset)
+
     35-46. First derivative of the MFCCs in onset transitions (12 DMFCC onset)
+
     47-58. Second derivative of the MFCCs in onset transitions (12 DDMFCC onset)
+
     59-80. Bark band energies in offset transitions (22 BBE).
+
     81-92. MFCCC in offset transitions (12 MFCC offset)
+
     93-104. First derivative of the MFCCs in offset transitions (12 DMFCC offset)
+
     105-116. Second derivative of the MFCCs in offset transitions (12 DMFCC offset)
+
     117. First formant Frequency
+
     118. First Derivative of the first formant frequency
+
     119. Second Derivative of the first formant frequency
+
     120. Second formant Frequency
+
     121. First derivative of the Second formant Frequency
+
     122. Second derivative of the Second formant Frequency
 
     Static or dynamic matrices can be computed:
@@ -71,18 +84,28 @@ class Articulation:
 
     Script is called as follows
 
-    python articulation.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
+    >>> python articulation.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
 
-    examples:
+    Examples command line:
 
-    python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKst.txt" "true" "true" txt
-    python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKst.csv" "true" "true" csv
-    python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKst.pt" "true" "true" torch
-    python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKdyn.txt" "false" "true" txt
-    python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKdyn.csv" "false" "true" csv
-    python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKdyn.pt" "false" "true" torch
+    >>> python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKst.txt" "true" "true" txt
+    >>> python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKst.csv" "true" "true" csv
+    >>> python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKst.pt" "true" "true" torch
+    >>> python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKdyn.txt" "false" "true" txt
+    >>> python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKdyn.csv" "false" "true" csv
+    >>> python articulation.py "../audios/001_ddk1_PCGITA.wav" "articulation_featuresDDKdyn.pt" "false" "true" torch
     
+    Examples directly in Python
+
+    >>> articulation=Articulation()
+    >>> file_audio="../audios/001_ddk1_PCGITA.wav"
+    >>> features1=articulation.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
+    >>> features2=articulation.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
+    >>> features3=articulation.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
+    >>> articulation.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
+
     """
+
     def __init__(self):
         self.pitch_method="praat"
         self.sizeframe=0.04
@@ -110,6 +133,7 @@ class Articulation:
 
     def plot_art(self, data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
         """Plots of the articulation features
+
         :param data_audio: speech signal.
         :param fs: sampling frequency
         :param F0: contour of the fundamental frequency
@@ -218,6 +242,7 @@ class Articulation:
 
     def extract_features_file(self, audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the articulation features from an audio file
+
         :param audio: .wav audio file.
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features
@@ -232,6 +257,12 @@ class Articulation:
         >>> features3=articulation.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
         >>> articulation.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
         
+        >>> path_audio="../audios/"
+        >>> features1=articulation.extract_features_path(path_audio, static=True, plots=False, fmt="npy")
+        >>> features2=articulation.extract_features_path(path_audio, static=True, plots=False, fmt="csv")
+        >>> features3=articulation.extract_features_path(path_audio, static=False, plots=True, fmt="torch")
+        >>> articulation.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
+
         """
         fs, data_audio=read(audio)
         data_audio=data_audio-np.mean(data_audio)
@@ -366,6 +397,7 @@ class Articulation:
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the articulation features for audios inside a path
+        
         :param path_audio: directory with (.wav) audio files inside, sampled at 16 kHz
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features

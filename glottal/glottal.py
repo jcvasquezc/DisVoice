@@ -1,68 +1,4 @@
 
-# -*- coding: utf-8 -*-
-"""
-Created on Jul 21 2017
-
-@author: J. C. Vasquez-Correa
-
-
-Compute features based on the glottal source reconstruction from sustained vowels and continuous speech.
-
-For continuous speech, the features are computed over voiced segments
-
-Nine descriptors are computed:
-
-1. Variability of time between consecutive glottal closure instants (GCI)
-2. Average opening quotient (OQ) for consecutive glottal cycles-> rate of opening phase duration / duration of glottal cycle
-3. Variability of opening quotient (OQ) for consecutive glottal cycles-> rate of opening phase duration /duration of glottal cycle
-4. Average normalized amplitude quotient (NAQ) for consecutive glottal cycles-> ratio of the amplitude quotient and the duration of the glottal cycle
-5. Variability of normalized amplitude quotient (NAQ) for consecutive glottal cycles-> ratio of the amplitude quotient and the duration of the glottal cycle
-6. Average H1H2: Difference between the first two harmonics of the glottal flow signal
-7. Variability H1H2: Difference between the first two harmonics of the glottal flow signal
-8. Average of Harmonic richness factor (HRF): ratio of the sum of the harmonics amplitude and the amplitude of the fundamental frequency
-9. Variability of HRF
-
-Static or dynamic matrices can be computed:
-
-Static matrix is formed with 36 features formed with (9 descriptors) x (4 functionals: mean, std, skewness, kurtosis)
-
-Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length with a time-shift of 100 ms.
-
-Notes:
-
-1. The fundamental frequency is computed using the RAPT algorithm.
-
-python glottal.py <file_or_folder_audio> <file_features> <dynamic_or_static> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>
-
-Examples command line:
-
-python glottal.py "../audios/001_a1_PCGITA.wav" "glottalfeaturesAst.txt" "static" "true" "txt"
-python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.csv" "static" "true" "csv"
-python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.ark" "dynamic" "true" "kaldi"
-python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.pt" "dynamic" "true" "torch"
-
-
-
-Examples directly in Python
-
-from disvoice.glottal import Glottal
-
-glottal=Glottal()
-
-file_audio="../audios/001_a1_PCGITA.wav"
-
-features=glottal.extract_features_file(file_audio, static, plots=True, fmt="numpy")
-features2=glottal.extract_features_file(file_audio, static, plots=True, fmt="dataframe")
-features3=glottal.extract_features_file(file_audio, dynamic, plots=True, fmt="torch")
-
-path_audios="../audios/"
-
-features1=glottal.extract_features_path(path_audios, static, plots=False, fmt="numpy")
-features2=glottal.extract_features_path(path_audios, static, plots=False, fmt="torch")
-features3=glottal.extract_features_path(path_audios, static, plots=False, fmt="dataframe")
-
-"""
-
 from scipy.io.wavfile import read
 import os
 import sys
@@ -94,7 +30,10 @@ from script_mananger import script_manager
 
 class Glottal:
     """
-    Compute features based on the glottal source reconstruction from sustained vowels
+    Compute features based on the glottal source reconstruction from sustained vowels and continuous speech.
+
+    For continuous speech, the features are computed over voiced segments
+
     Nine descriptors are computed:
 
     1. Variability of time between consecutive glottal closure instants (GCI)
@@ -108,20 +47,38 @@ class Glottal:
     9. Variability of HRF
 
     Static or dynamic matrices can be computed:
+
     Static matrix is formed with 36 features formed with (9 descriptors) x (4 functionals: mean, std, skewness, kurtosis)
-    Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length.
+
+    Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length with a time-shift of 100 ms.
 
     Notes:
+
     1. The fundamental frequency is computed using the RAPT algorithm.
 
-    python glottal.py <file_or_folder_audio> <file_features> <dynamic_or_static> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>
+    >>> python glottal.py <file_or_folder_audio> <file_features> <dynamic_or_static> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>
 
     Examples command line:
 
-    python glottal.py "../audios/001_a1_PCGITA.wav" "glottalfeaturesAst.txt" "static" "true" "txt"
-    python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.csv" "static" "true" "csv"
-    python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.ark" "dynamic" "true" "kaldi"
-    python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.pt" "dynamic" "true" "torch"
+    >>> python glottal.py "../audios/001_a1_PCGITA.wav" "glottalfeaturesAst.txt" "static" "true" "txt"
+    >>> python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.csv" "static" "true" "csv"
+    >>> python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.ark" "dynamic" "true" "kaldi"
+    >>> python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.pt" "dynamic" "true" "torch"
+
+
+    Examples directly in Python
+
+    >>> from disvoice.glottal import Glottal
+    >>> glottal=Glottal()
+    >>> file_audio="../audios/001_a1_PCGITA.wav"
+    >>> features=glottal.extract_features_file(file_audio, static, plots=True, fmt="numpy")
+    >>> features2=glottal.extract_features_file(file_audio, static, plots=True, fmt="dataframe")
+    >>> features3=glottal.extract_features_file(file_audio, dynamic, plots=True, fmt="torch")
+
+    >>> path_audios="../audios/"
+    >>> features1=glottal.extract_features_path(path_audios, static, plots=False, fmt="numpy")
+    >>> features2=glottal.extract_features_path(path_audios, static, plots=False, fmt="torch")
+    >>> features3=glottal.extract_features_path(path_audios, static, plots=False, fmt="dataframe")
     """
 
     def __init__(self):
@@ -133,6 +90,7 @@ class Glottal:
 
     def plot_glottal(self, data_audio,fs,GCI, glottal_flow, glottal_sig, GCI_avg, GCI_std):
         """Plots of the glottal features
+
         :param data_audio: speech signal.
         :param fs: sampling frequency
         :param GCI: glottal closure instants
@@ -181,6 +139,7 @@ class Glottal:
 
     def extract_features_file(self, audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the glottal features from an audio file
+
         :param audio: .wav audio file.
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features
@@ -311,6 +270,7 @@ class Glottal:
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the glottal features for audios inside a path
+        
         :param path_audio: directory with (.wav) audio files inside, sampled at 16 kHz
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features

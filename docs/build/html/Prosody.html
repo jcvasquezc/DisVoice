@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Prosody features &mdash; DisVoice 0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/disvoice_favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Phonological features" href="Phonological.html" />
+    <link rel="prev" title="Articulation features" href="Articulation.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DisVoice
+          
+
+          
+            
+            <img src="_static/disvoice_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need Help?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Glottal.html">Glottal features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Phonation.html">Phonation features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Articulation.html">Articulation features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Prosody features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Phonological.html">Phonological features</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DisVoice</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Prosody features</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Prosody.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-prosody">
+<span id="prosody-features"></span><h1>Prosody features<a class="headerlink" href="#module-prosody" title="Permalink to this headline">¶</a></h1>
+<p>Created on Jul 21 2017, Modified Apr 10 2018.</p>
+<p>&#64;author: J. C. Vasquez-Correa, T. Arias-Vergara, J. S. Guerrero</p>
+<dl class="class">
+<dt id="prosody.Prosody">
+<em class="property">class </em><code class="descclassname">prosody.</code><code class="descname">Prosody</code><a class="headerlink" href="#prosody.Prosody" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute prosody features from continuous speech based on duration, fundamental frequency and energy.
+Static or dynamic matrices can be computed:
+Static matrix is formed with 103 features and include</p>
+<p>1-6     F0-contour:                                                       Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>7-12    Tilt of a linear estimation of F0 for each voiced segment:        Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>13-18   MSE of a linear estimation of F0 for each voiced segment:         Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>19-24   F0 on the first voiced segment:                                   Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>25-30   F0 on the last voiced segment:                                    Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>31-34   energy-contour for voiced segments:                               Avg., Std., Skewness, Kurtosis</p>
+<p>35-38   Tilt of a linear estimation of energy contour for V segments:     Avg., Std., Skewness, Kurtosis</p>
+<p>39-42   MSE of a linear estimation of energy contour for V segment:       Avg., Std., Skewness, Kurtosis</p>
+<p>43-48   energy on the first voiced segment:                               Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>49-54   energy on the last voiced segment:                                Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>55-58   energy-contour for unvoiced segments:                             Avg., Std., Skewness, Kurtosis</p>
+<p>59-62   Tilt of a linear estimation of energy contour for U segments:     Avg., Std., Skewness, Kurtosis</p>
+<p>63-66   MSE of a linear estimation of energy contour for U segments:      Avg., Std., Skewness, Kurtosis</p>
+<p>67-72   energy on the first unvoiced segment:                             Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>73-78   energy on the last unvoiced segment:                              Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>79      Voiced rate:                                                      Number of voiced segments per second</p>
+<p>80-85   Duration of Voiced:                                               Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>86-91   Duration of Unvoiced:                                             Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>92-97   Duration of Pauses:                                               Avg., Std., Max., Min., Skewness, Kurtosis</p>
+<p>98-103  Duration ratios:                                                 Pause/(Voiced+Unvoiced), Pause/Unvoiced, Unvoiced/(Voiced+Unvoiced),Voiced/(Voiced+Unvoiced), Voiced/Puase, Unvoiced/Pause</p>
+<p>Dynamic matrix is formed with 13 features computed for each voiced segment and contains</p>
+<p>1-6. Coefficients of 5-degree Lagrange polynomial to model F0 contour</p>
+<p>7-12. Coefficients of 5-degree Lagrange polynomial to model energy contour</p>
+<ol class="arabic simple" start="13">
+<li>Duration of the voiced segment</li>
+</ol>
+<p>Dynamic prosody features are based on
+Najim Dehak, &#8220;Modeling Prosodic Features With Joint Factor Analysis for Speaker Verification&#8221;, 2007</p>
+<p>Script is called as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">file_or_folder_audio</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">file_features</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">static</span> <span class="p">(</span><span class="n">true</span> <span class="ow">or</span> <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">plots</span> <span class="p">(</span><span class="n">true</span> <span class="ow">or</span> <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nb">format</span> <span class="p">(</span><span class="n">csv</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">npy</span><span class="p">,</span> <span class="n">kaldi</span><span class="p">,</span> <span class="n">torch</span><span class="p">)</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Examples command line:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;prosodyfeaturesAst.txt&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;txt&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;prosodyfeaturesUst.csv&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;csv&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;prosodyfeaturesUdyn.pt&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;torch&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;prosodyfeaturesst.txt&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;txt&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;prosodyfeaturesst.csv&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;csv&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;prosodyfeaturesdyn.pt&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;torch&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">prosody</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;prosodyfeaturesdyn.csv&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;csv&quot;</span>
+</pre></div>
+</div>
+<p>Examples directly in Python</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">=</span><span class="n">Prosody</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path_audio</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test.ark&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="prosody.Prosody.extract_features_file">
+<code class="descname">extract_features_file</code><span class="sig-paren">(</span><em>audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#prosody.Prosody.extract_features_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the prosody features from an audio file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>audio</strong> &#8211; .wav audio file.</li>
+<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
+<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
+<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
+<li><strong>kaldi_file</strong> &#8211; file to store kaldi features, only valid when fmt==&#8221;kaldi&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">=</span><span class="n">Prosody</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="prosody.Prosody.extract_features_path">
+<code class="descname">extract_features_path</code><span class="sig-paren">(</span><em>path_audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#prosody.Prosody.extract_features_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the prosody features for audios inside a path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path_audio</strong> &#8211; directory with (.wav) audio files inside, sampled at 16 kHz</li>
+<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
+<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
+<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
+<li><strong>kaldi_file</strong> &#8211; file to store kaldifeatures, only valid when fmt==&#8221;kaldi&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">=</span><span class="n">Prosody</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_audio</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test.ark&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="prosody.Prosody.plot_pros">
+<code class="descname">plot_pros</code><span class="sig-paren">(</span><em>data_audio</em>, <em>fs</em>, <em>F0</em>, <em>segmentsV</em>, <em>segmentsU</em>, <em>F0_features</em><span class="sig-paren">)</span><a class="headerlink" href="#prosody.Prosody.plot_pros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots of the prosody features</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_audio</strong> &#8211; speech signal.</li>
+<li><strong>fs</strong> &#8211; sampling frequency</li>
+<li><strong>F0</strong> &#8211; contour of the fundamental frequency</li>
+<li><strong>segmentsV</strong> &#8211; list with the voiced segments</li>
+<li><strong>segmentsU</strong> &#8211; list with the unvoiced segments</li>
+<li><strong>F0_features</strong> &#8211; vector with f0-based features</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plots of the prosody features.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prosody.Prosody.prosody_dynamic">
+<code class="descname">prosody_dynamic</code><span class="sig-paren">(</span><em>audio</em><span class="sig-paren">)</span><a class="headerlink" href="#prosody.Prosody.prosody_dynamic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the dynamic prosody features from an audio file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>audio</strong> &#8211; .wav audio file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">array (N,13) with the prosody features extracted from an audio file.  N= number of voiced segments</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">=</span><span class="n">Prosody</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">prosody_dynamic</span><span class="p">(</span><span class="n">file_audio</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="prosody.Prosody.prosody_static">
+<code class="descname">prosody_static</code><span class="sig-paren">(</span><em>audio</em>, <em>plots</em><span class="sig-paren">)</span><a class="headerlink" href="#prosody.Prosody.prosody_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the static prosody features from an audio file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>audio</strong> &#8211; .wav audio file.</li>
+<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array with the 103 prosody features</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prosody</span><span class="o">=</span><span class="n">Prosody</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="o">=</span><span class="n">prosody</span><span class="o">.</span><span class="n">prosody_static</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Phonological.html" class="btn btn-neutral float-right" title="Phonological features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Articulation.html" class="btn btn-neutral" title="Articulation features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Camilo Vasquez.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

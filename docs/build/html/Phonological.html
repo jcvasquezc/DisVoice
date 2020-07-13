@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Phonological features &mdash; DisVoice 0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/disvoice_favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Prosody features" href="Prosody.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DisVoice
+          
+
+          
+            
+            <img src="_static/disvoice_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need Help?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Glottal.html">Glottal features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Phonation.html">Phonation features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Articulation.html">Articulation features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Prosody.html">Prosody features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Phonological features</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DisVoice</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Phonological features</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Phonological.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-phonological">
+<span id="phonological-features"></span><h1>Phonological features<a class="headerlink" href="#module-phonological" title="Permalink to this headline">¶</a></h1>
+<p>Created on Jun 24 2020</p>
+<p>&#64;author: J. C. Vasquez-Correa</p>
+<dl class="class">
+<dt id="phonological.Phonological">
+<em class="property">class </em><code class="descclassname">phonological.</code><code class="descname">Phonological</code><a class="headerlink" href="#phonological.Phonological" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute phonological features from continuous speech files.</p>
+<p>18 descriptors are computed, bases on 18 different phonological classes from the phonet toolkit 
+<a class="reference external" href="https://phonet.readthedocs.io/en/latest/?badge=latest">https://phonet.readthedocs.io/en/latest/?badge=latest</a></p>
+<p>It computes the phonological log-likelihood ratio features from phonet</p>
+<p>Static or dynamic matrices can be computed:</p>
+<p>Static matrix is formed with 108 features formed with (18 descriptors) x (6 functionals: mean, std, skewness, kurtosis, max, min)</p>
+<p>Dynamic matrix is formed with the 18 descriptors computed for frames of 25 ms with a time-shift of 10 ms.</p>
+<p>Script is called as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">file_or_folder_audio</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">file_features</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">static</span> <span class="p">(</span><span class="n">true</span> <span class="ow">or</span> <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">plots</span> <span class="p">(</span><span class="n">true</span> <span class="ow">or</span> <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nb">format</span> <span class="p">(</span><span class="n">csv</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">npy</span><span class="p">,</span> <span class="n">kaldi</span><span class="p">,</span> <span class="n">torch</span><span class="p">)</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Examples command line:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;phonologicalfeaturesAst.txt&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;txt&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;phonologicalfeaturesUst.csv&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;csv&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;phonologicalfeaturesUdyn.pt&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;torch&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;phonologicalfeaturesst.txt&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;txt&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;phonologicalfeaturesst.csv&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;csv&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;phonologicalfeaturesdyn.pt&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;torch&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">phonological</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;phonologicalfeaturesdyn.csv&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;csv&quot;</span>
+</pre></div>
+</div>
+<p>Examples directly in Python</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">=</span><span class="n">Phonological</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="phonological.Phonological.extract_features_file">
+<code class="descname">extract_features_file</code><span class="sig-paren">(</span><em>audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#phonological.Phonological.extract_features_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the phonological features from an audio file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>audio</strong> &#8211; .wav audio file.</li>
+<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
+<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
+<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
+<li><strong>kaldi_file</strong> &#8211; file to store kaldi features, only valid when fmt==&#8221;kaldi&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">=</span><span class="n">Phonological</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">=</span><span class="n">Phonological</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_audio</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test.ark&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonological.Phonological.extract_features_path">
+<code class="descname">extract_features_path</code><span class="sig-paren">(</span><em>path_audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#phonological.Phonological.extract_features_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the phonological features for audios inside a path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path_audio</strong> &#8211; directory with (.wav) audio files inside, sampled at 16 kHz</li>
+<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
+<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
+<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
+<li><strong>kaldi_file</strong> &#8211; file to store kaldifeatures, only valid when fmt==&#8221;kaldi&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">=</span><span class="n">Phonological</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_audio</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phonological</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test.ark&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="Prosody.html" class="btn btn-neutral" title="Prosody features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Camilo Vasquez.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

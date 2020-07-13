@@ -1,0 +1,18 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Glottal features}{3}{chapter.1}% 
+\contentsline {chapter}{\numberline {2}Phonation features}{7}{chapter.2}% 
+\contentsline {chapter}{\numberline {3}Articulation features}{11}{chapter.3}% 
+\contentsline {chapter}{\numberline {4}Prosody features}{15}{chapter.4}% 
+\contentsline {chapter}{\numberline {5}Phonological features}{19}{chapter.5}% 
+\contentsline {chapter}{\numberline {6}Need Help?}{23}{chapter.6}% 
+\contentsline {chapter}{\numberline {7}References}{25}{chapter.7}% 
+\contentsline {section}{\numberline {7.1}glottal features}{25}{section.7.1}% 
+\contentsline {section}{\numberline {7.2}phonation features}{25}{section.7.2}% 
+\contentsline {section}{\numberline {7.3}articulation features}{25}{section.7.3}% 
+\contentsline {section}{\numberline {7.4}prosody features}{25}{section.7.4}% 
+\contentsline {section}{\numberline {7.5}phonological features}{25}{section.7.5}% 
+\contentsline {chapter}{\numberline {8}Installation}{27}{chapter.8}% 
+\contentsline {chapter}{\numberline {9}Indices and tables}{29}{chapter.9}% 
+\contentsline {chapter}{\numberline {10}Help}{31}{chapter.10}% 
+\contentsline {chapter}{Python Module Index}{33}{section*.24}% 
+\contentsline {chapter}{Index}{35}{section*.25}% 

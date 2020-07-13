@@ -42,18 +42,28 @@ class Phonological:
 
     Script is called as follows
 
-    python phonological.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
+    >>> python phonological.py <file_or_folder_audio> <file_features> <static (true or false)> <plots (true or false)> <format (csv, txt, npy, kaldi, torch)>
 
-    examples:
+    Examples command line:
 
-    python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesAst.txt" "true" "true" "txt"
-    python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesUst.csv" "true" "true" "csv"
-    python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesUdyn.pt" "false" "true" "torch"
+    >>> python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesAst.txt" "true" "true" "txt"
+    >>> python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesUst.csv" "true" "true" "csv"
+    >>> python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesUdyn.pt" "false" "true" "torch"
 
-    python phonological.py "../audios/" "phonologicalfeaturesst.txt" "true" "false" "txt"
-    python phonological.py "../audios/" "phonologicalfeaturesst.csv" "true" "false" "csv"
-    python phonological.py "../audios/" "phonologicalfeaturesdyn.pt" "false" "false" "torch"
-    python phonological.py "../audios/" "phonologicalfeaturesdyn.csv" "false" "false" "csv"
+    >>> python phonological.py "../audios/" "phonologicalfeaturesst.txt" "true" "false" "txt"
+    >>> python phonological.py "../audios/" "phonologicalfeaturesst.csv" "true" "false" "csv"
+    >>> python phonological.py "../audios/" "phonologicalfeaturesdyn.pt" "false" "false" "torch"
+    >>> python phonological.py "../audios/" "phonologicalfeaturesdyn.csv" "false" "false" "csv"
+
+    Examples directly in Python
+
+    >>> phonological=Phonological()
+    >>> file_audio="../audios/001_ddk1_PCGITA.wav"
+    >>> features1=phonological.extract_features_file(file_audio, static=True, plots=True, fmt="npy")
+    >>> features2=phonological.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
+    >>> features3=phonological.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
+    >>> phonological.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
+
     """
 
     def __init__(self):
@@ -82,6 +92,14 @@ class Phonological:
         >>> features2=phonological.extract_features_file(file_audio, static=True, plots=True, fmt="dataframe")
         >>> features3=phonological.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
         >>> phonological.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
+
+        >>> phonological=Phonological()
+        >>> path_audio="../audios/"
+        >>> features1=phonological.extract_features_path(path_audio, static=True, plots=False, fmt="npy")
+        >>> features2=phonological.extract_features_path(path_audio, static=True, plots=False, fmt="csv")
+        >>> features3=phonological.extract_features_path(path_audio, static=False, plots=True, fmt="torch")
+        >>> phonological.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
+
         """
 
         
@@ -140,6 +158,7 @@ class Phonological:
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the phonological features for audios inside a path
+        
         :param path_audio: directory with (.wav) audio files inside, sampled at 16 kHz
         :param static: whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
         :param plots: timeshift to extract the features
