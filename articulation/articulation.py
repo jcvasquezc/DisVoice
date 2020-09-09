@@ -311,6 +311,12 @@ class Articulation:
 
         if len(F0)<len(F1):
             F0=np.hstack((F0, np.zeros(len(F1)-len(F0))))
+            F1nz=np.zeros((0,1))
+            F2nz=np.zeros((0,1))
+            DF1=np.zeros((0,1))
+            DDF1=np.zeros((0,1))
+            DF2=np.zeros((0,1))
+            DDF2=np.zeros((0,1))
         else:
             F1=np.hstack((F1, np.zeros(len(F0)-len(F1))))
             F2=np.hstack((F2, np.zeros(len(F0)-len(F2))))

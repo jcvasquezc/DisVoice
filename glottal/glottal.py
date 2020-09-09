@@ -190,31 +190,35 @@ class Glottal:
                 stopf0=stopf0+stepf0
                 rmwin.append(l)
                 continue
+                
             GCI=SE_VQ_varF0(data_frame,fs, f0=f0_frame)
-            g_iaif=IAIF(data_frame,fs,GCI)
-            g_iaif=g_iaif-np.mean(g_iaif)
-            g_iaif=g_iaif/max(abs(g_iaif))
-            glottal=cumtrapz(g_iaif)
-            glottal=glottal-np.mean(glottal)
-            glottal=glottal/max(abs(glottal))
-            startf0=startf0+stepf0
-            stopf0=stopf0+stepf0
+            if GCI is None:
+                print("------------- warning -------------------, not enought voiced segments were found to compute GCI")
+            else:
+                g_iaif=IAIF(data_frame,fs,GCI)
+                g_iaif=g_iaif-np.mean(g_iaif)
+                g_iaif=g_iaif/max(abs(g_iaif))
+                glottal=cumtrapz(g_iaif)
+                glottal=glottal-np.mean(glottal)
+                glottal=glottal/max(abs(glottal))
+                startf0=startf0+stepf0
+                stopf0=stopf0+stepf0
 
-            gci_s=GCI[:]
-            GCId=np.diff(gci_s)
-            avgGCIt[l]=np.mean(GCId/fs)
-            varGCIt[l]=np.std(GCId/fs)
-            NAQ, QOQ, T1, T2, H1H2, HRF=get_vq_params(glottal, g_iaif, fs, GCI)
-            avgNAQt[l]=np.mean(NAQ)
-            varNAQt[l]=np.std(NAQ)
-            avgQOQt[l]=np.mean(QOQ)
-            varQOQt[l]=np.std(QOQ)
-            avgH1H2t[l]=np.mean(H1H2)
-            varH1H2t[l]=np.std(H1H2)
-            avgHRFt[l]=np.mean(HRF)
-            varHRFt[l]=np.std(HRF)
-            if plots:
-                self.plot_glottal(data_frame,fs,GCI, g_iaif, glottal, avgGCIt[l], varGCIt[l])
+                gci_s=GCI[:]
+                GCId=np.diff(gci_s)
+                avgGCIt[l]=np.mean(GCId/fs)
+                varGCIt[l]=np.std(GCId/fs)
+                NAQ, QOQ, T1, T2, H1H2, HRF=get_vq_params(glottal, g_iaif, fs, GCI)
+                avgNAQt[l]=np.mean(NAQ)
+                varNAQt[l]=np.std(NAQ)
+                avgQOQt[l]=np.mean(QOQ)
+                varQOQt[l]=np.std(QOQ)
+                avgH1H2t[l]=np.mean(H1H2)
+                varH1H2t[l]=np.std(H1H2)
+                avgHRFt[l]=np.mean(HRF)
+                varHRFt[l]=np.std(HRF)
+                if plots:
+                    self.plot_glottal(data_frame,fs,GCI, g_iaif, glottal, avgGCIt[l], varGCIt[l])
 
         if len(rmwin)>0:
             varGCIt=np.delete(varGCIt,rmwin)
@@ -228,6 +232,7 @@ class Glottal:
             varHRFt=np.delete(varHRFt,rmwin)
         
         feat=np.stack((varGCIt, avgNAQt, varNAQt, avgQOQt, varQOQt, avgH1H2t, varH1H2t, avgHRFt, varHRFt), axis=1)
+
         if fmt=="npy" or fmt=="txt":
             if static:
                 return dynamic2static(feat)
