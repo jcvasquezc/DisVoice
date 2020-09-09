@@ -30,6 +30,11 @@ def F0feat(F0):
                     msef0t=mean_squared_error(F0nzlist[k],f0rec)
                     mse.append(msef0t)
 
+        if len(tilt) == 0:
+            print("------------- warning -------------------, not enough pitch periods detected in the speech utterance")
+            tilt.append(0)            
+            mse.append(0)
+            
         tiltmean=np.mean(np.asarray(tilt))
         msemean=np.mean(np.asarray(mse))
         tiltstd=np.std(np.asarray(tilt))
