@@ -8,10 +8,10 @@ import pysptk
 from scipy.integrate import cumtrapz
 try:
     from .peakdetect import peakdetect
-    from .utils_gci import *
+    from .utils_gci import create_continuous_smooth_f0, GetLPCresidual, get_MBS, get_MBS_GCI_intervals, search_res_interval_peaks, RESON_dyProg_mat, calc_residual
 except:
     from peakdetect import peakdetect
-    from utils_gci import *
+    from utils_gci import create_continuous_smooth_f0, GetLPCresidual, get_MBS, get_MBS_GCI_intervals, search_res_interval_peaks, RESON_dyProg_mat, calc_residual
 
 def SE_VQ_varF0(x,fs, f0=None):
     """

@@ -411,7 +411,6 @@ def calc_residual(x,x_lpc,ord_lpc,GCI):
     vector_res=np.zeros(len(x))
     ze_lpc=np.zeros(ord_lpc)
     ar_lpc=np.zeros((ord_lpc+1, len(GCI)))
-    e_lpc=np.zeros((ord_lpc+1, len(GCI)))
 
     for n in range(len(GCI)-1):
         if n>1:
