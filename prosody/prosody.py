@@ -262,8 +262,7 @@ class Prosody:
                 return feat_t
             if fmt=="kaldi":
                 raise ValueError("Kaldi is only supported for dynamic features")
-            else:
-                raise ValueError("format"+ fmt+" is not supported" )
+            raise ValueError("format"+ fmt+" is not supported" )
 
 
         else:
