@@ -18,7 +18,7 @@ plt.rcParams["font.family"] = "Times New Roman"
 
 path_app = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(path_app+'/../')
-from utils import save_dict_kaldimat
+from utils import save_dict_kaldimat, get_dict
 
 from script_mananger import script_manager
 import torch
@@ -149,7 +149,7 @@ class Phonological:
             if fmt=="kaldi":
                 featmat=np.stack([df[k] for k in keys], axis=1)
                 name_all=audio.split('/')
-                dictX={name_all[-1]:feat_mat}
+                dictX={name_all[-1]:featmat}
                 save_dict_kaldimat(dictX, kaldi_file)
             else:
                 raise ValueError(fmt+" is not supported")
