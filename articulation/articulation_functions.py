@@ -1,7 +1,6 @@
 
 import math
 import numpy as np
-import sys
 import pysptk
 
 def bark(f):

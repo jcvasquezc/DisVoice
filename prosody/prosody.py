@@ -13,16 +13,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
 from matplotlib import cm
-import math
 import pysptk
 try:
     from .prosody_functions import V_UV, logEnergy, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
 except:
     from prosody_functions import V_UV, logEnergy, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
 
-import scipy.stats as st
-import uuid
-from sklearn.metrics import mean_squared_error
 import pandas as pd
 import torch
 from tqdm import tqdm

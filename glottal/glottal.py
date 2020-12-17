@@ -5,10 +5,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
-import math
 import pysptk
-import scipy.stats as st
-import uuid
 try:
     from .peakdetect import peakdetect
     from .GCI import SE_VQ_varF0, IAIF, get_vq_params
@@ -20,7 +17,7 @@ except:
 PATH=os.path.dirname(os.path.abspath(__file__))
 sys.path.append('../')
 from utils import dynamic2static, save_dict_kaldimat, get_dict
-from kaldi_io import write_mat, write_vec_flt
+from kaldi_io import write_vec_flt
 from scipy.integrate import cumtrapz
 from tqdm import tqdm
 import pandas as pd

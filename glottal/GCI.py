@@ -2,11 +2,9 @@ import sys
 from scipy.io.wavfile import read
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 
 import pysptk
 
-from scipy.io.wavfile import write
 from scipy.integrate import cumtrapz
 try:
     from .peakdetect import peakdetect

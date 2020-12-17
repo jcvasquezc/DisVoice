@@ -13,14 +13,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
 
-import math
 import pysptk
 try:
     from .phonation_functions import jitter_env, logEnergy, shimmer_env, APQ, PPQ
 except:
     from phonation_functions import jitter_env, logEnergy, shimmer_env, APQ, PPQ
-import scipy.stats as st
-import uuid
 import pandas as pd
 path_app = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(path_app+'/../')
