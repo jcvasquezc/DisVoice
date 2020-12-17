@@ -16,9 +16,9 @@ from matplotlib import cm
 import math
 import pysptk
 try:
-    from .prosody_functions import V_UV, E_cont, logEnergy, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
+    from .prosody_functions import V_UV, logEnergy, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
 except:
-    from prosody_functions import V_UV, E_cont, logEnergy, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
+    from prosody_functions import V_UV, logEnergy, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
 
 import scipy.stats as st
 import uuid

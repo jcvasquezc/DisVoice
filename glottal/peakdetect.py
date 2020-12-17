@@ -951,8 +951,6 @@ def _test_graph_cross(window = 11):
     
     
 if __name__ == "__main__":
-    from math import pi
-    import pylab
     
     i = 10000
     x = np.linspace(0,3.7*pi,i)
