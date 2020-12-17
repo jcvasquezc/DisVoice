@@ -17,7 +17,6 @@ except:
 PATH=os.path.dirname(os.path.abspath(__file__))
 sys.path.append('../')
 from utils import dynamic2static, save_dict_kaldimat, get_dict
-from kaldi_io import write_vec_flt
 from scipy.integrate import cumtrapz
 from tqdm import tqdm
 import pandas as pd

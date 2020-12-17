@@ -89,7 +89,7 @@ def energy_cont_segm(segments, fs, size_frameS, size_stepS):
 
 
 
-def polyf0(F0, fs):
+def polyf0(F0):
     tsf0=0.01
 
     F0rec=[]
@@ -299,7 +299,7 @@ def duration_feat(segV, segU, segPause, signal, fs):
 
 
 
-def V_UV(F0, data_audio, fs, type_seg, size_stepS):
+def V_UV(F0, data_audio, type_seg, size_stepS):
     if type_seg=="Voiced":
         pitch_seg = np.where(F0!=0)[0]
     elif type_seg=="Unvoiced":

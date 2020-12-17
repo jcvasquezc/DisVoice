@@ -128,15 +128,6 @@ def _peakdetect_parabola_fitter(raw_peaks, x_axis, y_axis, points):
     return fitted_peaks
     
     
-def peakdetect_parabole(*args, **kwargs):
-    """
-    Misspelling of peakdetect_parabola
-    function is deprecated please use peakdetect_parabola
-    """
-    logging.warn("peakdetect_parabole is deprecated due to misspelling use: peakdetect_parabola")
-    
-    return peakdetect_parabola(*args, **kwargs)
-    
     
 def peakdetect(y_axis, x_axis = None, lookahead = 200, delta=0):
     """
@@ -827,7 +818,7 @@ def zero_crossings_sine_fit(y_axis, x_axis, fit_window = None, smooth_window = 1
     #get first guess
     zero_indices = zero_crossings(y_axis, window_len = smooth_window)
     #modify fit_window to show distance per direction
-    if fit_window == None:
+    if fit_window is None:
         fit_window = np.diff(zero_indices).mean() // 3
     else:
         fit_window = fit_window // 2

@@ -347,7 +347,7 @@ if __name__=="__main__":
         audio=sys.argv[1]
 
     fs, data_audio=read(audio)
-    GCI=SE_VQ_varF0(data_audio,fs, pitch_method="RAPT")
+    GCI=SE_VQ_varF0(data_audio,fs)
     print('Glottal inverse filtering using IAIF algorithm (Alku et al. 1992)')
     g_iaif=IAIF(data_audio,fs,GCI)
     g_iaif=g_iaif-np.mean(g_iaif)

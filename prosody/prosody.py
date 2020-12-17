@@ -193,7 +193,7 @@ class Prosody:
 
         ax2.plot([t2[0], t2[-1]], [f0avg, f0avg], color=colors.colors[2], label=r"Avg. $F_0$")
         ax2.fill_between([t2[0], t2[-1]], y1= [f0avg+f0std, f0avg+f0std], y2=[f0avg-f0std, f0avg-f0std], color=colors.colors[2], alpha=0.2, label=r"Avg. $F_0\pm$ SD.")
-        F0rec=polyf0(F0, fs)
+        F0rec=polyf0(F0)
         ax2.plot(t2,F0rec, label=r"estimated $F_0$", c=colors.colors[1], linewidth=2.0)
         plt.text(t2[2], np.max(F0)-5, r"$F_0$ SD.="+str(np.round(f0std, 1))+" Hz")
         plt.text(t2[2], np.max(F0)-20, r"$F_0$ tilt.="+str(np.round(F0_features[6], 1))+" Hz")
@@ -323,8 +323,8 @@ class Prosody:
             data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
             F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=self.minf0, max=self.maxf0, voice_bias=self.voice_bias, otype='f0')
 
-        segmentsV=V_UV(F0, data_audio, fs, type_seg="Voiced", size_stepS=size_stepS)
-        segmentsUP=V_UV(F0, data_audio, fs, type_seg="Unvoiced", size_stepS=size_stepS)
+        segmentsV=V_UV(F0, data_audio, type_seg="Voiced", size_stepS=size_stepS)
+        segmentsUP=V_UV(F0, data_audio, type_seg="Unvoiced", size_stepS=size_stepS)
 
         segmentsP=[]
         segmentsU=[]
