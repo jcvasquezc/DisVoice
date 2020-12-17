@@ -88,11 +88,11 @@ def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 	with open(file_textgrid) as fp:
 		for line in fp:
 			line = line.strip('\n')
-			if line=='"V"' or line == '"U"':
+			if line in ('"V"', '"U"'):
 				transVal=int(float(prev_line)*fs)-1
 				segment=data_audio[int(transVal-win_trans*fs):int(transVal+win_trans*fs)]
 				segments.append(segment)
-				if prev_trans=='"V"' or prev_trans=="":
+				if prev_trans in ('"V"', ""):
 					segments_onset.append(segment)
 				elif prev_trans=='"U"':
 					segments_offset.append(segment)
@@ -155,7 +155,7 @@ def decodeFormants(fileTxt):
 	ji=10
 	while (ji<len(end_line1)-1):
 		line1=datam[end_line1[ji]+1:end_line1[ji+1]]
-		cond=(line1=='3' or line1=='4' or line1=='5')
+		cond=(line1 in ('3', '4', '5'))
 		if (cond):
 			F1.append(float(datam[end_line1[ji+1]+1:end_line1[ji+2]]))
 			F2.append(float(datam[end_line1[ji+3]+1:end_line1[ji+4]]))

@@ -92,14 +92,10 @@ def SE_VQ_varF0(x,fs, f0=None):
     trans_wgt=1 # Transition cost weight
     relAmp_wgt=0.3 # Local cost weight
 
-    repNum=2 # Number of iterations for post-processing
-    removeThresh=0.4 # Threshold for removing false GCIs
-    search_reg=1.3/1000*fs # Search region for post processing
-
+    
     #Calculate LP-residual and extract N maxima per mean-based signal determined intervals
 
     res = GetLPCresidual(x,winLen*fs/1000,winShift*fs/1000,LPC_ord, VUV_inter) # Get LP residual
-    rep = RCVD_reson_GCI(res,fs,F0mean) #Get resonator output
 
     MBS = get_MBS(x,fs,T0mean) # Extract mean based signal
 
@@ -148,7 +144,7 @@ def IAIF(x,fs,GCI):
     # ------------------------------------------------
     # first estimation of the glottal source derivative - PART 4 & 5
     ord_lpc2=p
-    residual1=calc_residual(x_filt,x_filt,ord_lpc2,GCI)
+    residual1=calc_residual(x_filt,x_emph,ord_lpc2,GCI)
 
     # integration of the glottal source derivative to calculate the glottal
     # source pulse - PART 6 (cancelling lip radiation)
@@ -161,7 +157,6 @@ def IAIF(x,fs,GCI):
 
     # ------------------------------------------------
     # second estimation of the glottal source signal - PART 9 & 10
-    ug2=cumtrapz(vt_signal)
 
     ord_lpc4=p
     residual2=calc_residual(x_filt,vt_signal,ord_lpc4,GCI)
@@ -346,10 +341,10 @@ if __name__=="__main__":
     else:
         audio=sys.argv[1]
 
-    fs, data_audio=read(audio)
-    GCI=SE_VQ_varF0(data_audio,fs)
+    fsi, data_audio=read(audio)
+    GCIi=SE_VQ_varF0(data_audio,fsi)
     print('Glottal inverse filtering using IAIF algorithm (Alku et al. 1992)')
-    g_iaif=IAIF(data_audio,fs,GCI)
+    g_iaif=IAIF(data_audio,fsi,GCIi)
     g_iaif=g_iaif-np.mean(g_iaif)
     g_iaif=g_iaif/max(abs(g_iaif))
 

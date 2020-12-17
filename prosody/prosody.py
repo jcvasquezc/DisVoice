@@ -249,9 +249,9 @@ class Prosody:
         """
         if static:
             features=self.prosody_static(audio, plots)
-            if fmt=="npy" or fmt=="txt":
+            if fmt in("npy","txt"):
                 return features
-            if fmt=="dataframe" or fmt=="csv":
+            if fmt in("dataframe","csv"):
                 df={}
                 for e, k in enumerate(self.head_st):
                     #print(feat_v.shape, len(head_st), e, k)
@@ -268,9 +268,9 @@ class Prosody:
 
         else:
             features=self.prosody_dynamic(audio)
-            if fmt=="npy" or fmt=="txt":
+            if fmt in("npy","txt"):
                 return features
-            if fmt=="dataframe" or fmt=="csv":
+            if fmt in("dataframe","csv"):
                 df={}
                 for e, k in enumerate(self.head_dyn):
                     df[k]=features[:,e]
@@ -305,7 +305,6 @@ class Prosody:
         size_stepS=self.step*float(fs)
         thr_len_pause=self.thr_len*float(fs)
         overlap=size_stepS/size_frameS
-        nF=int((len(data_audio)/size_frameS/overlap))-1
 
         if self.pitch_method == 'praat':
             name_audio=audio.split('/')
@@ -329,7 +328,6 @@ class Prosody:
         segmentsP=[]
         segmentsU=[]
         for k in range(len(segmentsUP)):
-            eu=logEnergy(segmentsUP[k])
             if (len(segmentsUP[k])>thr_len_pause):
                 segmentsP.append(segmentsUP[k])
             else:
@@ -364,9 +362,7 @@ class Prosody:
         data_audio=data_audio/float(np.max(np.abs(data_audio)))
         size_frameS=self.size_frame*float(fs)
         size_stepS=self.step*float(fs)
-        thr_len_pause=self.thr_len*float(fs)
         overlap=size_stepS/size_frameS
-        nF=int((len(data_audio)/size_frameS/overlap))-1
 
         if self.pitch_method == 'praat':
             name_audio=audio.split('/')
@@ -483,9 +479,9 @@ class Prosody:
         
         Features=np.vstack(Features)
         ids=np.hstack(ids)
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             return Features
-        if fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 df={}
                 for e, k in enumerate(self.head_st):

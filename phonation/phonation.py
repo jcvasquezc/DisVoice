@@ -189,8 +189,6 @@ class Phonation:
         DDF0=np.diff(DF0,1)
         F0z=F0[F0==0]
         totaldurU=len(F0z)
-        thresholdE=10*logEnergy([self.energy_thr_percent])
-        degreeU=100*float(totaldurU)/len(F0)
         lnz=0
         for l in range(nF):
             data_frame=data_audio[int(l*size_stepS):int(l*size_stepS+size_frameS)]
@@ -228,11 +226,11 @@ class Phonation:
         feat_v=dynamic2statict([DF0, DDF0, Jitter, Shimmer, apq, ppq, logE])
 
 
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             if static:
                 return feat_v
             return feat_mat
-        elif fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 head_st=[]
                 df={}
@@ -299,9 +297,9 @@ class Phonation:
         
         Features=np.vstack(Features)
         ids=np.hstack(ids)
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             return Features
-        if fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 head_st=[]
                 df={}

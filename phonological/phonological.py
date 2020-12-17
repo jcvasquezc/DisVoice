@@ -124,24 +124,23 @@ class Phonological:
                         feat_name=j+"_"+l
 
                         dff[feat_name]=[function(df[j])]
-            if fmt=="npy" or fmt=="txt":
+            if fmt in("npy","txt"):
                 return np.hstack(feat_vec)
-            if fmt=="dataframe" or fmt=="csv":
+            if fmt in("dataframe","csv"):
                 return pd.DataFrame(dff)
             if fmt=="torch":
-                feat_t=torch.from_numpy(np.hstack(feat_vec))
-            elif fmt=="kaldi":
+                return torch.from_numpy(np.hstack(feat_vec))
+            if fmt=="kaldi":
                 raise ValueError("Kaldi is only supported for dynamic features")
-            else:
-                raise ValueError(fmt+" is not supported")
+            raise ValueError(fmt+" is not supported")
 
         else:
 
-            if fmt=="npy" or fmt=="txt":
+            if fmt in("npy","txt"):
                 featmat=np.stack([df[k] for k in keys], axis=1)
                 print(featmat.shape)
                 return featmat
-            if fmt=="dataframe" or fmt=="csv":
+            if fmt in("dataframe","csv"):
                 return df
             if fmt=="torch":
                 featmat=np.stack([df[k] for k in keys], axis=1)
@@ -193,9 +192,9 @@ class Phonological:
         
         Features=np.vstack(Features)
         ids=np.hstack(ids)
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             return Features
-        if fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 df={}
                 for e, k in enumerate(self.head_st):

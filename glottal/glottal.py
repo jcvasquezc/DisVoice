@@ -229,12 +229,12 @@ class Glottal:
         
         feat=np.stack((varGCIt, avgNAQt, varNAQt, avgQOQt, varQOQt, avgH1H2t, varH1H2t, avgHRFt, varHRFt), axis=1)
 
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             if static:
                 return dynamic2static(feat)
             return feat
 
-        elif fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 feat_st=dynamic2static(feat)
                 head_st=[]
@@ -251,13 +251,13 @@ class Glottal:
                 for e, k in enumerate(self.head):
                     df[k]=feat[:,e]
                 return pd.DataFrame(df)
-        elif fmt=="torch":
+        if fmt=="torch":
             if static:
                 feat_s=dynamic2static(feat)
                 feat_t=torch.from_numpy(feat_s)
                 return feat_t
             return torch.from_numpy(feat)
-        elif fmt=="kaldi":
+        if fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
             name_all=audio.split('/')
@@ -302,9 +302,9 @@ class Glottal:
         
         Features=np.vstack(Features)
         ids=np.hstack(ids)
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             return Features
-        if fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 head_st=[]
                 df={}

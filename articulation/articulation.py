@@ -266,7 +266,6 @@ class Articulation:
         data_audio=data_audio/float(np.max(np.abs(data_audio)))
         size_frameS=self.sizeframe*float(fs)
         size_stepS=self.step*float(fs)
-        overlap=size_stepS/size_frameS
 
         if self.pitch_method == 'praat':
             name_audio=audio.split('/')
@@ -360,11 +359,11 @@ class Articulation:
         feat_v=dynamic2statict_artic([BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1nz, DF1, DDF1, F2nz, DF2, DDF2])
         feat_mat=np.hstack((BBEon[2:,:], MFCCon[2:,:], DMFCCon[1:,:], DDMFCCon))
 
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             if static:
                 return feat_v
             return feat_mat
-        elif fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 head_st=[]
                 df={}
@@ -381,13 +380,13 @@ class Articulation:
                 for e, k in enumerate(self.head_dyn):
                     df[k]=feat_mat[:,e]
                 return pd.DataFrame(df)
-        elif fmt=="torch":
+        if fmt=="torch":
             if static:
                 feat_t=torch.from_numpy(feat_v)
                 return feat_t
             return torch.from_numpy(feat_mat)
 
-        elif fmt=="kaldi":
+        if fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
             name_all=audio.split('/')
@@ -432,9 +431,9 @@ class Articulation:
         
         Features=np.vstack(Features)
         ids=np.hstack(ids)
-        if fmt=="npy" or fmt=="txt":
+        if fmt in("npy","txt"):
             return Features
-        if fmt=="dataframe" or fmt=="csv":
+        if fmt in("dataframe","csv"):
             if static:
                 head_st=[]
                 df={}

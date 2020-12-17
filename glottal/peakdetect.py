@@ -906,7 +906,7 @@ def _test_graph():
     xn = [p[0] for p in _min]
     yn = [p[1] for p in _min]
     
-    plot = pylab.plot(x,y)
+    pylab.plot(x,y)
     pylab.hold(True)
     pylab.plot(xm, ym, "r+")
     pylab.plot(xn, yn, "g+")
@@ -955,7 +955,7 @@ if __name__ == "__main__":
     xn = [p[0] for p in _min]
     yn = [p[1] for p in _min]
     
-    plot = pylab.plot(x, y)
+    pylab.plot(x, y)
     pylab.hold(True)
     pylab.plot(xm, ym, "r+")
     pylab.plot(xn, yn, "g+")

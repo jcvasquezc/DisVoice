@@ -8,7 +8,6 @@ except:
     from peakdetect import peakdetect
 
 from scipy.stats import pearsonr
-import matplotlib.pyplot as plt
 from scipy.linalg import toeplitz
 try:
     from scipy.signal.windows import medfilt, hann, filtfilt, blackman, hamming, buttord, butter, lfiltic, lfilter
@@ -31,8 +30,6 @@ def create_continuous_smooth_f0(F0,VUV,x):
     # regions and is heavily smoothed with median and moving average filters.
     # Initial settings
     F0=np.asarray(F0)
-    F0_min=50
-    F0_max=500
     med_len=17
     sm_len=17
     F02=F0[:]
@@ -73,31 +70,25 @@ def create_continuous_smooth_f0(F0,VUV,x):
     return f0_inter, f0_samp
 
 
-def GetLPCresidual(wave,L,shift,order,VUV):
+def GetLPCresidual(wave,L,shift,order=24,VUV=1):
 
-    # ###
-    #
-    # Use: [res] = GetLPCresidual(wave,L,shift,VUV)
-    #
-    #
-    # L=window length (samples) (typ.25ms)
-    # shift=window shift (samples) (typ.5ms)
-    # order= LPC order
-    # VUV=vector of voicing decisions (=0 if Unvoiced, =1 if Voiced)
-    #
-    # Written originally by Thomas Drugman, TCTS Lab.
-    #
-    #Adapated to python by
-    # J. C. Vasquez-Correa
-    # Pattern recognition Lab, University of Erlangen-Nuremberg
-    # Faculty of Enginerring, University of Antiqouia,
-    # ###
+    """
+    Get the LPC residual signal
+    Written originally by Thomas Drugman, TCTS Lab.
+    
+    Adapated to python by
+    J. C. Vasquez-Correa
+    Pattern recognition Lab, University of Erlangen-Nuremberg
+    Faculty of Enginerring, University of Antiqouia,
 
-    ## My Bit!!
-    # use: L = 25/1000*fs # 25 ms frame length
-    #     shift = 5/1000*fs # 5 ms shift
-    #     order = 24
+	:param wave: array with the speech signal
+	:param L: window length (samples) (typ.25ms)
+	:param shift: window shift (samples) (typ.5ms)
+	:param order: LPC order
+	:param VUV: vector of voicing decisions (=0 if Unvoiced, =1 if Voiced)
+	:returns res: LPC residual signal 
 
+    """
     start=0
     stop=int(start+L)
     res=np.zeros(len(wave))
@@ -325,13 +316,10 @@ def RESON_dyProg_mat(GCI_relAmp,GCI_N,F0mean,x,fs,trans_wgt,relAmp_wgt, plots=Tr
         costm=np.asarray(costm)
         costi=np.min(costm,0)
         previ=np.argmin(costm,0)
-        #print(costi, previ)costi
         cost[n,0:ncands]=cost[n,0:ncands]+costi
         prev[n,0:ncands]=previ
 
-    #print(prev)
     best=np.zeros(n+1)
-    cbest=np.min(cost[n,0:ncands])
     best[n]=np.argmin(cost[n,0:ncands])
     for i in range(n-1,1,-1):
 
@@ -370,23 +358,15 @@ def lpcauto(s,p):
     #          e(nf)      is the energy in the residual.
     #                     sqrt(e) is often called the 'gain' of the filter.
 
-    t=[len(s), len(s), 0]
     nf=1
-    ng=1
     ar=np.zeros(p+1)
     ar[0]=1
     e=np.zeros(nf)
-    t1=1
-    it=1
-    nw=-1
-    zp=np.zeros(p)
-    r=np.arange(p+1)
     dd=s[:]
     nc=len(s)
     pp=min(p,nc)
     ww=np.hamming(nc)
     y=np.zeros(nc+p)
-    c=np.arange(nc)
     wd=dd*ww
     y[0:nc]=wd
     z=np.zeros((nc,pp+1))

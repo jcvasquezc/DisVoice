@@ -75,7 +75,6 @@ def energy_cont_segm(segments, fs, size_frameS, size_stepS):
 
     E=[]
     for j in range(len(segments)):
-        tsE=size_stepS/fs
         logE=[]
         segment_t=segments[j]
         overlap=size_stepS/size_frameS
@@ -308,16 +307,12 @@ def V_UV(F0, data_audio, type_seg, size_stepS):
     change = np.where(dchange>1)[0]
     if len(pitch_seg)==0:
         return []
-    ini = pitch_seg[0]
     init_seg= (pitch_seg[0]*size_stepS)+size_stepS
     segment=[]
     for indx in change:
-        endv = pitch_seg[indx]+1
         end_seg = (pitch_seg[indx]*size_stepS)+size_stepS#To compute energy
         seg = data_audio[int(init_seg):int(end_seg)]#To compute energy
         segment.append(seg)
-
-        ini= pitch_seg[indx+1]
         init_seg = (pitch_seg[indx+1]*size_stepS)+size_stepS#To compute energy
 
     return segment

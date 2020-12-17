@@ -85,14 +85,13 @@ def multi_find(s, r):
     r_len = len(r)
     _complete = []
     if s_len < r_len:
-        n = -1
-    else:
-        for i in range(s_len):
-            # search for r in s until not enough characters are left
-            if s[i:i + r_len] == r:
-                _complete.append(i)
-            else:
-                i = i + 1
-    return(_complete)
+        return -1
+    for i in range(s_len):
+        # search for r in s until not enough characters are left
+        if s[i:i + r_len] == r:
+            _complete.append(i)
+        else:
+            i = i + 1
+    return _complete
 
 
