@@ -28,12 +28,9 @@ Installation
 
 From the source file::
 
-    git clone https://github.com/jcvasquezc/phonet
+    git clone https://github.com/jcvasquezc/disvoice
     cd disvoice
     bash install.sh
-
-
-
 
 
 Indices and tables
