@@ -39,7 +39,6 @@ def barke(x,Fs, nfft=2048, nB=25):
         else:
             barkEnergy.append(0)
 
-
     e = np.asarray(barkEnergy)+eps
     e = np.log(e)
     return e

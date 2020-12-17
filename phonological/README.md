@@ -77,7 +77,6 @@ phonological.extract_features_path(path_audio, static=False, plots=False, fmt="k
 Phonological analysis
 !![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/phonological1.png?raw=true)
 !![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/phonological2.png?raw=true)
-!![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/phonological3.png?raw=true)
 
 
 #### References
