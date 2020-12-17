@@ -136,8 +136,7 @@ def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 			argmin=np.argmin(np.abs(t-time_voiced))
 			pitch_zeros[argmin]=pitch
 		return pitch_zeros, t
-	else:
-		return pitch, time_voiced
+	return pitch, time_voiced
 
 def decodeFormants(fileTxt):
 	"""
