@@ -363,8 +363,7 @@ class Articulation:
         if fmt=="npy" or fmt=="txt":
             if static:
                 return feat_v
-            else:
-                return feat_mat
+            return feat_mat
         elif fmt=="dataframe" or fmt=="csv":
             if static:
                 head_st=[]
@@ -386,8 +385,7 @@ class Articulation:
             if static:
                 feat_t=torch.from_numpy(feat_v)
                 return feat_t
-            else:
-                return torch.from_numpy(feat_mat)
+            return torch.from_numpy(feat_mat)
 
         elif fmt=="kaldi":
             if static:
@@ -436,7 +434,7 @@ class Articulation:
         ids=np.hstack(ids)
         if fmt=="npy" or fmt=="txt":
             return Features
-        elif fmt=="dataframe" or fmt=="csv":
+        if fmt=="dataframe" or fmt=="csv":
             if static:
                 head_st=[]
                 df={}
@@ -451,9 +449,9 @@ class Articulation:
                     df[k]=Features[:,e]
             df["id"]=ids
             return pd.DataFrame(df)
-        elif fmt=="torch":
+        if fmt=="torch":
             return torch.from_numpy(Features)
-        elif fmt=="kaldi":
+        if fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
             dictX=get_dict(Features, ids)
