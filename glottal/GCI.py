@@ -15,7 +15,7 @@ except:
     from peakdetect import peakdetect
     from utils_gci import *
 
-def SE_VQ_varF0(x,fs, f0=[]):
+def SE_VQ_varF0(x,fs, f0=None):
     """
     Function to extract GCIs using an adapted version of the SEDREAMS
     algorithm which is optimised for non-modal voice qualities (SE-VQ). Ncand maximum
@@ -55,6 +55,8 @@ def SE_VQ_varF0(x,fs, f0=[]):
     ##########################################################################
 
     """
+    if f0 is None:
+        f0 = []
     F0min=20
     F0max=500
     if len(f0)==0 or sum(f0)==0:
