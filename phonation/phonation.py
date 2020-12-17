@@ -262,10 +262,9 @@ class Phonation:
         elif fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
-            else:
-                name_all=audio.split('/')
-                dictX={name_all[-1]:feat_mat}
-                save_dict_kaldimat(dictX, kaldi_file)
+            name_all=audio.split('/')
+            dictX={name_all[-1]:feat_mat}
+            save_dict_kaldimat(dictX, kaldi_file)
         else:
             raise ValueError(fmt+" is not supported")
 
@@ -327,9 +326,8 @@ class Phonation:
         elif fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
-            else:
-                dictX=get_dict(Features, ids)
-                save_dict_kaldimat(dictX, kaldi_file)
+            dictX=get_dict(Features, ids)
+            save_dict_kaldimat(dictX, kaldi_file)
         else:
             raise ValueError(fmt+" is not supported")
 

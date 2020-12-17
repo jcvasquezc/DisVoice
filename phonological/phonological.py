@@ -211,9 +211,8 @@ class Phonological:
         elif fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
-            else:
-                dictX=get_dict(Features, ids)
-                save_dict_kaldimat(dictX, kaldi_file)
+            dictX=get_dict(Features, ids)
+            save_dict_kaldimat(dictX, kaldi_file)
         else:
             raise ValueError(fmt+" is not supported")
 
