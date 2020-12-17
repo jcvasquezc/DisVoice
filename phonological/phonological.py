@@ -126,9 +126,9 @@ class Phonological:
                         dff[feat_name]=[function(df[j])]
             if fmt=="npy" or fmt=="txt":
                 return np.hstack(feat_vec)
-            elif fmt=="dataframe" or fmt=="csv":
+            if fmt=="dataframe" or fmt=="csv":
                 return pd.DataFrame(dff)
-            elif fmt=="torch":
+            if fmt=="torch":
                 feat_t=torch.from_numpy(np.hstack(feat_vec))
             elif fmt=="kaldi":
                 raise ValueError("Kaldi is only supported for dynamic features")
@@ -136,17 +136,17 @@ class Phonological:
                 raise ValueError(fmt+" is not supported")
 
         else:
-            
+
             if fmt=="npy" or fmt=="txt":
                 featmat=np.stack([df[k] for k in keys], axis=1)
                 print(featmat.shape)
                 return featmat
-            elif fmt=="dataframe" or fmt=="csv":
+            if fmt=="dataframe" or fmt=="csv":
                 return df
-            elif fmt=="torch":
+            if fmt=="torch":
                 featmat=np.stack([df[k] for k in keys], axis=1)
                 return torch.from_numpy(featmat)
-            elif fmt=="kaldi":
+            if fmt=="kaldi":
                 featmat=np.stack([df[k] for k in keys], axis=1)
                 name_all=audio.split('/')
                 dictX={name_all[-1]:feat_mat}
@@ -195,7 +195,7 @@ class Phonological:
         ids=np.hstack(ids)
         if fmt=="npy" or fmt=="txt":
             return Features
-        elif fmt=="dataframe" or fmt=="csv":
+        if fmt=="dataframe" or fmt=="csv":
             if static:
                 df={}
                 for e, k in enumerate(self.head_st):
@@ -206,9 +206,9 @@ class Phonological:
                     df[k]=Features[:,e]
             df["id"]=ids
             return pd.DataFrame(df)
-        elif fmt=="torch":
+        if fmt=="torch":
             return torch.from_numpy(Features)
-        elif fmt=="kaldi":
+        if fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
             dictX=get_dict(Features, ids)
