@@ -268,8 +268,7 @@ def dur_seg(segments, fs):
     dur=np.asarray(dur)
     if len(dur)>1:
         return np.asarray([np.mean(dur), np.std(dur), st.skew(dur), st.kurtosis(dur), np.max(dur), np.min(dur)])
-    else:
-        return np.zeros(6)
+    return np.zeros(6)
 
 
 
