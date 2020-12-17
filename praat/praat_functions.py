@@ -142,8 +142,7 @@ def decodeFormants(fileTxt):
 	"""
 	Read the praat textgrid file for formants and return the array
 	
-	:param fileTxt: File with the formants, which can be generated using the
-		 			function praat_formants
+	:param fileTxt: File with the formants, which can be generated using the '''praat_formants'''
 	:returns F1: Numpy array containing the values for the first formant
 	:returns F2: Numpy array containing the values for the second formant
 	"""

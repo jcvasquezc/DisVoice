@@ -12,76 +12,76 @@ def bark(f):
 	return (b)
 
 def barke(x,Fs, nfft=2048, nB=25):
-		"""
-		e: Energy in frequency bands according to the Bark scale
-		x: signal
-		Fs: sampling frequency
-            nfft: number of points for the Fourier transform
-            nB: number of bands for energy computation
-		"""
-		eps = 1e-30
-		y = fftsolp(x,nfft)
-		f = (Fs/2)*(np.linspace(0,1,int(nfft/2+1)))
-		barkScale = bark(f)
-		barkIndices = []
-		for i in range (0,len(barkScale)):
-			barkIndices.append(int(barkScale[i]))
+    """
+    e: Energy in frequency bands according to the Bark scale
+    x: signal
+    Fs: sampling frequency
+    nfft: number of points for the Fourier transform
+    nB: number of bands for energy computation
+    """
+    eps = 1e-30
+    y = fftsolp(x,nfft)
+    f = (Fs/2)*(np.linspace(0,1,int(nfft/2+1)))
+    barkScale = bark(f)
+    barkIndices = []
+    for i in range (0,len(barkScale)):
+        barkIndices.append(int(barkScale[i]))
 
-		barkIndices = np.asarray(barkIndices)
+    barkIndices = np.asarray(barkIndices)
 
-		barkEnergy=[]
-		for i in range (nB):
-			brk = np.nonzero(barkIndices==i)
-			brk = np.asarray(brk)[0]
-			sizeb=len(brk)
-			if (sizeb>0):
-				barkEnergy.append(sum(np.abs(y[brk]))/sizeb)
-			else:
-				barkEnergy.append(0)
+    barkEnergy=[]
+    for i in range (nB):
+        brk = np.nonzero(barkIndices==i)
+        brk = np.asarray(brk)[0]
+        sizeb=len(brk)
+        if (sizeb>0):
+            barkEnergy.append(sum(np.abs(y[brk]))/sizeb)
+        else:
+            barkEnergy.append(0)
 
 
-		e = np.asarray(barkEnergy)+eps
-		e = np.log(e)
-		return e
+    e = np.asarray(barkEnergy)+eps
+    e = np.log(e)
+    return e
 
 
 def fftsolp(x,nfft):
-     """
-     STFT for compute the energy in Bark scale
-     x: signal
-     nffft: number of points of the Fourier transform
-     """
-     window = np.hamming(len(x)/4)
-     noverlap = np.ceil(len(window)/2)
+    """
+    STFT for compute the energy in Bark scale
+    x: signal
+    nffft: number of points of the Fourier transform
+    """
+    window = np.hamming(len(x)/4)
+    noverlap = np.ceil(len(window)/2)
 
-     nx = len(x)
-     nwind = len(window)
+    nx = len(x)
+    nwind = len(window)
 
-     ncol = np.fix((nx-noverlap)/(nwind-noverlap))
-     ncol = int(ncol)
-     colindex = (np.arange(0,ncol))*(nwind-noverlap)
-     colindex = colindex.astype(int)
+    ncol = np.fix((nx-noverlap)/(nwind-noverlap))
+    ncol = int(ncol)
+    colindex = (np.arange(0,ncol))*(nwind-noverlap)
+    colindex = colindex.astype(int)
 
-     rowindex = np.arange(0,nwind)
-     rowindex = rowindex.astype(int)
-     rowindex = rowindex[np.newaxis]
-     rowindex = rowindex.T
+    rowindex = np.arange(0,nwind)
+    rowindex = rowindex.astype(int)
+    rowindex = rowindex[np.newaxis]
+    rowindex = rowindex.T
 
-     y = np.zeros((nwind,ncol),dtype=np.int)
-     d = np.ones((nwind,ncol),dtype=np.int)
+    y = np.zeros((nwind,ncol),dtype=np.int)
+    d = np.ones((nwind,ncol),dtype=np.int)
 
 
-     y = x[d*(rowindex+colindex)]
-     window = window.astype(float)
-     window = window[np.newaxis]
-     window = window.T
-     new = window*d
-     y = new*y
-     y = y[:,0]
+    y = x[d*(rowindex+colindex)]
+    window = window.astype(float)
+    window = window[np.newaxis]
+    window = window.T
+    new = window*d
+    y = new*y
+    y = y[:,0]
 
-     y = np.fft.fft(y,nfft)
-     y = (y[0:int(nfft/2+1)])
-     return y
+    y = np.fft.fft(y,nfft)
+    y = (y[0:int(nfft/2+1)])
+    return y
 
 
 

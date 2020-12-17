@@ -75,19 +75,18 @@ def GetLPCresidual(wave,L,shift,order=24,VUV=1):
     """
     Get the LPC residual signal
     Written originally by Thomas Drugman, TCTS Lab.
-    
+
     Adapated to python by
     J. C. Vasquez-Correa
     Pattern recognition Lab, University of Erlangen-Nuremberg
     Faculty of Enginerring, University of Antiqouia,
 
-	:param wave: array with the speech signal
-	:param L: window length (samples) (typ.25ms)
-	:param shift: window shift (samples) (typ.5ms)
-	:param order: LPC order
-	:param VUV: vector of voicing decisions (=0 if Unvoiced, =1 if Voiced)
-	:returns res: LPC residual signal 
-
+    :param wave: array with the speech signal
+    :param L: window length (samples) (typ.25ms)
+    :param shift: window shift (samples) (typ.5ms)
+    :param order: LPC order
+    :param VUV: vector of voicing decisions (=0 if Unvoiced, =1 if Voiced)
+    :returns res: LPC residual signal 
     """
     start=0
     stop=int(start+L)

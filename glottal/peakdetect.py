@@ -910,13 +910,6 @@ def _test_graph():
     pylab.plot(xm, ym, "r+")
     pylab.plot(xn, yn, "g+")
     
-    _max, _min = peak_det_bad.peakdetect(y, 0.7, x)
-    xm = [p[0] for p in _max]
-    ym = [p[1] for p in _max]
-    xn = [p[0] for p in _min]
-    yn = [p[1] for p in _min]
-    pylab.plot(xm, ym, "y*")
-    pylab.plot(xn, yn, "k*")
     pylab.show()
     
 def _test_graph_cross(window = 11):
