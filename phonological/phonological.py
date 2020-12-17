@@ -111,15 +111,14 @@ class Phonological:
         if static:
             dff={}
             feat_vec=[]
-            
             functions=[np.mean, np.std, st.skew, st.kurtosis, np.max, np.min]
 
             for j in keys:
                 for l, function in zip(self.statistics, functions):
 
-                    if (fmt=="npy") or (fmt=="txt") or (fmt=="torch"):
+                    if fmt in("npy","txt","torch"):
                         feat_vec.append(function(df[j]))
-                    elif fmt=="dataframe" or fmt=="csv":
+                    if fmt in("dataframe","csv"):
 
                         feat_name=j+"_"+l
 
@@ -138,7 +137,6 @@ class Phonological:
 
             if fmt in("npy","txt"):
                 featmat=np.stack([df[k] for k in keys], axis=1)
-                print(featmat.shape)
                 return featmat
             if fmt in("dataframe","csv"):
                 return df

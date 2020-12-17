@@ -71,7 +71,7 @@ def F0feat(F0):
 
 
 
-def energy_cont_segm(segments, fs, size_frameS, size_stepS):
+def energy_cont_segm(segments, size_frameS, size_stepS):
 
     E=[]
     for j in range(len(segments)):

@@ -204,7 +204,7 @@ class Prosody:
         size_frameS=0.02*float(fs)
         size_stepS=0.01*float(fs)
 
-        logE=energy_cont_segm([data_audio], fs,size_frameS, size_stepS)
+        logE=energy_cont_segm([data_audio],size_frameS, size_stepS)
         Esp=len(logE[0])/t[-1]
         t2=np.arange(len(logE[0]))/float(Esp)
         plt.plot(t2, logE[0], color='k', linewidth=2.0)
@@ -216,8 +216,8 @@ class Prosody:
         plt.show()
 
         plt.figure(figsize=(6,3))
-        Ev=energy_cont_segm(segmentsV, fs, size_frameS, size_stepS)
-        Eu=energy_cont_segm(segmentsU, fs, size_frameS, size_stepS)
+        Ev=energy_cont_segm(segmentsV, size_frameS, size_stepS)
+        Eu=energy_cont_segm(segmentsU, size_frameS, size_stepS)
 
         plt.plot([np.mean(Ev[j]) for j in range(len(Ev))], label="Voiced energy")
         plt.plot([np.mean(Eu[j]) for j in range(len(Eu))], label="Unvoiced energy")

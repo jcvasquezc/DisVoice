@@ -14,7 +14,6 @@
 # public domain see: http://billauer.co.il/peakdet.html
 #
 
-import logging
 from math import pi, log
 import numpy as np
 import pylab
