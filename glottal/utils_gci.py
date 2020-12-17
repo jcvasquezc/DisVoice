@@ -219,7 +219,7 @@ def search_res_interval_peaks(res,interval,Ncand,VUV):
         stop=int(interval[n][1])
         if stop<=start or np.sum(VUV[start:stop])!=len(VUV[start:stop]):
             continue
-        elif stop-start<Ncand:
+        if stop-start<Ncand:
             amp=np.max(res[start:stop])
             idx=np.argmax(res[start:stop])
             GCI_cur=GCI_cur+start-1
