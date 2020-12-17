@@ -251,16 +251,16 @@ class Prosody:
             features=self.prosody_static(audio, plots)
             if fmt=="npy" or fmt=="txt":
                 return features
-            elif fmt=="dataframe" or fmt=="csv":
+            if fmt=="dataframe" or fmt=="csv":
                 df={}
                 for e, k in enumerate(self.head_st):
                     #print(feat_v.shape, len(head_st), e, k)
                     df[k]=[features[e]]
                 return pd.DataFrame(df)
-            elif fmt=="torch":
+            if fmt=="torch":
                 feat_t=torch.from_numpy(features)
                 return feat_t
-            elif fmt=="kaldi":
+            if fmt=="kaldi":
                 raise ValueError("Kaldi is only supported for dynamic features")
             else:
                 raise ValueError("format"+ fmt+" is not supported" )
@@ -270,15 +270,15 @@ class Prosody:
             features=self.prosody_dynamic(audio)
             if fmt=="npy" or fmt=="txt":
                 return features
-            elif fmt=="dataframe" or fmt=="csv":
+            if fmt=="dataframe" or fmt=="csv":
                 df={}
                 for e, k in enumerate(self.head_dyn):
                     df[k]=features[:,e]
                 return pd.DataFrame(df)
-            elif fmt=="torch":
+            if fmt=="torch":
                 feat_t=torch.from_numpy(features)
                 return feat_t
-            elif fmt=="kaldi":
+            if fmt=="kaldi":
                 name_all=audio.split('/')
                 dictX={name_all[-1]:features}
                 save_dict_kaldimat(dictX, kaldi_file)
@@ -485,7 +485,7 @@ class Prosody:
         ids=np.hstack(ids)
         if fmt=="npy" or fmt=="txt":
             return Features
-        elif fmt=="dataframe" or fmt=="csv":
+        if fmt=="dataframe" or fmt=="csv":
             if static:
                 df={}
                 for e, k in enumerate(self.head_st):
@@ -496,9 +496,9 @@ class Prosody:
                     df[k]=Features[:,e]
             df["id"]=ids
             return pd.DataFrame(df)
-        elif fmt=="torch":
+        if fmt=="torch":
             return torch.from_numpy(Features)
-        elif fmt=="kaldi":
+        if fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
             dictX=get_dict(Features, ids)
