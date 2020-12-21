@@ -1,7 +1,7 @@
 librosa==0.8.0
 scipy==1.5.2
 phonet==0.3.6
-numpy==1.15.3
+numpy
 tqdm==4.23.4
 pandas==1.1.2
 torch==1.7.0
