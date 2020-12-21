@@ -11,7 +11,7 @@ import sys
 import numpy as np
 import pandas as pd
 try:
-    from replearning.AEspeech import AEspeech
+    from .AEspeech import AEspeech
 except:
     from AEspeech import AEspeech
 
