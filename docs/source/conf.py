@@ -41,6 +41,7 @@ sys.path.insert(0,os.path.abspath('../../phonation/'))
 sys.path.insert(0,os.path.abspath('../../articulation/'))
 sys.path.insert(0,os.path.abspath('../../prosody/'))
 sys.path.insert(0,os.path.abspath('../../phonological/'))
+sys.path.insert(0,os.path.abspath('../../replearning/'))
 
 
 # -- General configuration ------------------------------------------------

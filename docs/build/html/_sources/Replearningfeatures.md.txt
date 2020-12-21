@@ -1,0 +1,20 @@
+Representatoin learning-based features
+==================================
+
+.. image:: ../../images/replearning_continuous.png
+  :width: 400
+  :alt: Input and decoded spectrograms
+
+.. image:: ../../images/replearning_error.png
+  :width: 400
+  :alt: reconstructioon error
+
+.. automodule:: replearning
+   :no-members:
+   :no-inherited-members:
+
+   .. autoclass:: RepLearning
+      :members:
+
+   .. autoclass:: AEspeech
+      :members:

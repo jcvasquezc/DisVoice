@@ -35,7 +35,6 @@ Extract features in the command line
 
 ```sh
 python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesAst.txt" "true" "true" "txt"
-python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesUst.csv" "true" "true" "csv"
 python phonological.py "../audios/001_ddk1_PCGITA.wav" "phonologicalfeaturesUdyn.pt" "false" "true" "torch"
 
 python phonological.py "../audios/" "phonologicalfeaturesst.txt" "true" "false" "txt"
@@ -53,7 +52,7 @@ python phonological.py "../audios/" "phonologicalfeaturesdyn" "false" "false" "k
 Extract features directly in Python
 
 
-```
+```python
 phonological=Phonological()
 file_audio="../audios/001_ddk1_PCGITA.wav"
 features1=phonological.extract_features_file(file_audio, static=True, plots=True, fmt="npy")

@@ -12,7 +12,7 @@ Compute articulation features from continuous speech.
 - 35 - 46. First derivative of the MFCCs in onset transitions (12 DMFCC onset)
 - 47 - 58. Second derivative of the MFCCs in onset transitions (12 DDMFCC onset)
 - 59 - 80. Bark band energies in offset transitions (22 BBE).
-- 81 - 92. MFCCC in offset transitions (12 MFCC offset)
+- 81 - 92. MFCCs in offset transitions (12 MFCC offset)
 - 93 - 104. First derivative of the MFCCs in offset transitions (12 DMFCC offset)
 - 105 - 116. Second derivative of the MFCCs in offset transitions (12 DMFCC offset)
 - 117 First formant Frequency
@@ -65,7 +65,7 @@ python articulation.py "../audios/" "articulationfeaturesdyn" "false" "false" "k
 ```
 
 Extract features directly in Python
-```
+```python
 from articulation import Articulation
 articulation=Articulation()
 file_audio="../audios/001_ddk1_PCGITA.wav"

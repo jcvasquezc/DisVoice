@@ -9,11 +9,12 @@ dependencies:
         - phonet==0.3.6
         - pysptk==0.1.16
         - tqdm==4.23.4
-        - scipy==1.0.0
-        - pandas==1.0.5
+        - scipy==1.5.2
+        - pandas==1.1.2
         - numpy==1.14.0
         - kaldi_io==0.9.0
         - matplotlib==3.0.2
-        - torch==0.4.1
-        - scikit_learn==0.23.1
-
+        - torch==1.7.0
+        - scikit_learn==0.23.2
+        - librosa==0.8.0
+        - seaborn==0.9.0

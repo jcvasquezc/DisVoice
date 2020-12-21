@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Representatoin learning-based features &mdash; DisVoice 0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/disvoice_favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DisVoice
+          
+
+          
+            
+            <img src="_static/disvoice_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="Glottal.html">Glottal features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Phonation.html">Phonation features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Articulation.html">Articulation features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Prosody.html">Prosody features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Phonological.html">Phonological features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need Help?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DisVoice</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Representatoin learning-based features</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Replearningfeatures.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="representatoin-learning-based-features">
+<h1>Representatoin learning-based features<a class="headerlink" href="#representatoin-learning-based-features" title="Permalink to this headline">¶</a></h1>
+<a class="reference internal image-reference" href="_images/replearning_continuous.png"><img alt="Input and decoded spectrograms" src="_images/replearning_continuous.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="_images/replearning_error.png"><img alt="reconstructioon error" src="_images/replearning_error.png" style="width: 400px;" /></a>
+<span class="target" id="module-replearning"></span><p>Created on Dec 18 2020</p>
+<p>&#64;author: J. C. Vasquez-Correa</p>
+<dl class="class">
+<dt id="replearning.RepLearning">
+<em class="property">class </em><code class="descclassname">replearning.</code><code class="descname">RepLearning</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.RepLearning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Feature extraction from speech signals based on representation learning strategies using convolutional and recurrent autoencoders</p>
+<p>Two types of features are computed</p>
+<ol class="arabic simple">
+<li>256 features extracted from the bottleneck layer of the autoencoders</li>
+<li>128 features based on the MSE between the decoded and input spectrograms of the autoencoder in different frequency regions</li>
+</ol>
+<p>Additionally, static (for all utterance) or dynamic (for each 500 ms speech segments) features can be computed:
+- The static feature vector is formed with 1024 features and contains (384 descriptors) x (4 functionals: mean, std, skewness, kurtosis)
+- The dynamic feature matrix is formed with the 384 descriptors computed for speech segments with 500ms length and 250ms time-shift
+- You can choose between features computed from a convolutional or recurrent autoencoder</p>
+<p>Script is called as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">replearning</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">file_or_folder_audio</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">file_features</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">static</span> <span class="p">(</span><span class="n">true</span> <span class="ow">or</span> <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">plots</span> <span class="p">(</span><span class="n">true</span> <span class="ow">or</span> <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nb">format</span> <span class="p">(</span><span class="n">csv</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">npy</span><span class="p">,</span> <span class="n">kaldi</span><span class="p">,</span> <span class="n">torch</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">model</span> <span class="p">(</span><span class="n">CAE</span><span class="p">,</span> <span class="n">RAE</span><span class="p">)</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Examples command line:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">replearning</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;replearningfeaturesDDKst.txt&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;txt&quot;</span> <span class="s2">&quot;CAE&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">replearning</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span> <span class="s2">&quot;replearningfeaturesDDKdyn.pt&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;torch&quot;</span> <span class="s2">&quot;CAE&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">replearning</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;replearningfeaturesst.txt&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;txt&quot;</span> <span class="s2">&quot;CAE&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">replearning</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;replearningfeaturesst.csv&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;csv&quot;</span> <span class="s2">&quot;CAE&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">replearning</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/&quot;</span> <span class="s2">&quot;replearningfeaturesdyn.pt&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;false&quot;</span> <span class="s2">&quot;torch&quot;</span> <span class="s2">&quot;CAE&quot;</span>
+</pre></div>
+</div>
+<p>Examples directly in Python</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">replearning</span> <span class="kn">import</span> <span class="n">RepLearning</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">=</span><span class="n">RepLearning</span><span class="p">(</span><span class="s1">&#39;CAE&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_a1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="replearning.RepLearning.extract_features_file">
+<code class="descname">extract_features_file</code><span class="sig-paren">(</span><em>audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.RepLearning.extract_features_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the representation learning features from an audio file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>audio</strong> &#8211; .wav audio file.</li>
+<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
+<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
+<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
+<li><strong>kaldi_file</strong> &#8211; file to store kaldi features, only valid when fmt==&#8221;kaldi&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">=</span><span class="n">RepLearning</span><span class="p">(</span><span class="s1">&#39;CAE&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_ddk1_PCGITA.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">=</span><span class="n">RepLearning</span><span class="p">(</span><span class="s1">&#39;CAE&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_audio</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test.ark&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.RepLearning.extract_features_path">
+<code class="descname">extract_features_path</code><span class="sig-paren">(</span><em>path_audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.RepLearning.extract_features_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the representation learning features for audios inside a path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path_audio</strong> &#8211; directory with (.wav) audio files inside, sampled at 16 kHz</li>
+<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
+<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
+<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
+<li><strong>kaldi_file</strong> &#8211; file to store kaldifeatures, only valid when fmt==&#8221;kaldi&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">=</span><span class="n">RepLearning</span><span class="p">(</span><span class="s1">&#39;CAE&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_audio</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">replearning</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">replearning</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">phonological</span><span class="o">.</span><span class="n">replearning</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">replearning</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;kaldi&quot;</span><span class="p">,</span> <span class="n">kaldi_file</span><span class="o">=</span><span class="s2">&quot;./test.ark&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="replearning.AEspeech">
+<em class="property">class </em><code class="descclassname">replearning.</code><code class="descname">AEspeech</code><span class="sig-paren">(</span><em>model</em>, <em>units</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="replearning.AEspeech.compute_bottleneck_features">
+<code class="descname">compute_bottleneck_features</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_bottleneck_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the the bottleneck features of the autoencoder
+:param wav_file: <a href="#id1"><span class="problematic" id="id2">*</span></a>.wav file with a sampling frequency of 16kHz
+:param return_numpy: return the features in a numpy array (True) or a Pytorch tensor (False)
+:returns: Pytorch tensor (nf, h) or numpy array (nf, h) with the extracted features. nf: number of frames, size of the bottleneck space</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.compute_dynamic_features">
+<code class="descname">compute_dynamic_features</code><span class="sig-paren">(</span><em>wav_directory</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_dynamic_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute both the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory
+:param wav_directory: <a href="#id3"><span class="problematic" id="id4">*</span></a>.wav file with a sampling frequency of 16kHz
+:return: dictionary with the extracted bottleneck and error features, and with information about which frame coresponds to which wav file in the directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.compute_global_features">
+<code class="descname">compute_global_features</code><span class="sig-paren">(</span><em>wav_directory</em>, <em>stack_feat=False</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_global_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute global features (1 vector per utterance) both for the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory 
+:param wav_directory: <a href="#id5"><span class="problematic" id="id6">*</span></a>.wav file with a sampling frequency of 16kHz
+:param stack_feat: if True, returns also a feature matrix with the stack of the bottleneck and error features
+:return: pandas dataframes with the bottleneck and error features.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.compute_rec_error_features">
+<code class="descname">compute_rec_error_features</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_rec_error_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the  reconstruction error features from the autoencoder
+:param wav_file: <a href="#id7"><span class="problematic" id="id8">*</span></a>.wav file with a sampling frequency of 16kHz
+:param return_numpy: return the features in a numpy array (True) or a Pytorch tensor (False)
+:returns: Pytorch tensor (nf, 128) or numpy array (nf, 128) with the extracted features. nf: number of frames</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.compute_rec_spectrogram">
+<code class="descname">compute_rec_spectrogram</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_rec_spectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the  reconstructed spectrogram from the autoencoder
+:param wav_file: <a href="#id9"><span class="problematic" id="id10">*</span></a>.wav file with a sampling frequency of 16kHz
+:param return_numpy: return the features in a numpy array (True) or a Pytorch tensor (False)
+:returns: Pytorch tensor (N, C, F, T). N: batch of spectrograms extracted every 500ms, C: number of channels (1),  F: number of Mel frequencies (128), T: time steps (126)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.compute_spectrograms">
+<code class="descname">compute_spectrograms</code><span class="sig-paren">(</span><em>wav_file</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_spectrograms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file
+:param wav_file: <a href="#id11"><span class="problematic" id="id12">*</span></a>.wav file with a sampling frequency of 16kHz
+:returns: Pytorch tensor (N, C, F, T). N: batch of spectrograms extracted every 500ms, C: number of channels (1),  F: number of Mel frequencies (128), T: time steps (126)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.destandard">
+<code class="descname">destandard</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.destandard" title="Permalink to this definition">¶</a></dt>
+<dd><p>destandardize input tensor from the autoencoders
+:param tensor: standardized input tensor for the AEs (N, 128,126)
+:returns:  destandardized tensor for the AEs (N, 128,126)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.plot_spectrograms">
+<code class="descname">plot_spectrograms</code><span class="sig-paren">(</span><em>wav_file</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.plot_spectrograms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Figure of the decoded spectrograms by the AEs
+:param wav_file: <a href="#id13"><span class="problematic" id="id14">*</span></a>.wav file with a sampling frequency of 16kHz</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.show_spectrograms">
+<code class="descname">show_spectrograms</code><span class="sig-paren">(</span><em>spectrograms</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.show_spectrograms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualization of the computed tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file
+:param spectrograms: tensor of spectrograms obtained from &#8216;&#8217;&#8216;compute_spectrograms(wav-file)&#8217;&#8216;&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="replearning.AEspeech.standard">
+<code class="descname">standard</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.standard" title="Permalink to this definition">¶</a></dt>
+<dd><p>standardize input tensor for the autoencoders
+:param tensor: input tensor for the AEs (N, 128,126)
+:returns:  standardize tensor for the AEs (N, 128,126)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Camilo Vasquez.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

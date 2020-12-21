@@ -22,7 +22,7 @@ Seven descriptors are computed:
 
 Additionally, static (for all utterance) or dynamic (frame by frame) features can be computed:
 
-- The static feature vector is formed with 29 features and contains (seven descriptors) x (4 functionals: mean, std, skewness, kurtosis) + degree of Unvoiced
+- The static feature vector is formed with 28 features and contains (seven descriptors) x (4 functionals: mean, std, skewness, kurtosis)
 
 - The dynamic feature matrix is formed with the seven descriptors computed for frames of 40 ms with a time-shift of 20 ms.
 
@@ -64,7 +64,7 @@ python phonation.py "../audios/" "phonationfeaturesdyn" "false" "false" "kaldi"
 Extract features directly in Python
 
 
-```
+```python
 from phonation import Phonation
 phonation=Phonation()
 file_audio="../audios/001_a1_PCGITA.wav"

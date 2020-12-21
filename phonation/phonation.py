@@ -246,13 +246,13 @@ class Phonation:
                 for e, k in enumerate(self.head):
                     df[k]=feat_mat[:,e]
                 return pd.DataFrame(df)
-        elif fmt=="torch":
+        if fmt=="torch":
             if static:
                 feat_t=torch.from_numpy(feat_v)
                 return feat_t
             return torch.from_numpy(feat_mat)
 
-        elif fmt=="kaldi":
+        if fmt=="kaldi":
             if static:
                 raise ValueError("Kaldi is only supported for dynamic features")
             name_all=audio.split('/')

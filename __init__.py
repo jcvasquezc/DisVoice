@@ -2,4 +2,4 @@
 
 
 
-__all__=['glottal', 'phonation', 'articulation', 'prosody']
+__all__=['glottal', 'phonation', 'articulation', 'prosody', 'replearning']

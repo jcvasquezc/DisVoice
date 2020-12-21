@@ -41,7 +41,7 @@
 
 
 \title{Disvoice Documentation}
-\date{Jul 13, 2020}
+\date{Dec 21, 2020}
 \release{0.1}
 \author{Camilo Vasquez}
 \newcommand{\sphinxlogo}{}
@@ -55,12 +55,21 @@
 \phantomsection\label{\detokenize{index::doc}}
 
 
-DisVoice is a python framework designed to compute features from speech files. Disvoice computes glottal, phonation, articulation, prosody, and phonological-based features both from sustained vowels and continuous speech utterances with the aim to recognize praliguistic aspects from speech.
+\noindent\sphinxincludegraphics[width=400\sphinxpxdimen]{{disvoice_logo}.png}
+
+DisVoice is a python framework designed to compute features from speech files. Disvoice computes glottal, phonation, articulation, prosody, phonological, and features representation learnig strategies using autoencders. The features can be computed both from sustained vowels and continuous speech utterances with the aim to recognize praliguistic aspects from speech.
+
 The features can be used in classifiers to recognize emotions, or communication capabilities of patients with different speech disorders including diseases with functional origin such as larinx cancer or nodules; craneo-facial based disorders such as hipernasality developed by cleft-lip and palate; or neurodegenerative disorders such as Parkinson's or Hungtinton's diseases.
+
+The features are also suitable to evaluate mood problems like depression based on speech patterns.
+
+For additional details about each feature type, and how to use DisVoice, please check
 
 
 \chapter{Glottal features}
-\label{\detokenize{Glottal::doc}}\label{\detokenize{Glottal:glottal-features}}\label{\detokenize{Glottal:welcome-to-disvoice-s-documentation}}\label{\detokenize{Glottal:module-glottal}}\index{glottal (module)}\index{Glottal (class in glottal)}
+\label{\detokenize{Glottal::doc}}\label{\detokenize{Glottal:glottal-features}}\label{\detokenize{Glottal:welcome-to-disvoice-s-documentation}}
+\noindent\sphinxincludegraphics[width=800\sphinxpxdimen]{{glottal_vowel}.png}
+\phantomsection\label{\detokenize{Glottal:module-glottal}}\index{glottal (module)}\index{Glottal (class in glottal)}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{Glottal:glottal.Glottal}}\pysigline{\sphinxstrong{class }\sphinxcode{glottal.}\sphinxbfcode{Glottal}}
@@ -265,7 +274,9 @@ plots of the glottal features.
 
 
 \chapter{Phonation features}
-\label{\detokenize{Phonation::doc}}\label{\detokenize{Phonation:module-phonation}}\label{\detokenize{Phonation:phonation-features}}\index{phonation (module)}
+\label{\detokenize{Phonation::doc}}\label{\detokenize{Phonation:phonation-features}}
+\noindent\sphinxincludegraphics[width=800\sphinxpxdimen]{{phonation_vowel}.png}
+\phantomsection\label{\detokenize{Phonation:module-phonation}}\index{phonation (module)}
 Created on Jul 21 2017
 
 @author: J. C. Vasquez-Correa
@@ -469,7 +480,9 @@ plots of the phonation features.
 
 
 \chapter{Articulation features}
-\label{\detokenize{Articulation::doc}}\label{\detokenize{Articulation:articulation-features}}\label{\detokenize{Articulation:module-articulation}}\index{articulation (module)}
+\label{\detokenize{Articulation::doc}}\label{\detokenize{Articulation:articulation-features}}
+\noindent\sphinxincludegraphics[width=400\sphinxpxdimen]{{articulation_transition}.png}
+\phantomsection\label{\detokenize{Articulation:module-articulation}}\index{articulation (module)}
 Created on Jul 21 2017
 
 @author: J. C. Vasquez-Correa
@@ -688,7 +701,9 @@ plots of the articulation features.
 
 
 \chapter{Prosody features}
-\label{\detokenize{Prosody::doc}}\label{\detokenize{Prosody:prosody-features}}\label{\detokenize{Prosody:module-prosody}}\index{prosody (module)}
+\label{\detokenize{Prosody::doc}}\label{\detokenize{Prosody:prosody-features}}
+\noindent\sphinxincludegraphics[width=400\sphinxpxdimen]{{prosody1}.png}
+\phantomsection\label{\detokenize{Prosody:module-prosody}}\index{prosody (module)}
 Created on Jul 21 2017, Modified Apr 10 2018.
 
 @author: J. C. Vasquez-Correa, T. Arias-Vergara, J. S. Guerrero
@@ -964,7 +979,9 @@ array with the 103 prosody features
 
 
 \chapter{Phonological features}
-\label{\detokenize{Phonological::doc}}\label{\detokenize{Phonological:module-phonological}}\label{\detokenize{Phonological:phonological-features}}\index{phonological (module)}
+\label{\detokenize{Phonological::doc}}\label{\detokenize{Phonological:phonological-features}}
+\noindent\sphinxincludegraphics[width=800\sphinxpxdimen]{{phonological1}.png}
+\phantomsection\label{\detokenize{Phonological:module-phonological}}\index{phonological (module)}
 Created on Jun 24 2020
 
 @author: J. C. Vasquez-Correa
@@ -1110,6 +1127,344 @@ features computed from the audio file.
 
 
 
+\chapter{Representation learning features}
+\label{\detokenize{RepLearning::doc}}\label{\detokenize{RepLearning:representation-learning-features}}
+\noindent\sphinxincludegraphics[width=800\sphinxpxdimen]{{replearning_continuous}.png}
+
+\noindent\sphinxincludegraphics[width=600\sphinxpxdimen]{{replearning_error}.png}
+\phantomsection\label{\detokenize{RepLearning:module-replearning}}\index{replearning (module)}
+Created on Dec 18 2020
+
+@author: J. C. Vasquez-Correa
+\index{RepLearning (class in replearning)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.RepLearning}}\pysiglinewithargsret{\sphinxstrong{class }\sphinxcode{replearning.}\sphinxbfcode{RepLearning}}{\emph{model}}{}
+Feature extraction from speech signals based on representation learning strategies using convolutional and recurrent autoencoders
+
+Two types of features are computed
+\begin{enumerate}
+\item {} 
+256 features extracted from the bottleneck layer of the autoencoders
+
+\item {} 
+128 features based on the MSE between the decoded and input spectrograms of the autoencoder in different frequency regions
+
+\end{enumerate}
+
+Additionally, static (for all utterance) or dynamic (for each 500 ms speech segments) features can be computed:
+- The static feature vector is formed with 1024 features and contains (384 descriptors) x (4 functionals: mean, std, skewness, kurtosis)
+- The dynamic feature matrix is formed with the 384 descriptors computed for speech segments with 500ms length and 250ms time-shift
+- You can choose between features computed from a convolutional or recurrent autoencoder
+
+Script is called as follows
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{python} \PYG{n}{replearning}\PYG{o}{.}\PYG{n}{py} \PYG{o}{\PYGZlt{}}\PYG{n}{file\PYGZus{}or\PYGZus{}folder\PYGZus{}audio}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n}{file\PYGZus{}features}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n}{static} \PYG{p}{(}\PYG{n}{true} \PYG{o+ow}{or} \PYG{n}{false}\PYG{p}{)}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n}{plots} \PYG{p}{(}\PYG{n}{true} \PYG{o+ow}{or} \PYG{n}{false}\PYG{p}{)}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n+nb}{format} \PYG{p}{(}\PYG{n}{csv}\PYG{p}{,} \PYG{n}{txt}\PYG{p}{,} \PYG{n}{npy}\PYG{p}{,} \PYG{n}{kaldi}\PYG{p}{,} \PYG{n}{torch}\PYG{p}{)}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n}{model} \PYG{p}{(}\PYG{n}{CAE}\PYG{p}{,} \PYG{n}{RAE}\PYG{p}{)}\PYG{o}{\PYGZgt{}}
+\end{sphinxVerbatim}
+
+Examples command line:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{python} \PYG{n}{replearning}\PYG{o}{.}\PYG{n}{py} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/001\PYGZus{}ddk1\PYGZus{}PCGITA.wav}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{replearningfeaturesDDKst.txt}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{true}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{true}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{txt}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAE}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{python} \PYG{n}{replearning}\PYG{o}{.}\PYG{n}{py} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/001\PYGZus{}ddk1\PYGZus{}PCGITA.wav}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{replearningfeaturesDDKdyn.pt}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{false}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{true}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{torch}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAE}\PYG{l+s+s2}{\PYGZdq{}}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{python} \PYG{n}{replearning}\PYG{o}{.}\PYG{n}{py} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{replearningfeaturesst.txt}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{true}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{false}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{txt}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAE}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{python} \PYG{n}{replearning}\PYG{o}{.}\PYG{n}{py} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{replearningfeaturesst.csv}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{true}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{false}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{csv}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAE}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{python} \PYG{n}{replearning}\PYG{o}{.}\PYG{n}{py} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{replearningfeaturesdyn.pt}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{false}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{false}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{torch}\PYG{l+s+s2}{\PYGZdq{}} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAE}\PYG{l+s+s2}{\PYGZdq{}}
+\end{sphinxVerbatim}
+
+Examples directly in Python
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from} \PYG{n+nn}{replearning} \PYG{k+kn}{import} \PYG{n}{RepLearning}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{=}\PYG{n}{RepLearning}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{CAE}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{file\PYGZus{}audio}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/001\PYGZus{}a1\PYGZus{}PCGITA.wav}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features1}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{npy}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features2}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dataframe}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features3}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{torch}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{kaldi}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{kaldi\PYGZus{}file}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{./test}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+\index{extract\_features\_file() (replearning.RepLearning method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.RepLearning.extract_features_file}}\pysiglinewithargsret{\sphinxbfcode{extract\_features\_file}}{\emph{audio}, \emph{static=True}, \emph{plots=False}, \emph{fmt='npy'}, \emph{kaldi\_file='`}}{}
+Extract the representation learning features from an audio file
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{audio} -- .wav audio file.
+
+\item {} 
+\sphinxstyleliteralstrong{static} -- whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
+
+\item {} 
+\sphinxstyleliteralstrong{plots} -- timeshift to extract the features
+
+\item {} 
+\sphinxstyleliteralstrong{fmt} -- format to return the features (npy, dataframe, torch, kaldi)
+
+\item {} 
+\sphinxstyleliteralstrong{kaldi\_file} -- file to store kaldi features, only valid when fmt==\sphinxquotedblright{}kaldi\sphinxquotedblright{}
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+features computed from the audio file.
+
+\end{description}\end{quote}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{=}\PYG{n}{RepLearning}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{CAE}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{file\PYGZus{}audio}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/001\PYGZus{}ddk1\PYGZus{}PCGITA.wav}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features1}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{npy}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features2}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dataframe}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features3}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{torch}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}file}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{kaldi}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{kaldi\PYGZus{}file}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{./test}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{=}\PYG{n}{RepLearning}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{CAE}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{path\PYGZus{}audio}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features1}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}path}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{npy}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features2}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}path}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features3}\PYG{o}{=}\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}path}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{torch}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}path}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{kaldi}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{kaldi\PYGZus{}file}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{./test.ark}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}
+
+\index{extract\_features\_path() (replearning.RepLearning method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.RepLearning.extract_features_path}}\pysiglinewithargsret{\sphinxbfcode{extract\_features\_path}}{\emph{path\_audio}, \emph{static=True}, \emph{plots=False}, \emph{fmt='npy'}, \emph{kaldi\_file='`}}{}
+Extract the representation learning features for audios inside a path
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path\_audio} -- directory with (.wav) audio files inside, sampled at 16 kHz
+
+\item {} 
+\sphinxstyleliteralstrong{static} -- whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames
+
+\item {} 
+\sphinxstyleliteralstrong{plots} -- timeshift to extract the features
+
+\item {} 
+\sphinxstyleliteralstrong{fmt} -- format to return the features (npy, dataframe, torch, kaldi)
+
+\item {} 
+\sphinxstyleliteralstrong{kaldi\_file} -- file to store kaldifeatures, only valid when fmt==\sphinxquotedblright{}kaldi\sphinxquotedblright{}
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+features computed from the audio file.
+
+\end{description}\end{quote}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{=}\PYG{n}{RepLearning}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{CAE}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{path\PYGZus{}audio}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features1}\PYG{o}{=}\PYG{n}{phonological}\PYG{o}{.}\PYG{n}{replearning}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{npy}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features2}\PYG{o}{=}\PYG{n}{phonological}\PYG{o}{.}\PYG{n}{replearning}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{csv}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{features3}\PYG{o}{=}\PYG{n}{phonological}\PYG{o}{.}\PYG{n}{replearning}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{torch}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{replearning}\PYG{o}{.}\PYG{n}{extract\PYGZus{}features\PYGZus{}path}\PYG{p}{(}\PYG{n}{path\PYGZus{}audio}\PYG{p}{,} \PYG{n}{static}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{plots}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{fmt}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{kaldi}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{kaldi\PYGZus{}file}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{./test.ark}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{AEspeech (class in replearning)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech}}\pysiglinewithargsret{\sphinxstrong{class }\sphinxcode{replearning.}\sphinxbfcode{AEspeech}}{\emph{model}, \emph{units}}{}~\index{compute\_bottleneck\_features() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_bottleneck_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_bottleneck\_features}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
+Compute the the bottleneck features of the autoencoder
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{wav\_file} -- .wav file with a sampling frequency of 16kHz
+
+\item {} 
+\sphinxstyleliteralstrong{return\_numpy} -- return the features in a numpy array (True) or a Pytorch tensor (False)
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Pytorch tensor (nf, h) or numpy array (nf, h) with the extracted features. nf: number of frames, size of the bottleneck space
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{compute\_dynamic\_features() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_dynamic_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_dynamic\_features}}{\emph{wav\_directory}}{}
+Compute both the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{wav\_directory} -- .wav file with a sampling frequency of 16kHz
+
+\item[{Returns}] \leavevmode
+dictionary with the extracted bottleneck and error features, and with information about which frame coresponds to which wav file in the directory.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{compute\_global\_features() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_global_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_global\_features}}{\emph{wav\_directory}, \emph{stack\_feat=False}}{}
+Compute global features (1 vector per utterance) both for the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{wav\_directory} -- .wav file with a sampling frequency of 16kHz
+
+\item {} 
+\sphinxstyleliteralstrong{stack\_feat} -- if True, returns also a feature matrix with the stack of the bottleneck and error features
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+pandas dataframes with the bottleneck and error features.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{compute\_rec\_error\_features() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_rec_error_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_rec\_error\_features}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
+Compute the  reconstruction error features from the autoencoder
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{wav\_file} -- .wav file with a sampling frequency of 16kHz
+
+\item {} 
+\sphinxstyleliteralstrong{return\_numpy} -- return the features in a numpy array (True) or a Pytorch tensor (False)
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Pytorch tensor (nf, 128) or numpy array (nf, 128) with the extracted features. nf: number of frames
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{compute\_rec\_spectrogram() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_rec_spectrogram}}\pysiglinewithargsret{\sphinxbfcode{compute\_rec\_spectrogram}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
+Compute the  reconstructed spectrogram from the autoencoder
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{wav\_file} -- .wav file with a sampling frequency of 16kHz
+
+\item {} 
+\sphinxstyleliteralstrong{return\_numpy} -- return the features in a numpy array (True) or a Pytorch tensor (False)
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Pytorch tensor (N, C, F, T). N: batch of spectrograms extracted every 500ms, C: number of channels (1),  F: number of Mel frequencies (128), T: time steps (126)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{compute\_spectrograms() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{compute\_spectrograms}}{\emph{wav\_file}}{}
+Compute the tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{wav\_file} -- .wav file with a sampling frequency of 16kHz
+
+\item[{Returns}] \leavevmode
+Pytorch tensor (N, C, F, T). N: batch of spectrograms extracted every 500ms, C: number of channels (1),  F: number of Mel frequencies (128), T: time steps (126)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{destandard() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.destandard}}\pysiglinewithargsret{\sphinxbfcode{destandard}}{\emph{tensor}}{}
+destandardize input tensor from the autoencoders
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{tensor} -- standardized input tensor for the AEs (N, 128,126)
+
+\item[{Returns}] \leavevmode
+destandardized tensor for the AEs (N, 128,126)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_spectrograms() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.plot_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{plot\_spectrograms}}{\emph{wav\_file}}{}
+Figure of the decoded spectrograms by the AEs
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{wav\_file} -- .wav file with a sampling frequency of 16kHz
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{show\_spectrograms() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.show_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{show\_spectrograms}}{\emph{spectrograms}}{}
+Visualization of the computed tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{spectrograms} -- tensor of spectrograms obtained from \sphinxcode{compute\_spectrograms(wav-file)}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{standard() (replearning.AEspeech method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.standard}}\pysiglinewithargsret{\sphinxbfcode{standard}}{\emph{tensor}}{}
+standardize input tensor for the autoencoders
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{tensor} -- input tensor for the AEs (N, 128,126)
+
+\item[{Returns}] \leavevmode
+standardize tensor for the AEs (N, 128,126)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
 \chapter{Need Help?}
 \label{\detokenize{help::doc}}\label{\detokenize{help:need-help}}
 If you have trouble with Disvoice, please write to Camilo Vasquez at: \sphinxhref{mailto:juan.vasquez@fau.de}{juan.vasquez@fau.de}
@@ -1151,12 +1506,17 @@ If you use Disvoice for research purposes, please cite the following papers, dep
 {[}1{]} Vásquez-Correa, J. C., Klumpp, P., Orozco-Arroyave, J. R., \& Nöth, E. (2019). Phonet: a Tool Based on Gated Recurrent Neural Networks to Extract Phonological Posteriors from Speech. Proc. Interspeech 2019, 549-553.
 
 
+\section{Representation learning features}
+\label{\detokenize{reference:representation-learning-features}}
+{[}1{]} Vasquez-Correa, J. C., et al. (2020). Parallel Representation Learning for the Classification of Pathological Speech: Studies on Parkinson’s Disease and Cleft Lip and Palate. Speech Communication, 122, 56-67.
+
+
 \chapter{Installation}
 \label{\detokenize{index:installation}}
 From the source file:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{n}{git} \PYG{n}{clone} \PYG{n}{https}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{github}\PYG{o}{.}\PYG{n}{com}\PYG{o}{/}\PYG{n}{jcvasquezc}\PYG{o}{/}\PYG{n}{phonet}
+\PYG{n}{git} \PYG{n}{clone} \PYG{n}{https}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{github}\PYG{o}{.}\PYG{n}{com}\PYG{o}{/}\PYG{n}{jcvasquezc}\PYG{o}{/}\PYG{n}{disvoice}
 \PYG{n}{cd} \PYG{n}{disvoice}
 \PYG{n}{bash} \PYG{n}{install}\PYG{o}{.}\PYG{n}{sh}
 \end{sphinxVerbatim}
@@ -1194,6 +1554,9 @@ If you have trouble with Disvoice, please write to Camilo Vasquez at: \sphinxhre
 \item {\sphinxstyleindexentry{phonation}}\sphinxstyleindexpageref{Phonation:\detokenize{module-phonation}}
 \item {\sphinxstyleindexentry{phonological}}\sphinxstyleindexpageref{Phonological:\detokenize{module-phonological}}
 \item {\sphinxstyleindexentry{prosody}}\sphinxstyleindexpageref{Prosody:\detokenize{module-prosody}}
+\indexspace
+\bigletter{r}
+\item {\sphinxstyleindexentry{replearning}}\sphinxstyleindexpageref{RepLearning:\detokenize{module-replearning}}
 \end{sphinxtheindex}
 
 \renewcommand{\indexname}{Index}
