@@ -79,11 +79,13 @@ replearning.extract_features_file(file_audio, static=False, plots=False, fmt="ka
 
 
 Input and decoded spectrograms from the autoencoders
-!![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/replearning_continuous.png?raw=true)
+
+![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/replearning_continuous.png?raw=true)
 
 
 Reconstruction error in different frequency bands
-!![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/replearning_error.png?raw=true)
+
+![Image](https://github.com/jcvasquezc/DisVoice/blob/master/images/replearning_error.png?raw=true)
 
 
 
