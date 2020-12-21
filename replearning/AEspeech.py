@@ -6,8 +6,8 @@ Feature extraction from speech signals based on representation learning strategi
 
 import os
 try:
-    from replearning.CAE import CAEn
-    from replearning.RAE import RAEn
+    from .CAE import CAEn
+    from .RAE import RAEn
 except:
     from CAE import CAEn
     from RAE import RAEn
