@@ -4,12 +4,12 @@ import numpy as np
 import pysptk
 
 def bark(f):
-	x=(f*0.00076)
-	x2=(f/7500)**2
-	b=[]
-	for i in range (0,len(f)):
-		b.append(13*( math.atan(x[i]) )+3.5*( math.atan(x2[i]))) #Bark scale values
-	return (b)
+    x=(f*0.00076)
+    x2=(f/7500)**2
+    b=[]
+    for i in range (0,len(f)):
+        b.append(13*( math.atan(x[i]) )+3.5*( math.atan(x2[i]))) #Bark scale values
+    return (b)
 
 def barke(x,Fs, nfft=2048, nB=25):
     """
@@ -82,9 +82,7 @@ def fftsolp(x,nfft):
     y = (y[0:int(nfft/2+1)])
     return y
 
-
-
-
+    
 def extractTrans(segments, fs, size_frameS, size_stepS, nB=22, nMFCC=12, nfft=2048):
     frames=[]
     size_frame_full=int(2**np.ceil(np.log2(size_frameS)))
