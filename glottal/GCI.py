@@ -15,42 +15,45 @@ except:
 
 def SE_VQ_varF0(x,fs, f0=None):
     """
-    Function to extract GCIs using an adapted version of the SEDREAMS
+    Function to extract GCIs using an adapted version of the SEDREAMS 
     algorithm which is optimised for non-modal voice qualities (SE-VQ). Ncand maximum
     peaks are selected from the LP-residual signal in the interval defined by
-    the mean-based signal. A dynamic programming algorithm is then used to
-    select the optimal path of GCI locations. Then a post-processing method,
-    using the output of a resonator applied to the residual signal, is
-    carried out to remove false positives occurring in creaky speech regions
+    the mean-based signal. 
+    
+    A dynamic programming algorithm is then used to select the optimal path of GCI locations. 
+    Then a post-processing method, using the output of a resonator applied to the residual signal, is
+    carried out to remove false positives occurring in creaky speech regions.
+    
     Note that this method is slightly different from the standard SE-VQ
     algorithm as the mean based signal is calculated using a variable window
-    length. This is set using an f0 contour interpolated over unvoiced
+    length. 
+    
+    This is set using an f0 contour interpolated over unvoiced
     regions and heavily smoothed. This is particularly useful for speech
-    involving large f0 excursions (i.e. very expressive speech). Note also
-    that this algorithm has not yet been fully formally tested.
+    involving large f0 excursions (i.e. very expressive speech).
 
     :param x:  speech signal (in samples)
     :param fs: sampling frequency (Hz)
     :param f0: f0 contour (optional), otherwise its computed  using the RAPT algorithm
-    :returns GCI: Glottal closure instants (in samples)
+    :returns: GCI Glottal closure instants (in samples)
     
-    REFERENCE:
+    References:
           Kane, J., Gobl, C., (2013) `Evaluation of glottal closure instant 
           detection in a range of voice qualities', Speech Communication
           55(2), pp. 295-314.
     
-    ##########################################################################
-    # ORIGINAL FUNCTION WAS CODED BY JOHN KANE AT THE PHONETICS AND SPEECH LAB IN #####
-    # TRINITY COLLEGE DUBLIN ON 2013.
-    # THE SEDREAMS FUNCTION WAS
-    # CODED BY THOMAS DRUGMAN OF THE UNIVERSITY OF MONS ######################
-    #
-    # THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
-    # AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBER- GERMANY
-    # AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
-    # JCAMILO.VASQUEZ@UDEA.EDU.CO
-    # https//jcvasquezc.github.io
-    ##########################################################################
+
+    ORIGINAL FUNCTION WAS CODED BY JOHN KANE AT THE PHONETICS AND SPEECH LAB IN 
+    TRINITY COLLEGE DUBLIN ON 2013.
+    
+    THE SEDREAMS FUNCTION WAS CODED BY THOMAS DRUGMAN OF THE UNIVERSITY OF MONS
+   
+    THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
+    AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBER- GERMANY
+    AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
+    JCAMILO.VASQUEZ@UDEA.EDU.CO
+    https//jcvasquezc.github.io
+
 
     """
     if f0 is None:
@@ -114,21 +117,22 @@ def SE_VQ_varF0(x,fs, f0=None):
 def IAIF(x,fs,GCI):
     """
     Function to carry out iterative and adaptive inverse filtering (Alku et al 1992).
+    
     :param x: speech signal (in samples)
     :param fs: sampling frequency (in Hz)
     :param GCI: Glottal closure instants (in samples)
-    :returns g_iaif : glottal flow derivative estimate
+    :returns: glottal flow derivative estimate
     
-    ########################################################################
-    # Function Coded by John Kane @ The Phonetics and Speech Lab ###########
-    # Trinity College Dublin, August 2012 ##################################
-    ########################################################################
 
-    # THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
-    # AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBER- GERMANY
-    # AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
-    # JCAMILO.VASQUEZ@UDEA.EDU.CO
-    # https//jcvasquezc.github.io
+    Function Coded by John Kane @ The Phonetics and Speech Lab
+    Trinity College Dublin, August 2012
+
+
+    THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
+    AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBER- GERMANY
+    AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
+    JCAMILO.VASQUEZ@UDEA.EDU.CO
+    https//jcvasquezc.github.io
     """
 
     p=int(fs/1000)+2 # LPC order
@@ -173,42 +177,38 @@ def get_vq_params(gf, gfd, fs, GCI):
     normalized amplitude quotient (NAQ), the quasi-open quotient (QOQ), the
     difference in amplitude of the first two harmonics of the differentiated
     glottal source spectrum (H1-H2), and the harmonic richness factor (HRF)
+    
     :param gf: [samples] [N] Glottal flow estimation
     :param gfd: [samples] [N] Glottal flow derivative estimation
     :param fs: [Hz] [1] sampling frequency
     :param GCI: [samples] [M] Glottal closure instants
-    :returns NAQ: [s,samples] [Mx2] Normalised amplitude quotient
-    :returns QOQ: [s,samples] [Mx2] Quasi-open quotient
-    :returns H1H2: [s,dB] [Mx2] Difference in glottal harmonic amplitude
-    :returns HRF: [s,samples] [Mx2] Harmonic richness factor
+    :returns: NAQ [s,samples] [Mx2] Normalised amplitude quotient
+    :returns: QOQ[s,samples] [Mx2] Quasi-open quotient
+    :returns: H1H2[s,dB] [Mx2] Difference in glottal harmonic amplitude
+    :returns: HRF[s,samples] [Mx2] Harmonic richness factor
     
-    References
-     [1] Alku, P., B ackstrom, T., and Vilkman, E. Normalized amplitude quotient
-        for parameterization of the glottal flow. Journal of the Acoustical
-        Society of America, 112(2):701-710, 2002.
-     [2] Hacki, T. Klassifizierung von glottisdysfunktionen mit hilfe der
-        elektroglottographie. Folia Phoniatrica, pages 43-48, 1989.
-     [3] Alku, P., Strik, H., and Vilkman, E. Parabolic spectral parameter -
-        A new method for quantification of the glottal flow. Speech
-        Communication, 22(1):67-79, 1997.
-     [4] Hanson, H. M. Glottal characteristics of female speakers: Acoustic
-        correlates. Journal of the Acoustical Society of America,
-        10(1):466-481, 1997.
-     [5] Childers, D. G. and Lee, C. K. Voice quality factors: Analysis,
-        synthesis and perception. Journal of the Acoustical Society of
-        America, 90(5):2394-2410, 1991.
+    References:
+     [1] Alku, P., B ackstrom, T., and Vilkman, E. Normalized amplitude quotient for parameterization of the glottal flow. Journal of the Acoustical Society of America, 112(2):701-710, 2002.
+     
+     [2] Hacki, T. Klassifizierung von glottisdysfunktionen mit hilfe der elektroglottographie. Folia Phoniatrica, pages 43-48, 1989.
+     
+     [3] Alku, P., Strik, H., and Vilkman, E. Parabolic spectral parameter - A new method for quantification of the glottal flow. Speech Communication, 22(1):67-79, 1997.
+     
+     [4] Hanson, H. M. Glottal characteristics of female speakers: Acoustic correlates. Journal of the Acoustical Society of America, 10(1):466-481, 1997.
+        
+     [5] Childers, D. G. and Lee, C. K. Voice quality factors: Analysis, synthesis and perception. Journal of the Acoustical Society of  America, 90(5):2394-2410, 1991.
     
-    Author
-    ########################################################################
-    # Function Coded by John Kane @ The Phonetics and Speech Lab ###########
-    # Trinity College Dublin, August 2012 ##################################
-    ########################################################################
 
-    # THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
-    # AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBERGER- GERMANY
-    # AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
-    # JCAMILO.VASQUEZ@UDEA.EDU.CO
-    # https//jcvasquezc.github.io
+
+    Function Coded by John Kane @ The Phonetics and Speech Lab
+    Trinity College Dublin, August 2012
+
+
+    THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
+    AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBERGER- GERMANY
+    AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
+    JCAMILO.VASQUEZ@UDEA.EDU.CO
+    https//jcvasquezc.github.io
     """
 
     F0min=20

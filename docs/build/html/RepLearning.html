@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Representation learning features &mdash; DisVoice 0.1 documentation</title>
+  <title>Representation learning features &mdash; DisVoice 0.1.1 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1
+                0.1.1
               </div>
             
           
@@ -163,10 +163,8 @@
   <div class="section" id="representation-learning-features">
 <h1>Representation learning features<a class="headerlink" href="#representation-learning-features" title="Permalink to this headline">¶</a></h1>
 <a class="reference internal image-reference" href="_images/replearning_continuous.png"><img alt="Input and decoded spectrograms" src="_images/replearning_continuous.png" style="width: 800px;" /></a>
-<a class="reference internal image-reference" href="_images/replearning_error.png"><img alt="reconstructioon error" src="_images/replearning_error.png" style="width: 600px;" /></a>
-<span class="target" id="module-replearning"></span><p>Created on Dec 18 2020</p>
-<p>&#64;author: J. C. Vasquez-Correa</p>
-<dl class="class">
+<a class="reference internal image-reference" href="_images/replearning_error.png"><img alt="reconstruction error" src="_images/replearning_error.png" style="width: 600px;" /></a>
+<span class="target" id="module-replearning"></span><dl class="class">
 <dt id="replearning.RepLearning">
 <em class="property">class </em><code class="descclassname">replearning.</code><code class="descname">RepLearning</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.RepLearning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Feature extraction from speech signals based on representation learning strategies using convolutional and recurrent autoencoders</p>
@@ -277,12 +275,13 @@
 
 </dd></dl>
 
+<span class="target" id="module-AEspeech"></span><p>Feature extraction from speech signals based on representation learning strategies</p>
 <dl class="class">
-<dt id="replearning.AEspeech">
-<em class="property">class </em><code class="descclassname">replearning.</code><code class="descname">AEspeech</code><span class="sig-paren">(</span><em>model</em>, <em>units</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech">
+<em class="property">class </em><code class="descclassname">AEspeech.</code><code class="descname">AEspeech</code><span class="sig-paren">(</span><em>model</em>, <em>units</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
-<dt id="replearning.AEspeech.compute_bottleneck_features">
-<code class="descname">compute_bottleneck_features</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_bottleneck_features" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.compute_bottleneck_features">
+<code class="descname">compute_bottleneck_features</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.compute_bottleneck_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the the bottleneck features of the autoencoder</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -302,8 +301,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.compute_dynamic_features">
-<code class="descname">compute_dynamic_features</code><span class="sig-paren">(</span><em>wav_directory</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_dynamic_features" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.compute_dynamic_features">
+<code class="descname">compute_dynamic_features</code><span class="sig-paren">(</span><em>wav_directory</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.compute_dynamic_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute both the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -318,8 +317,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.compute_global_features">
-<code class="descname">compute_global_features</code><span class="sig-paren">(</span><em>wav_directory</em>, <em>stack_feat=False</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_global_features" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.compute_global_features">
+<code class="descname">compute_global_features</code><span class="sig-paren">(</span><em>wav_directory</em>, <em>stack_feat=False</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.compute_global_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute global features (1 vector per utterance) both for the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -339,8 +338,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.compute_rec_error_features">
-<code class="descname">compute_rec_error_features</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_rec_error_features" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.compute_rec_error_features">
+<code class="descname">compute_rec_error_features</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.compute_rec_error_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the  reconstruction error features from the autoencoder</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -360,8 +359,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.compute_rec_spectrogram">
-<code class="descname">compute_rec_spectrogram</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_rec_spectrogram" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.compute_rec_spectrogram">
+<code class="descname">compute_rec_spectrogram</code><span class="sig-paren">(</span><em>wav_file</em>, <em>return_numpy=True</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.compute_rec_spectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the  reconstructed spectrogram from the autoencoder</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -381,8 +380,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.compute_spectrograms">
-<code class="descname">compute_spectrograms</code><span class="sig-paren">(</span><em>wav_file</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.compute_spectrograms" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.compute_spectrograms">
+<code class="descname">compute_spectrograms</code><span class="sig-paren">(</span><em>wav_file</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.compute_spectrograms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -397,8 +396,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.destandard">
-<code class="descname">destandard</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.destandard" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.destandard">
+<code class="descname">destandard</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.destandard" title="Permalink to this definition">¶</a></dt>
 <dd><p>destandardize input tensor from the autoencoders</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -413,8 +412,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.plot_spectrograms">
-<code class="descname">plot_spectrograms</code><span class="sig-paren">(</span><em>wav_file</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.plot_spectrograms" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.plot_spectrograms">
+<code class="descname">plot_spectrograms</code><span class="sig-paren">(</span><em>wav_file</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.plot_spectrograms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Figure of the decoded spectrograms by the AEs</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -427,8 +426,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.show_spectrograms">
-<code class="descname">show_spectrograms</code><span class="sig-paren">(</span><em>spectrograms</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.show_spectrograms" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.show_spectrograms">
+<code class="descname">show_spectrograms</code><span class="sig-paren">(</span><em>spectrograms</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.show_spectrograms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Visualization of the computed tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -441,8 +440,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="replearning.AEspeech.standard">
-<code class="descname">standard</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="headerlink" href="#replearning.AEspeech.standard" title="Permalink to this definition">¶</a></dt>
+<dt id="AEspeech.AEspeech.standard">
+<code class="descname">standard</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="headerlink" href="#AEspeech.AEspeech.standard" title="Permalink to this definition">¶</a></dt>
 <dd><p>standardize input tensor for the autoencoders</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -502,7 +501,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1',
+            VERSION:'0.1.1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

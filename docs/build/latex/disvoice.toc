@@ -1,20 +1,20 @@
 \babel@toc {english}{}
 \contentsline {chapter}{\numberline {1}Glottal features}{3}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Phonation features}{7}{chapter.2}%
-\contentsline {chapter}{\numberline {3}Articulation features}{11}{chapter.3}%
-\contentsline {chapter}{\numberline {4}Prosody features}{15}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Phonological features}{19}{chapter.5}%
-\contentsline {chapter}{\numberline {6}Representation learning features}{23}{chapter.6}%
-\contentsline {chapter}{\numberline {7}Need Help?}{29}{chapter.7}%
-\contentsline {chapter}{\numberline {8}References}{31}{chapter.8}%
-\contentsline {section}{\numberline {8.1}glottal features}{31}{section.8.1}%
-\contentsline {section}{\numberline {8.2}phonation features}{31}{section.8.2}%
-\contentsline {section}{\numberline {8.3}articulation features}{31}{section.8.3}%
-\contentsline {section}{\numberline {8.4}prosody features}{31}{section.8.4}%
-\contentsline {section}{\numberline {8.5}phonological features}{31}{section.8.5}%
-\contentsline {section}{\numberline {8.6}Representation learning features}{32}{section.8.6}%
-\contentsline {chapter}{\numberline {9}Installation}{33}{chapter.9}%
-\contentsline {chapter}{\numberline {10}Indices and tables}{35}{chapter.10}%
-\contentsline {chapter}{\numberline {11}Help}{37}{chapter.11}%
-\contentsline {chapter}{Python Module Index}{39}{section*.44}%
-\contentsline {chapter}{Index}{41}{section*.45}%
+\contentsline {chapter}{\numberline {2}Phonation features}{9}{chapter.2}%
+\contentsline {chapter}{\numberline {3}Articulation features}{13}{chapter.3}%
+\contentsline {chapter}{\numberline {4}Prosody features}{17}{chapter.4}%
+\contentsline {chapter}{\numberline {5}Phonological features}{21}{chapter.5}%
+\contentsline {chapter}{\numberline {6}Representation learning features}{25}{chapter.6}%
+\contentsline {chapter}{\numberline {7}Need Help?}{31}{chapter.7}%
+\contentsline {chapter}{\numberline {8}References}{33}{chapter.8}%
+\contentsline {section}{\numberline {8.1}glottal features}{33}{section.8.1}%
+\contentsline {section}{\numberline {8.2}phonation features}{33}{section.8.2}%
+\contentsline {section}{\numberline {8.3}articulation features}{33}{section.8.3}%
+\contentsline {section}{\numberline {8.4}prosody features}{33}{section.8.4}%
+\contentsline {section}{\numberline {8.5}phonological features}{33}{section.8.5}%
+\contentsline {section}{\numberline {8.6}Representation learning features}{34}{section.8.6}%
+\contentsline {chapter}{\numberline {9}Installation}{35}{chapter.9}%
+\contentsline {chapter}{\numberline {10}Indices and tables}{37}{chapter.10}%
+\contentsline {chapter}{\numberline {11}Help}{39}{chapter.11}%
+\contentsline {chapter}{Python Module Index}{41}{section*.49}%
+\contentsline {chapter}{Index}{43}{section*.50}%

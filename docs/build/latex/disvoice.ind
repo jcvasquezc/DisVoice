@@ -2,67 +2,75 @@
 \def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
 
   \bigletter A
-  \item AEspeech (class in replearning), \hyperpage{26}
-  \item Articulation (class in articulation), \hyperpage{11}
-  \item articulation (module), \hyperpage{11}
+  \item AEspeech (class in AEspeech), \hyperpage{28}
+  \item AEspeech (module), \hyperpage{28}
+  \item Articulation (class in articulation), \hyperpage{13}
+  \item articulation (module), \hyperpage{13}
 
   \indexspace
   \bigletter C
-  \item compute\_bottleneck\_features() (replearning.AEspeech method), \hyperpage{26}
-  \item compute\_dynamic\_features() (replearning.AEspeech method), \hyperpage{26}
-  \item compute\_global\_features() (replearning.AEspeech method), \hyperpage{26}
-  \item compute\_rec\_error\_features() (replearning.AEspeech method), \hyperpage{27}
-  \item compute\_rec\_spectrogram() (replearning.AEspeech method), \hyperpage{27}
-  \item compute\_spectrograms() (replearning.AEspeech method), \hyperpage{27}
+  \item compute\_bottleneck\_features() (AEspeech.AEspeech method), \hyperpage{28}
+  \item compute\_dynamic\_features() (AEspeech.AEspeech method), \hyperpage{28}
+  \item compute\_global\_features() (AEspeech.AEspeech method), \hyperpage{28}
+  \item compute\_rec\_error\_features() (AEspeech.AEspeech method), \hyperpage{29}
+  \item compute\_rec\_spectrogram() (AEspeech.AEspeech method), \hyperpage{29}
+  \item compute\_spectrograms() (AEspeech.AEspeech method), \hyperpage{29}
 
   \indexspace
   \bigletter D
-  \item destandard() (replearning.AEspeech method), \hyperpage{27}
+  \item destandard() (AEspeech.AEspeech method), \hyperpage{29}
 
   \indexspace
   \bigletter E
-  \item extract\_features\_file() (articulation.Articulation method), \hyperpage{12}
+  \item extract\_features\_file() (articulation.Articulation method), \hyperpage{14}
   \item extract\_features\_file() (glottal.Glottal method), \hyperpage{4}
-  \item extract\_features\_file() (phonation.Phonation method), \hyperpage{9}
-  \item extract\_features\_file() (phonological.Phonological method), \hyperpage{20}
-  \item extract\_features\_file() (prosody.Prosody method), \hyperpage{17}
-  \item extract\_features\_file() (replearning.RepLearning method), \hyperpage{25}
-  \item extract\_features\_path() (articulation.Articulation method), \hyperpage{13}
+  \item extract\_features\_file() (phonation.Phonation method), \hyperpage{11}
+  \item extract\_features\_file() (phonological.Phonological method), \hyperpage{22}
+  \item extract\_features\_file() (prosody.Prosody method), \hyperpage{19}
+  \item extract\_features\_file() (replearning.RepLearning method), \hyperpage{27}
+  \item extract\_features\_path() (articulation.Articulation method), \hyperpage{15}
   \item extract\_features\_path() (glottal.Glottal method), \hyperpage{5}
-  \item extract\_features\_path() (phonation.Phonation method), \hyperpage{9}
-  \item extract\_features\_path() (phonological.Phonological method), \hyperpage{21}
-  \item extract\_features\_path() (prosody.Prosody method), \hyperpage{17}
-  \item extract\_features\_path() (replearning.RepLearning method), \hyperpage{26}
+  \item extract\_features\_path() (phonation.Phonation method), \hyperpage{11}
+  \item extract\_features\_path() (phonological.Phonological method), \hyperpage{23}
+  \item extract\_features\_path() (prosody.Prosody method), \hyperpage{19}
+  \item extract\_features\_path() (replearning.RepLearning method), \hyperpage{28}
+  \item extract\_glottal\_signal() (glottal.Glottal method), \hyperpage{5}
 
   \indexspace
   \bigletter G
+  \item get\_vq\_params() (in module glottal), \hyperpage{7}
   \item Glottal (class in glottal), \hyperpage{3}
   \item glottal (module), \hyperpage{3}
 
   \indexspace
+  \bigletter I
+  \item IAIF() (in module glottal), \hyperpage{7}
+
+  \indexspace
   \bigletter P
-  \item Phonation (class in phonation), \hyperpage{7}
-  \item phonation (module), \hyperpage{7}
-  \item Phonological (class in phonological), \hyperpage{19}
-  \item phonological (module), \hyperpage{19}
-  \item plot\_art() (articulation.Articulation method), \hyperpage{13}
-  \item plot\_glottal() (glottal.Glottal method), \hyperpage{5}
-  \item plot\_phon() (phonation.Phonation method), \hyperpage{10}
-  \item plot\_pros() (prosody.Prosody method), \hyperpage{18}
-  \item plot\_spectrograms() (replearning.AEspeech method), \hyperpage{27}
-  \item Prosody (class in prosody), \hyperpage{15}
-  \item prosody (module), \hyperpage{15}
-  \item prosody\_dynamic() (prosody.Prosody method), \hyperpage{18}
-  \item prosody\_static() (prosody.Prosody method), \hyperpage{18}
+  \item Phonation (class in phonation), \hyperpage{9}
+  \item phonation (module), \hyperpage{9}
+  \item Phonological (class in phonological), \hyperpage{21}
+  \item phonological (module), \hyperpage{21}
+  \item plot\_art() (articulation.Articulation method), \hyperpage{15}
+  \item plot\_glottal() (glottal.Glottal method), \hyperpage{6}
+  \item plot\_phon() (phonation.Phonation method), \hyperpage{12}
+  \item plot\_pros() (prosody.Prosody method), \hyperpage{20}
+  \item plot\_spectrograms() (AEspeech.AEspeech method), \hyperpage{29}
+  \item Prosody (class in prosody), \hyperpage{17}
+  \item prosody (module), \hyperpage{17}
+  \item prosody\_dynamic() (prosody.Prosody method), \hyperpage{20}
+  \item prosody\_static() (prosody.Prosody method), \hyperpage{20}
 
   \indexspace
   \bigletter R
-  \item RepLearning (class in replearning), \hyperpage{24}
-  \item replearning (module), \hyperpage{24}
+  \item RepLearning (class in replearning), \hyperpage{26}
+  \item replearning (module), \hyperpage{26}
 
   \indexspace
   \bigletter S
-  \item show\_spectrograms() (replearning.AEspeech method), \hyperpage{27}
-  \item standard() (replearning.AEspeech method), \hyperpage{27}
+  \item SE\_VQ\_varF0() (in module glottal), \hyperpage{6}
+  \item show\_spectrograms() (AEspeech.AEspeech method), \hyperpage{29}
+  \item standard() (AEspeech.AEspeech method), \hyperpage{29}
 
 \end{sphinxtheindex}

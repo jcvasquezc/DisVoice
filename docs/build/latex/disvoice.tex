@@ -41,8 +41,8 @@
 
 
 \title{Disvoice Documentation}
-\date{Dec 21, 2020}
-\release{0.1}
+\date{Mar 04, 2021}
+\release{0.1.1}
 \author{Camilo Vasquez}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -112,7 +112,7 @@ Static or dynamic matrices can be computed:
 
 Static matrix is formed with 36 features formed with (9 descriptors) x (4 functionals: mean, std, skewness, kurtosis)
 
-Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length with a time-shift of 100 ms.
+Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length with a time-shift of 50 ms.
 
 Notes:
 \begin{enumerate}
@@ -231,10 +231,46 @@ features computed from the audio file.
 
 \end{fulllineitems}
 
+\index{extract\_glottal\_signal() (glottal.Glottal method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{Glottal:glottal.Glottal.extract_glottal_signal}}\pysiglinewithargsret{\sphinxbfcode{extract\_glottal\_signal}}{\emph{x}, \emph{fs}}{}
+Extract the glottal flow and the glottal flow derivative signals
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} -- data from the speech signal.
+
+\item {} 
+\sphinxstyleliteralstrong{fs} -- sampling frequency
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+glottal signal
+
+\item[{Returns}] \leavevmode
+derivative  of the glottal signal
+
+\item[{Returns}] \leavevmode
+glottal closure instants
+
+\end{description}\end{quote}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from} \PYG{n+nn}{scipy}\PYG{n+nn}{.}\PYG{n+nn}{io}\PYG{n+nn}{.}\PYG{n+nn}{wavfile} \PYG{k+kn}{import} \PYG{n}{read}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{glottal}\PYG{o}{=}\PYG{n}{Glottal}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{file\PYGZus{}audio}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{../audios/001\PYGZus{}a1\PYGZus{}PCGITA.wav}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{fs}\PYG{p}{,} \PYG{n}{data\PYGZus{}audio}\PYG{o}{=}\PYG{n}{read}\PYG{p}{(}\PYG{n}{audio}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{glottal}\PYG{p}{,} \PYG{n}{g\PYGZus{}iaif}\PYG{p}{,} \PYG{n}{GCIs}\PYG{o}{=}\PYG{n}{glottal}\PYG{o}{.}\PYG{n}{extract\PYGZus{}glottal\PYGZus{}signal}\PYG{p}{(}\PYG{n}{data\PYGZus{}audio}\PYG{p}{,} \PYG{n}{fs}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}
+
 \index{plot\_glottal() (glottal.Glottal method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Glottal:glottal.Glottal.plot_glottal}}\pysiglinewithargsret{\sphinxbfcode{plot\_glottal}}{\emph{data\_audio}, \emph{fs}, \emph{GCI}, \emph{glottal\_flow}, \emph{glottal\_sig}, \emph{GCI\_avg}, \emph{GCI\_std}}{}
+\phantomsection\label{\detokenize{Glottal:glottal.Glottal.plot_glottal}}\pysiglinewithargsret{\sphinxbfcode{plot\_glottal}}{\emph{data\_audio}, \emph{fs}, \emph{GCI}, \emph{glottal\_flow}, \emph{glottal\_sig}}{}
 Plots of the glottal features
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -253,12 +289,6 @@ Plots of the glottal features
 \item {} 
 \sphinxstyleliteralstrong{glottal\_sig} -- reconstructed glottal signal
 
-\item {} 
-\sphinxstyleliteralstrong{GCI\_avg} -- average of the glottal closure instants
-
-\item {} 
-\sphinxstyleliteralstrong{GCI\_std} -- standard deviation of the glottal closure instants
-
 \end{itemize}
 
 \item[{Returns}] \leavevmode
@@ -271,10 +301,167 @@ plots of the glottal features.
 
 \end{fulllineitems}
 
+\index{SE\_VQ\_varF0() (in module glottal)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{Glottal:glottal.SE_VQ_varF0}}\pysiglinewithargsret{\sphinxcode{glottal.}\sphinxbfcode{SE\_VQ\_varF0}}{\emph{x}, \emph{fs}, \emph{f0=None}}{}
+Function to extract GCIs using an adapted version of the SEDREAMS 
+algorithm which is optimised for non-modal voice qualities (SE-VQ). Ncand maximum
+peaks are selected from the LP-residual signal in the interval defined by
+the mean-based signal.
+
+A dynamic programming algorithm is then used to select the optimal path of GCI locations. 
+Then a post-processing method, using the output of a resonator applied to the residual signal, is
+carried out to remove false positives occurring in creaky speech regions.
+
+Note that this method is slightly different from the standard SE-VQ
+algorithm as the mean based signal is calculated using a variable window
+length.
+
+This is set using an f0 contour interpolated over unvoiced
+regions and heavily smoothed. This is particularly useful for speech
+involving large f0 excursions (i.e. very expressive speech).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} -- speech signal (in samples)
+
+\item {} 
+\sphinxstyleliteralstrong{fs} -- sampling frequency (Hz)
+
+\item {} 
+\sphinxstyleliteralstrong{f0} -- f0 contour (optional), otherwise its computed  using the RAPT algorithm
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+GCI Glottal closure instants (in samples)
+
+\end{description}\end{quote}
+\begin{description}
+\item[{References:}] \leavevmode
+Kane, J., Gobl, C., (2013) {\color{red}\bfseries{}{}`}Evaluation of glottal closure instant 
+detection in a range of voice qualities', Speech Communication
+55(2), pp. 295-314.
+
+\end{description}
+
+ORIGINAL FUNCTION WAS CODED BY JOHN KANE AT THE PHONETICS AND SPEECH LAB IN 
+TRINITY COLLEGE DUBLIN ON 2013.
+
+THE SEDREAMS FUNCTION WAS CODED BY THOMAS DRUGMAN OF THE UNIVERSITY OF MONS
+
+THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
+AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBER- GERMANY
+AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
+\sphinxhref{mailto:JCAMILO.VASQUEZ@UDEA.EDU.CO}{JCAMILO.VASQUEZ@UDEA.EDU.CO}
+https//jcvasquezc.github.io
+
+\end{fulllineitems}
+
+\index{IAIF() (in module glottal)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{Glottal:glottal.IAIF}}\pysiglinewithargsret{\sphinxcode{glottal.}\sphinxbfcode{IAIF}}{\emph{x}, \emph{fs}, \emph{GCI}}{}
+Function to carry out iterative and adaptive inverse filtering (Alku et al 1992).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} -- speech signal (in samples)
+
+\item {} 
+\sphinxstyleliteralstrong{fs} -- sampling frequency (in Hz)
+
+\item {} 
+\sphinxstyleliteralstrong{GCI} -- Glottal closure instants (in samples)
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+glottal flow derivative estimate
+
+\end{description}\end{quote}
+
+Function Coded by John Kane @ The Phonetics and Speech Lab
+Trinity College Dublin, August 2012
+
+THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
+AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBER- GERMANY
+AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
+\sphinxhref{mailto:JCAMILO.VASQUEZ@UDEA.EDU.CO}{JCAMILO.VASQUEZ@UDEA.EDU.CO}
+https//jcvasquezc.github.io
+
+\end{fulllineitems}
+
+\index{get\_vq\_params() (in module glottal)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{Glottal:glottal.get_vq_params}}\pysiglinewithargsret{\sphinxcode{glottal.}\sphinxbfcode{get\_vq\_params}}{\emph{gf}, \emph{gfd}, \emph{fs}, \emph{GCI}}{}
+Function to estimate the glottal parameters: NAQ, QOQ, H1-H2, and HRF
+
+This function can be used to estimate a range of conventional glottal
+source parameters often used in the literature. This includes: the
+normalized amplitude quotient (NAQ), the quasi-open quotient (QOQ), the
+difference in amplitude of the first two harmonics of the differentiated
+glottal source spectrum (H1-H2), and the harmonic richness factor (HRF)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{gf} -- {[}samples{]} {[}N{]} Glottal flow estimation
+
+\item {} 
+\sphinxstyleliteralstrong{gfd} -- {[}samples{]} {[}N{]} Glottal flow derivative estimation
+
+\item {} 
+\sphinxstyleliteralstrong{fs} -- {[}Hz{]} {[}1{]} sampling frequency
+
+\item {} 
+\sphinxstyleliteralstrong{GCI} -- {[}samples{]} {[}M{]} Glottal closure instants
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+NAQ {[}s,samples{]} {[}Mx2{]} Normalised amplitude quotient
+
+\item[{Returns}] \leavevmode
+QOQ{[}s,samples{]} {[}Mx2{]} Quasi-open quotient
+
+\item[{Returns}] \leavevmode
+H1H2{[}s,dB{]} {[}Mx2{]} Difference in glottal harmonic amplitude
+
+\item[{Returns}] \leavevmode
+HRF{[}s,samples{]} {[}Mx2{]} Harmonic richness factor
+
+\end{description}\end{quote}
+\begin{description}
+\item[{References:}] \leavevmode
+{[}1{]} Alku, P., B ackstrom, T., and Vilkman, E. Normalized amplitude quotient for parameterization of the glottal flow. Journal of the Acoustical Society of America, 112(2):701-710, 2002.
+
+{[}2{]} Hacki, T. Klassifizierung von glottisdysfunktionen mit hilfe der elektroglottographie. Folia Phoniatrica, pages 43-48, 1989.
+
+{[}3{]} Alku, P., Strik, H., and Vilkman, E. Parabolic spectral parameter - A new method for quantification of the glottal flow. Speech Communication, 22(1):67-79, 1997.
+
+{[}4{]} Hanson, H. M. Glottal characteristics of female speakers: Acoustic correlates. Journal of the Acoustical Society of America, 10(1):466-481, 1997.
+
+{[}5{]} Childers, D. G. and Lee, C. K. Voice quality factors: Analysis, synthesis and perception. Journal of the Acoustical Society of  America, 90(5):2394-2410, 1991.
+
+\end{description}
+
+Function Coded by John Kane @ The Phonetics and Speech Lab
+Trinity College Dublin, August 2012
+
+THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
+AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBERGER- GERMANY
+AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
+\sphinxhref{mailto:JCAMILO.VASQUEZ@UDEA.EDU.CO}{JCAMILO.VASQUEZ@UDEA.EDU.CO}
+https//jcvasquezc.github.io
+
+\end{fulllineitems}
+
 
 
 \chapter{Phonation features}
-\label{\detokenize{Phonation::doc}}\label{\detokenize{Phonation:phonation-features}}
+\label{\detokenize{Phonation:phonation-features}}\label{\detokenize{Phonation::doc}}
 \noindent\sphinxincludegraphics[width=800\sphinxpxdimen]{{phonation_vowel}.png}
 \phantomsection\label{\detokenize{Phonation:module-phonation}}\index{phonation (module)}
 Created on Jul 21 2017
@@ -1132,11 +1319,7 @@ features computed from the audio file.
 \noindent\sphinxincludegraphics[width=800\sphinxpxdimen]{{replearning_continuous}.png}
 
 \noindent\sphinxincludegraphics[width=600\sphinxpxdimen]{{replearning_error}.png}
-\phantomsection\label{\detokenize{RepLearning:module-replearning}}\index{replearning (module)}
-Created on Dec 18 2020
-
-@author: J. C. Vasquez-Correa
-\index{RepLearning (class in replearning)}
+\phantomsection\label{\detokenize{RepLearning:module-replearning}}\index{replearning (module)}\index{RepLearning (class in replearning)}
 
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{RepLearning:replearning.RepLearning}}\pysiglinewithargsret{\sphinxstrong{class }\sphinxcode{replearning.}\sphinxbfcode{RepLearning}}{\emph{model}}{}
@@ -1279,13 +1462,15 @@ features computed from the audio file.
 
 \end{fulllineitems}
 
-\index{AEspeech (class in replearning)}
+\phantomsection\label{\detokenize{RepLearning:module-AEspeech}}\index{AEspeech (module)}
+Feature extraction from speech signals based on representation learning strategies
+\index{AEspeech (class in AEspeech)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech}}\pysiglinewithargsret{\sphinxstrong{class }\sphinxcode{replearning.}\sphinxbfcode{AEspeech}}{\emph{model}, \emph{units}}{}~\index{compute\_bottleneck\_features() (replearning.AEspeech method)}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech}}\pysiglinewithargsret{\sphinxstrong{class }\sphinxcode{AEspeech.}\sphinxbfcode{AEspeech}}{\emph{model}, \emph{units}}{}~\index{compute\_bottleneck\_features() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_bottleneck_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_bottleneck\_features}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.compute_bottleneck_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_bottleneck\_features}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
 Compute the the bottleneck features of the autoencoder
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1304,10 +1489,10 @@ Pytorch tensor (nf, h) or numpy array (nf, h) with the extracted features. nf: n
 
 \end{fulllineitems}
 
-\index{compute\_dynamic\_features() (replearning.AEspeech method)}
+\index{compute\_dynamic\_features() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_dynamic_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_dynamic\_features}}{\emph{wav\_directory}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.compute_dynamic_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_dynamic\_features}}{\emph{wav\_directory}}{}
 Compute both the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1320,10 +1505,10 @@ dictionary with the extracted bottleneck and error features, and with informatio
 
 \end{fulllineitems}
 
-\index{compute\_global\_features() (replearning.AEspeech method)}
+\index{compute\_global\_features() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_global_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_global\_features}}{\emph{wav\_directory}, \emph{stack\_feat=False}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.compute_global_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_global\_features}}{\emph{wav\_directory}, \emph{stack\_feat=False}}{}
 Compute global features (1 vector per utterance) both for the bottleneck and the reconstruction error features from the autoencoder for wav files inside a directory
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1342,10 +1527,10 @@ pandas dataframes with the bottleneck and error features.
 
 \end{fulllineitems}
 
-\index{compute\_rec\_error\_features() (replearning.AEspeech method)}
+\index{compute\_rec\_error\_features() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_rec_error_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_rec\_error\_features}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.compute_rec_error_features}}\pysiglinewithargsret{\sphinxbfcode{compute\_rec\_error\_features}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
 Compute the  reconstruction error features from the autoencoder
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1364,10 +1549,10 @@ Pytorch tensor (nf, 128) or numpy array (nf, 128) with the extracted features. n
 
 \end{fulllineitems}
 
-\index{compute\_rec\_spectrogram() (replearning.AEspeech method)}
+\index{compute\_rec\_spectrogram() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_rec_spectrogram}}\pysiglinewithargsret{\sphinxbfcode{compute\_rec\_spectrogram}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.compute_rec_spectrogram}}\pysiglinewithargsret{\sphinxbfcode{compute\_rec\_spectrogram}}{\emph{wav\_file}, \emph{return\_numpy=True}}{}
 Compute the  reconstructed spectrogram from the autoencoder
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1386,10 +1571,10 @@ Pytorch tensor (N, C, F, T). N: batch of spectrograms extracted every 500ms, C: 
 
 \end{fulllineitems}
 
-\index{compute\_spectrograms() (replearning.AEspeech method)}
+\index{compute\_spectrograms() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.compute_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{compute\_spectrograms}}{\emph{wav\_file}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.compute_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{compute\_spectrograms}}{\emph{wav\_file}}{}
 Compute the tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1402,10 +1587,10 @@ Pytorch tensor (N, C, F, T). N: batch of spectrograms extracted every 500ms, C: 
 
 \end{fulllineitems}
 
-\index{destandard() (replearning.AEspeech method)}
+\index{destandard() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.destandard}}\pysiglinewithargsret{\sphinxbfcode{destandard}}{\emph{tensor}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.destandard}}\pysiglinewithargsret{\sphinxbfcode{destandard}}{\emph{tensor}}{}
 destandardize input tensor from the autoencoders
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1418,10 +1603,10 @@ destandardized tensor for the AEs (N, 128,126)
 
 \end{fulllineitems}
 
-\index{plot\_spectrograms() (replearning.AEspeech method)}
+\index{plot\_spectrograms() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.plot_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{plot\_spectrograms}}{\emph{wav\_file}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.plot_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{plot\_spectrograms}}{\emph{wav\_file}}{}
 Figure of the decoded spectrograms by the AEs
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1431,10 +1616,10 @@ Figure of the decoded spectrograms by the AEs
 
 \end{fulllineitems}
 
-\index{show\_spectrograms() (replearning.AEspeech method)}
+\index{show\_spectrograms() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.show_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{show\_spectrograms}}{\emph{spectrograms}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.show_spectrograms}}\pysiglinewithargsret{\sphinxbfcode{show\_spectrograms}}{\emph{spectrograms}}{}
 Visualization of the computed tensor of Mel-scale spectrograms to be used as input for the autoencoders from a wav file
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1444,10 +1629,10 @@ Visualization of the computed tensor of Mel-scale spectrograms to be used as inp
 
 \end{fulllineitems}
 
-\index{standard() (replearning.AEspeech method)}
+\index{standard() (AEspeech.AEspeech method)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{RepLearning:replearning.AEspeech.standard}}\pysiglinewithargsret{\sphinxbfcode{standard}}{\emph{tensor}}{}
+\phantomsection\label{\detokenize{RepLearning:AEspeech.AEspeech.standard}}\pysiglinewithargsret{\sphinxbfcode{standard}}{\emph{tensor}}{}
 standardize input tensor for the autoencoders
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1545,6 +1730,7 @@ If you have trouble with Disvoice, please write to Camilo Vasquez at: \sphinxhre
 \begin{sphinxtheindex}
 \def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
 \bigletter{a}
+\item {\sphinxstyleindexentry{AEspeech}}\sphinxstyleindexpageref{RepLearning:\detokenize{module-AEspeech}}
 \item {\sphinxstyleindexentry{articulation}}\sphinxstyleindexpageref{Articulation:\detokenize{module-articulation}}
 \indexspace
 \bigletter{g}

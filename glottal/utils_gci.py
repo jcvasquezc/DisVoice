@@ -444,8 +444,9 @@ def calc_residual(x,x_lpc,ord_lpc,GCI):
             except:
                 residual=[frame_res]
             residual_win=residual[0]*hamming(len(residual[0]))
-
-            vector_res[start:stop]=vector_res[start:stop]+residual_win
-
+            try:
+                vector_res[start:stop]=vector_res[start:stop]+residual_win
+            except:
+                vector_res[start:start+len(residual_win)]=vector_res[start:start+len(residual_win)]+residual_win
 
     return vector_res

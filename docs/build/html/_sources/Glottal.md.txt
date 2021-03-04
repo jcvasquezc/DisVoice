@@ -11,3 +11,8 @@ Glottal features
 
    .. autoclass:: Glottal
       :members:
+      
+.. autofunction:: SE_VQ_varF0
+.. autofunction:: IAIF
+.. autofunction:: get_vq_params
+

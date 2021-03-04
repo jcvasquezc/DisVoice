@@ -1,10 +1,3 @@
-
-# -*- coding: utf-8 -*-
-"""
-Created on Dec 18 2020
-
-@author: J. C. Vasquez-Correa
-"""
 import os
 import sys
 

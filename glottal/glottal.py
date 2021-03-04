@@ -46,7 +46,7 @@ class Glottal:
 
     Static matrix is formed with 36 features formed with (9 descriptors) x (4 functionals: mean, std, skewness, kurtosis)
 
-    Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length with a time-shift of 100 ms.
+    Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length with a time-shift of 50 ms.
 
     Notes:
 
@@ -79,12 +79,12 @@ class Glottal:
 
     def __init__(self):
         self.size_frame=0.2
-        self.size_step=0.1
+        self.size_step=0.05
         self.head=["var GCI", "avg NAQ", "std NAQ", "avg QOQ", "std QOQ", "avg H1H2", "std H1H2", "avg HRF", "std HRF"]
 
 
 
-    def plot_glottal(self, data_audio,fs,GCI, glottal_flow, glottal_sig, GCI_avg, GCI_std):
+    def plot_glottal(self, data_audio,fs,GCI, glottal_flow, glottal_sig):
         """Plots of the glottal features
 
         :param data_audio: speech signal.
@@ -92,46 +92,103 @@ class Glottal:
         :param GCI: glottal closure instants
         :param glottal_flow: glottal flow
         :param glottal_sig: reconstructed glottal signal
-        :param GCI_avg: average of the glottal closure instants
-        :param GCI_std: standard deviation of the glottal closure instants
         :returns: plots of the glottal features.
         """
-        plt.figure(1)
-        plt.subplot(311)
+
+        fig, ax=plt.subplots(3, sharex=True)
         t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
         if len(t)>len(data_audio):
             t=t[:len(data_audio)]
         elif len(t)<len(data_audio):
             data_audio=data_audio[:len(t)]
-        plt.plot(t, data_audio, 'k')
-        plt.ylabel('Amplitude', fontsize=12)
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
+        ax[0].plot(t, data_audio, 'k')
+        ax[0].set_ylabel('Amplitude', fontsize=12)
+        ax[0].set_xlim([0, t[-1]])
+        ax[0].grid(True)
 
-        plt.subplot(312)
-        plt.plot(t[0:-1], glottal_sig, color='k', linewidth=2.0, label="Glottal flow signal")
+        ax[1].plot(t, glottal_sig, color='k', linewidth=2.0, label="Glottal flow signal")
         amGCI=[glottal_sig[int(k-2)] for k in GCI]
 
         GCI=GCI/fs
-        plt.plot(GCI, amGCI, 'bo', alpha=0.5, markersize=8, label="GCI")
+        ax[1].plot(GCI, amGCI, 'bo', alpha=0.5, markersize=8, label="GCI")
+        GCId=np.diff(GCI)
+        ax[1].set_ylabel("Glottal flow", fontsize=12)
+        ax[1].text(t[2],-0.8, "Avg. time consecutive GCI:"+str(np.round(np.mean(GCId)*1000,2))+" ms")
+        ax[1].text(t[2],-1.05, "Std. time consecutive GCI:"+str(np.round(np.std(GCId)*1000,2))+" ms")
+        ax[1].set_xlabel('Time (s)', fontsize=12)
+        ax[1].set_xlim([0, t[-1]])
+        ax[1].set_ylim([-1.1, 1.1])
+        ax[1].grid(True)
 
-        plt.ylabel("Glottal flow", fontsize=12)
-        plt.text(t[2],-0.8, "Avg. time consecutive GCI:"+str(np.round(GCI_avg*1000,2))+" ms")
-        plt.text(t[2],-1.05, "Std. time consecutive GCI:"+str(np.round(GCI_std*1000,2))+" ms")
-        plt.xlabel('Time (s)', fontsize=12)
-        plt.xlim([0, t[-1]])
-        plt.ylim([-1.1, 1.1])
-        plt.grid(True)
-        plt.legend(ncol=2, loc=2)
+        ax[1].legend(ncol=2, loc=2)
 
-        plt.subplot(313)
-        plt.plot(t, glottal_flow, color='k', linewidth=2.0)
-        plt.ylabel("Glotal flow derivative", fontsize=12)
-        plt.xlabel('Time (s)', fontsize=12)
-        plt.xlim([0, t[-1]])
-        plt.grid(True)
+        ax[2].plot(t, glottal_flow, color='k', linewidth=2.0)
+        ax[2].set_ylabel("Glotal flow derivative", fontsize=12)
+        ax[2].set_xlabel('Time (s)', fontsize=12)
+        ax[2].set_xlim([0, t[-1]])
+        ax[2].grid(True)
 
         plt.show()
+
+    def extract_glottal_signal(self, x, fs):
+        """Extract the glottal flow and the glottal flow derivative signals
+
+        :param x: data from the speech signal.
+        :param fs: sampling frequency
+        :returns: glottal signal
+        :returns: derivative  of the glottal signal
+        :returns: glottal closure instants
+
+        >>> from scipy.io.wavfile import read
+        >>> glottal=Glottal()
+        >>> file_audio="../audios/001_a1_PCGITA.wav"
+        >>> fs, data_audio=read(audio)
+        >>> glottal, g_iaif, GCIs=glottal.extract_glottal_signal(data_audio, fs)
+
+        """
+        winlen=int(0.025*fs)
+        winshift=int(0.005*fs)
+        x=x-np.mean(x)
+        x=x/float(np.max(np.abs(x)))
+        GCIs=SE_VQ_varF0(x,fs)
+        g_iaif=np.zeros(len(x))
+        glottal=np.zeros(len(x))
+        wins=np.zeros(len(x))
+
+        if GCIs is None:
+            print("------------- warning -------------------, not enought voiced segments were found to compute GCI")
+            return glottal, g_iaif, GCIs
+
+        start=0
+        stop=int(start+winlen)
+        win = np.hanning(winlen)
+
+        while stop <= len(x):
+
+            x_frame=x[start:stop]
+            pGCIt=np.where((GCIs>start) & (GCIs<stop))[0]
+            GCIt=GCIs[pGCIt]-start
+
+
+            g_iaif_f=IAIF(x_frame,fs,GCIt)
+            glottal_f=cumtrapz(g_iaif_f, dx=1/fs)
+            glottal_f=np.hstack((glottal[start], glottal_f))
+            g_iaif[start:stop]=g_iaif[start:stop]+g_iaif_f*win
+            glottal[start:stop]=glottal[start:stop]+glottal_f*win
+            start=start+winshift
+            stop=start+winlen
+        g_iaif=g_iaif-np.mean(g_iaif)
+        g_iaif=g_iaif/max(abs(g_iaif))
+
+        glottal=glottal-np.mean(glottal)
+        glottal=glottal/max(abs(glottal))
+        glottal=glottal-np.mean(glottal)
+        glottal=glottal/max(abs(glottal))
+
+        return glottal, g_iaif, GCIs
+
+
+
 
     def extract_features_file(self, audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the glottal features from an audio file
@@ -165,6 +222,13 @@ class Glottal:
         stepf0=int(self.size_step/0.01)
         startf0=0
         stopf0=sizef0
+
+        glottal, g_iaif, GCI=self.extract_glottal_signal(data_audio, fs)
+
+        if plots:
+            self.plot_glottal(data_audio,fs,GCI, g_iaif, glottal)
+
+
         avgGCIt=np.zeros(nF)
         varGCIt=np.zeros(nF)
         avgNAQt=np.zeros(nF)
@@ -177,46 +241,47 @@ class Glottal:
         varHRFt=np.zeros(nF)
         rmwin=[]
         for l in range(nF):
-            data_frame=data_audio[int(l*size_stepS):int(l*size_stepS+size_frameS)]
+            init=int(l*size_stepS)
+            endi=int(l*size_stepS+size_frameS)
+            data_frame=data_audio[init:endi]
+
+            gframe=glottal[init:endi]
+            dgframe=glottal[init:endi]
+
+            pGCIt=np.where((GCI>init) & (GCI<endi))[0]
+            gci_s=GCI[pGCIt]-init
+
+
             f0_frame=f0[startf0:stopf0]
             pf0framez=np.where(f0_frame!=0)[0]
             f0nzframe=f0_frame[pf0framez]
-            if len(f0nzframe)<10:
+            if len(f0nzframe)<5:
                 startf0=startf0+stepf0
                 stopf0=stopf0+stepf0
                 rmwin.append(l)
                 continue
                 
-            GCI=SE_VQ_varF0(data_frame,fs, f0=f0_frame)
-            if GCI is None:
-                print("------------- warning -------------------, not enought voiced segments were found to compute GCI")
-            else:
-                g_iaif=IAIF(data_frame,fs,GCI)
-                g_iaif=g_iaif-np.mean(g_iaif)
-                g_iaif=g_iaif/max(abs(g_iaif))
-                glottal=cumtrapz(g_iaif)
-                glottal=glottal-np.mean(glottal)
-                glottal=glottal/max(abs(glottal))
-                startf0=startf0+stepf0
-                stopf0=stopf0+stepf0
 
-                gci_s=GCI[:]
-                GCId=np.diff(gci_s)
-                avgGCIt[l]=np.mean(GCId/fs)
-                varGCIt[l]=np.std(GCId/fs)
-                NAQ, QOQ, T1, T2, H1H2, HRF=get_vq_params(glottal, g_iaif, fs, GCI)
-                avgNAQt[l]=np.mean(NAQ)
-                varNAQt[l]=np.std(NAQ)
-                avgQOQt[l]=np.mean(QOQ)
-                varQOQt[l]=np.std(QOQ)
-                avgH1H2t[l]=np.mean(H1H2)
-                varH1H2t[l]=np.std(H1H2)
-                avgHRFt[l]=np.mean(HRF)
-                varHRFt[l]=np.std(HRF)
-                if plots:
-                    self.plot_glottal(data_frame,fs,GCI, g_iaif, glottal, avgGCIt[l], varGCIt[l])
+            startf0=startf0+stepf0
+            stopf0=stopf0+stepf0
 
-        if len(rmwin)>0:
+            GCId=np.diff(gci_s)
+            avgGCIt[l]=np.mean(GCId/fs)
+            varGCIt[l]=np.std(GCId/fs)
+            NAQ, QOQ, T1, T2, H1H2, HRF=get_vq_params(gframe, dgframe, fs, gci_s)
+            avgNAQt[l]=np.mean(NAQ)
+            varNAQt[l]=np.std(NAQ)
+            avgQOQt[l]=np.mean(QOQ)
+            varQOQt[l]=np.std(QOQ)
+            avgH1H2t[l]=np.mean(H1H2)
+            varH1H2t[l]=np.std(H1H2)
+            avgHRFt[l]=np.mean(HRF)
+            varHRFt[l]=np.std(HRF)
+
+
+
+
+        if static and len(rmwin)>0:
             varGCIt=np.delete(varGCIt,rmwin)
             avgNAQt=np.delete(avgNAQt,rmwin)
             varNAQt=np.delete(varNAQt,rmwin)

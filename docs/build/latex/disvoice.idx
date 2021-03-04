@@ -2,40 +2,45 @@
 \indexentry{Glottal (class in glottal)|hyperpage}{3}
 \indexentry{extract\_features\_file() (glottal.Glottal method)|hyperpage}{4}
 \indexentry{extract\_features\_path() (glottal.Glottal method)|hyperpage}{5}
-\indexentry{plot\_glottal() (glottal.Glottal method)|hyperpage}{5}
-\indexentry{phonation (module)|hyperpage}{7}
-\indexentry{Phonation (class in phonation)|hyperpage}{7}
-\indexentry{extract\_features\_file() (phonation.Phonation method)|hyperpage}{9}
-\indexentry{extract\_features\_path() (phonation.Phonation method)|hyperpage}{9}
-\indexentry{plot\_phon() (phonation.Phonation method)|hyperpage}{10}
-\indexentry{articulation (module)|hyperpage}{11}
-\indexentry{Articulation (class in articulation)|hyperpage}{11}
-\indexentry{extract\_features\_file() (articulation.Articulation method)|hyperpage}{12}
-\indexentry{extract\_features\_path() (articulation.Articulation method)|hyperpage}{13}
-\indexentry{plot\_art() (articulation.Articulation method)|hyperpage}{13}
-\indexentry{prosody (module)|hyperpage}{15}
-\indexentry{Prosody (class in prosody)|hyperpage}{15}
-\indexentry{extract\_features\_file() (prosody.Prosody method)|hyperpage}{17}
-\indexentry{extract\_features\_path() (prosody.Prosody method)|hyperpage}{17}
-\indexentry{plot\_pros() (prosody.Prosody method)|hyperpage}{18}
-\indexentry{prosody\_dynamic() (prosody.Prosody method)|hyperpage}{18}
-\indexentry{prosody\_static() (prosody.Prosody method)|hyperpage}{18}
-\indexentry{phonological (module)|hyperpage}{19}
-\indexentry{Phonological (class in phonological)|hyperpage}{19}
-\indexentry{extract\_features\_file() (phonological.Phonological method)|hyperpage}{20}
-\indexentry{extract\_features\_path() (phonological.Phonological method)|hyperpage}{21}
-\indexentry{replearning (module)|hyperpage}{24}
-\indexentry{RepLearning (class in replearning)|hyperpage}{24}
-\indexentry{extract\_features\_file() (replearning.RepLearning method)|hyperpage}{25}
-\indexentry{extract\_features\_path() (replearning.RepLearning method)|hyperpage}{26}
-\indexentry{AEspeech (class in replearning)|hyperpage}{26}
-\indexentry{compute\_bottleneck\_features() (replearning.AEspeech method)|hyperpage}{26}
-\indexentry{compute\_dynamic\_features() (replearning.AEspeech method)|hyperpage}{26}
-\indexentry{compute\_global\_features() (replearning.AEspeech method)|hyperpage}{26}
-\indexentry{compute\_rec\_error\_features() (replearning.AEspeech method)|hyperpage}{27}
-\indexentry{compute\_rec\_spectrogram() (replearning.AEspeech method)|hyperpage}{27}
-\indexentry{compute\_spectrograms() (replearning.AEspeech method)|hyperpage}{27}
-\indexentry{destandard() (replearning.AEspeech method)|hyperpage}{27}
-\indexentry{plot\_spectrograms() (replearning.AEspeech method)|hyperpage}{27}
-\indexentry{show\_spectrograms() (replearning.AEspeech method)|hyperpage}{27}
-\indexentry{standard() (replearning.AEspeech method)|hyperpage}{27}
+\indexentry{extract\_glottal\_signal() (glottal.Glottal method)|hyperpage}{5}
+\indexentry{plot\_glottal() (glottal.Glottal method)|hyperpage}{6}
+\indexentry{SE\_VQ\_varF0() (in module glottal)|hyperpage}{6}
+\indexentry{IAIF() (in module glottal)|hyperpage}{7}
+\indexentry{get\_vq\_params() (in module glottal)|hyperpage}{7}
+\indexentry{phonation (module)|hyperpage}{9}
+\indexentry{Phonation (class in phonation)|hyperpage}{9}
+\indexentry{extract\_features\_file() (phonation.Phonation method)|hyperpage}{11}
+\indexentry{extract\_features\_path() (phonation.Phonation method)|hyperpage}{11}
+\indexentry{plot\_phon() (phonation.Phonation method)|hyperpage}{12}
+\indexentry{articulation (module)|hyperpage}{13}
+\indexentry{Articulation (class in articulation)|hyperpage}{13}
+\indexentry{extract\_features\_file() (articulation.Articulation method)|hyperpage}{14}
+\indexentry{extract\_features\_path() (articulation.Articulation method)|hyperpage}{15}
+\indexentry{plot\_art() (articulation.Articulation method)|hyperpage}{15}
+\indexentry{prosody (module)|hyperpage}{17}
+\indexentry{Prosody (class in prosody)|hyperpage}{17}
+\indexentry{extract\_features\_file() (prosody.Prosody method)|hyperpage}{19}
+\indexentry{extract\_features\_path() (prosody.Prosody method)|hyperpage}{19}
+\indexentry{plot\_pros() (prosody.Prosody method)|hyperpage}{20}
+\indexentry{prosody\_dynamic() (prosody.Prosody method)|hyperpage}{20}
+\indexentry{prosody\_static() (prosody.Prosody method)|hyperpage}{20}
+\indexentry{phonological (module)|hyperpage}{21}
+\indexentry{Phonological (class in phonological)|hyperpage}{21}
+\indexentry{extract\_features\_file() (phonological.Phonological method)|hyperpage}{22}
+\indexentry{extract\_features\_path() (phonological.Phonological method)|hyperpage}{23}
+\indexentry{replearning (module)|hyperpage}{26}
+\indexentry{RepLearning (class in replearning)|hyperpage}{26}
+\indexentry{extract\_features\_file() (replearning.RepLearning method)|hyperpage}{27}
+\indexentry{extract\_features\_path() (replearning.RepLearning method)|hyperpage}{28}
+\indexentry{AEspeech (module)|hyperpage}{28}
+\indexentry{AEspeech (class in AEspeech)|hyperpage}{28}
+\indexentry{compute\_bottleneck\_features() (AEspeech.AEspeech method)|hyperpage}{28}
+\indexentry{compute\_dynamic\_features() (AEspeech.AEspeech method)|hyperpage}{28}
+\indexentry{compute\_global\_features() (AEspeech.AEspeech method)|hyperpage}{28}
+\indexentry{compute\_rec\_error\_features() (AEspeech.AEspeech method)|hyperpage}{29}
+\indexentry{compute\_rec\_spectrogram() (AEspeech.AEspeech method)|hyperpage}{29}
+\indexentry{compute\_spectrograms() (AEspeech.AEspeech method)|hyperpage}{29}
+\indexentry{destandard() (AEspeech.AEspeech method)|hyperpage}{29}
+\indexentry{plot\_spectrograms() (AEspeech.AEspeech method)|hyperpage}{29}
+\indexentry{show\_spectrograms() (AEspeech.AEspeech method)|hyperpage}{29}
+\indexentry{standard() (AEspeech.AEspeech method)|hyperpage}{29}
