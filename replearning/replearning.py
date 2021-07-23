@@ -64,8 +64,6 @@ class RepLearning:
         self.AEspeech=AEspeech(model, self.size_bottleneck)
         self.statistics=["mean", "std", "skewness", "kurtosis"]
 
-        total_bottle=[]
-        total_error=[]
         feat_names_bottle=["bottleneck_"+str(k) for k in range(self.size_bottleneck)]
         feat_names_error=["error_"+str(k) for k in range(128)]
         feat_names_bottle_all=[]

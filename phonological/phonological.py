@@ -131,8 +131,7 @@ class Phonological:
                 return torch.from_numpy(np.hstack(feat_vec))
             if fmt=="kaldi":
                 raise ValueError("Kaldi is only supported for dynamic features")
-            else:
-                raise ValueError(fmt+" is not supported")
+            raise ValueError(fmt+" is not supported")
 
         else:
 

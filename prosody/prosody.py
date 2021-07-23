@@ -303,7 +303,6 @@ class Prosody:
         size_frameS=self.size_frame*float(fs)
         size_stepS=self.step*float(fs)
         thr_len_pause=self.thr_len*float(fs)
-        overlap=size_stepS/size_frameS
 
         if self.pitch_method == 'praat':
             name_audio=audio.split('/')

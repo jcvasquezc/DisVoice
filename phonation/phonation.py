@@ -187,8 +187,6 @@ class Phonation:
         ppq=[]
         DF0=np.diff(F0nz, 1)
         DDF0=np.diff(DF0,1)
-        F0z=F0[F0==0]
-        totaldurU=len(F0z)
         lnz=0
         for l in range(nF):
             data_frame=data_audio[int(l*size_stepS):int(l*size_stepS+size_frameS)]

@@ -377,9 +377,7 @@ def peakdetect_parabola(y_axis, x_axis, points = 31):
     min_ = _peakdetect_parabola_fitter(min_raw, x_axis, y_axis, points)
     
     max_peaks = map(lambda x: [x[0], x[1]], max_)
-    max_fitted = map(lambda x: x[-1], max_)
     min_peaks = map(lambda x: [x[0], x[1]], min_)
-    min_fitted = map(lambda x: x[-1], min_)
     
     return [max_peaks, min_peaks]
     
@@ -502,9 +500,7 @@ def peakdetect_sine(y_axis, x_axis, points = 31, lock_frequency = False):
     
     # structure date for output
     max_peaks = map(lambda x: [x[0], x[1]], fitted_peaks[0])
-    max_fitted = map(lambda x: x[-1], fitted_peaks[0])
     min_peaks = map(lambda x: [x[0], x[1]], fitted_peaks[1])
-    min_fitted = map(lambda x: x[-1], fitted_peaks[1])
     
     
     return [max_peaks, min_peaks]
@@ -926,7 +922,7 @@ def _test_graph_cross(window = 11):
     y_cross = [0] * len(crossings)
     
     
-    plot = pylab.plot(x,y)
+    pylab.plot(x,y)
     pylab.hold(True)
     pylab.plot(crossings, y_cross, "b+")
     pylab.show()
@@ -935,22 +931,22 @@ def _test_graph_cross(window = 11):
     
 if __name__ == "__main__":
     
-    i = 10000
-    x = np.linspace(0,3.7*pi,i)
-    y = (0.3*np.sin(x) + np.sin(1.3 * x) + 0.9 * np.sin(4.2 * x) + 0.06 * 
-    np.random.randn(i))
-    y *= -1
+    it = 10000
+    xl = np.linspace(0,3.7*pi,it)
+    yl = (0.3*np.sin(xl) + np.sin(1.3 * xl) + 0.9 * np.sin(4.2 * xl) + 0.06 * 
+    np.random.randn(it))
+    yl *= -1
     
-    _max, _min = peakdetect(y, x, 750, 0.30)
-    xm = [p[0] for p in _max]
-    ym = [p[1] for p in _max]
-    xn = [p[0] for p in _min]
-    yn = [p[1] for p in _min]
+    _max, _min = peakdetect(yl, xl, 750, 0.30)
+    xm1 = [p[0] for p in _max]
+    ym1 = [p[1] for p in _max]
+    xn1 = [p[0] for p in _min]
+    yn1 = [p[1] for p in _min]
     
-    pylab.plot(x, y)
+    pylab.plot(xl, yl)
     pylab.hold(True)
-    pylab.plot(xm, ym, "r+")
-    pylab.plot(xn, yn, "g+")
+    pylab.plot(xm1, ym1, "r+")
+    pylab.plot(xn1, yn1, "g+")
     
     
     pylab.show()

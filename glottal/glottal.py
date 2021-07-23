@@ -153,7 +153,6 @@ class Glottal:
         GCIs=SE_VQ_varF0(x,fs)
         g_iaif=np.zeros(len(x))
         glottal=np.zeros(len(x))
-        wins=np.zeros(len(x))
 
         if GCIs is None:
             print("------------- warning -------------------, not enought voiced segments were found to compute GCI")
@@ -243,7 +242,6 @@ class Glottal:
         for l in range(nF):
             init=int(l*size_stepS)
             endi=int(l*size_stepS+size_frameS)
-            data_frame=data_audio[init:endi]
 
             gframe=glottal[init:endi]
             dgframe=glottal[init:endi]
@@ -399,5 +397,5 @@ if __name__=="__main__":
         print("python glottal.py <file_or_folder_audio> <file_features> <static (true, false)> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>")
         sys.exit()
 
-    glottal=Glottal()
-    script_manager(sys.argv, glottal)
+    glottal_o=Glottal()
+    script_manager(sys.argv, glottal_o)

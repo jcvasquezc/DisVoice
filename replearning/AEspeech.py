@@ -144,7 +144,7 @@ class AEspeech:
         
         """
         temp=tensor-self.min_scaler
-        temp/(self.max_scaler-self.min_scaler)
+        temp=temp/(self.max_scaler-self.min_scaler)
         return temp.float()
 
     def destandard(self, tensor):
@@ -175,8 +175,7 @@ class AEspeech:
         to, bot=self.AE.forward(mat)
         if return_numpy:
             return bot.data.numpy()
-        else:
-            return bot
+        return bot
 
     def compute_rec_error_features(self, wav_file, return_numpy=True):
         """
@@ -198,8 +197,7 @@ class AEspeech:
         error=torch.mean(mat_error,2)
         if return_numpy:
             return error.data.numpy()
-        else:
-            return error
+        return error
 
 
 
@@ -221,8 +219,7 @@ class AEspeech:
 
         if return_numpy:
             return to.data.numpy(), mat.data.numpy()
-        else:
-            return to, mat
+        return to, mat
 
 
     def plot_spectrograms(self, wav_file):
@@ -300,8 +297,7 @@ class AEspeech:
         if wav_directory[-1]!='/':
             wav_directory=wav_directory+"/"
 
-        total_bottle=[]
-        total_error=[]
+
         metadata={"wav_file":[], "frame": [], "bottleneck": [], "error":[]}
         for wav_file in hf:
             bottle=self.compute_bottleneck_features(wav_directory+wav_file, True)
@@ -340,8 +336,6 @@ class AEspeech:
         if wav_directory[-1]!='/':
             wav_directory=wav_directory+"/"
 
-        total_bottle=[]
-        total_error=[]
         feat_names_bottle=["bottleneck_"+str(k) for k in range(self.units)]
         feat_names_error=["error_"+str(k) for k in range(128)]
 
@@ -359,7 +353,6 @@ class AEspeech:
         if stack_feat:
             feat_names_all=feat_names_bottle_all+feat_names_error_all
 
-        metadata={"wav_file":[], "frame": [], "bottleneck": [], "error":[]}
         bottle_feat=np.zeros((len(hf), len(feat_names_bottle_all)))
         error_feat=np.zeros((len(hf), len(feat_names_error_all)))
         
