@@ -400,7 +400,6 @@ class Prosody:
                 seg_voiced.append(VoicedSeg)
                 #Compute duration
                 dur = len(VoicedSeg)/float(fs)
-                tempvec.append(dur)
                 #Pitch coefficients
                 x = np.arange(0,len(temp))
                 z = np.poly1d(np.polyfit(x,temp,self.P))
@@ -412,6 +411,7 @@ class Prosody:
                 x = np.arange(0,len(temp))
                 z = np.poly1d(np.polyfit(x,temp,self.P))
                 tempvec.extend(z.coeffs)
+                tempvec.append(dur)
                 featvec.append(tempvec)
             iniV= pitchON[indx+1]
             iniVoiced = (pitchON[indx+1]*size_stepS)+size_stepS#To compute energy
