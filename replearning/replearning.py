@@ -12,8 +12,8 @@ import scipy.stats as st
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
 
-path_app = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(path_app+'/../')
+PATH = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(PATH, '..'))
 from utils import save_dict_kaldimat, get_dict
 
 from script_mananger import script_manager
@@ -120,12 +120,12 @@ class RepLearning:
                 
             if fmt in("npy","txt"):
                 return feat_vec
-            if fmt in("dataframe","csv"):
+            elif fmt in("dataframe","csv"):
                 dff={key: [value] for (key, value) in zip(self.head_st, feat_vec)}
                 return pd.DataFrame(dff)
-            if fmt=="torch":
+            elif fmt=="torch":
                 return torch.from_numpy(feat_vec)
-            if fmt=="kaldi":
+            elif fmt=="kaldi":
                 raise ValueError("Kaldi is only supported for dynamic features")
             raise ValueError(fmt+" is not supported")
 
@@ -133,16 +133,16 @@ class RepLearning:
             featmat=np.concatenate((hb, err), axis=1)
             if fmt in("npy","txt"):
                 return featmat
-            if fmt in("dataframe","csv"):
+            elif fmt in("dataframe","csv"):
 
                 dff={}
                 for e, key in enumerate(self.head_dyn):
                     dff[key]=featmat[:,e]
                 dff=pd.DataFrame(dff)
                 return dff
-            if fmt=="torch":
+            elif fmt=="torch":
                 return torch.from_numpy(featmat)
-            if fmt=="kaldi":
+            elif fmt=="kaldi":
                 name_all=audio.split('/')
                 dictX={name_all[-1]:featmat}
                 save_dict_kaldimat(dictX, kaldi_file)
