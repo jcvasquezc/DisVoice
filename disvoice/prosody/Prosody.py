@@ -18,14 +18,13 @@ from matplotlib import cm
 from scipy.io.wavfile import read
 import os
 import sys
-path_app = os.path.dirname(os.path.realpath(__file__))
+PATH = os.path.dirname(os.path.realpath(__file__))
 
-sys.path.append(path_app+'/../')
+sys.path.append(PATH+'/../')
+sys.path.append(PATH)
+
 plt.rcParams["font.family"] = "Times New Roman"
-try:
-    from .prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, get_energy_segment
-except:
-    from prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, get_energy_segment
+from prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, get_energy_segment
 
 from script_mananger import script_manager
 from utils import save_dict_kaldimat, get_dict
@@ -418,9 +417,8 @@ class Prosody:
             if len(VoicedSeg) > int(size_frameS):
                 seg_voiced.append(VoicedSeg)
                 dur = len(VoicedSeg)/float(fs)
-                
-                x = np.arange(0, len(temp))
-                z = np.poly1d(np.polyfit(x, temp, self.P))
+                x = np.arange(0,len(temp))
+                z = np.poly1d(np.polyfit(x,temp,self.P))
                 f0v.append(temp)
                 tempvec.extend(z.coeffs)
                 temp=get_energy_segment(size_frameS, size_stepS, VoicedSeg, overlap)
