@@ -1,6 +1,7 @@
 from torch import nn
+import torch
 import torch.nn.functional as F
-
+import torch
 
 
 class CAEenc(nn.Module):
@@ -49,7 +50,7 @@ class CAEdec(nn.Module):
         x = F.interpolate(x, scale_factor=2)
         x =F.leaky_relu((self.bn3(self.conv3(x))))
         x = F.interpolate(x, scale_factor=2)
-        x =F.sigmoid((self.conv4(x)))
+        x =torch.sigmoid((self.conv4(x)))
         return x[:,:,:,0:-2]
 
 

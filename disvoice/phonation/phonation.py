@@ -14,13 +14,13 @@ import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
 
 import pysptk
-try:
-    from .phonation_functions import jitter_env, logEnergy, shimmer_env, APQ, PPQ
-except:
-    from phonation_functions import jitter_env, logEnergy, shimmer_env, APQ, PPQ
+
 import pandas as pd
-path_app = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(path_app+'/../')
+PATH = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(PATH, '..'))
+sys.path.append(PATH)
+from phonation_functions import jitter_env, get_log_energy, shimmer_env, APQ, PPQ
+
 from utils import dynamic2statict, save_dict_kaldimat,get_dict
 import praat.praat_functions as praat_functions
 from script_mananger import script_manager
@@ -98,9 +98,14 @@ class Phonation:
         self.maxf0=350
         self.voice_bias=-0.2
         self.energy_thr_percent=0.025
-        self.PATH = os.path.dirname(os.path.abspath(__file__))
-        self.head=["DF0", "DDF0", "Jitter", "Shimmer", "apq", "ppq", "logE"]
-
+        self.head_dyn=["DF0", "DDF0", "Jitter", "Shimmer", "apq", "ppq", "logE"]
+        
+        if not os.path.exists(PATH+'/../tempfiles/'):
+            os.makedirs(PATH+'/../tempfiles/')
+        self.head_st=[]
+        for k in ["avg", "std", "skewness", "kurtosis"]:
+            for h in self.head_dyn:
+                self.head_st.append(k+" "+h)
 
 
     def plot_phon(self, data_audio,fs,F0,logE):
@@ -158,26 +163,19 @@ class Phonation:
         >>> features3=phonation.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
         >>> phonation.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test")
         """
+        if static and fmt=="kaldi":
+            raise ValueError("Kaldi is only supported for dynamic features")
+
+        if audio.find('.wav') == -1 and audio.find('.WAV') == -1:
+            raise ValueError(audio+" is not a valid wav file")
+
         fs, data_audio=read(audio)
         data_audio=data_audio-np.mean(data_audio)
         data_audio=data_audio/float(np.max(np.abs(data_audio)))
         size_frameS=self.size_frame*float(fs)
         size_stepS=self.size_step*float(fs)
         overlap=size_stepS/size_frameS
-        if self.pitch_method == 'praat':
-            name_audio=audio.split('/')
-            temp_uuid='phon'+name_audio[-1][0:-4]
-            if not os.path.exists(self.PATH+'/../tempfiles/'):
-                os.makedirs(self.PATH+'/../tempfiles/')
-            temp_filename_vuv=self.PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
-            temp_filename_f0=self.PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
-            praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=self.size_step, minf0=self.minf0, maxf0=self.maxf0)
-            F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),self.size_step)
-            os.remove(temp_filename_vuv)
-            os.remove(temp_filename_f0)
-        elif self.pitch_method == 'rapt':
-            data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-            F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=self.minf0, max=self.maxf0, voice_bias=self.voice_bias, otype='f0')
+        F0 = self.get_F0(audio, fs, data_audio, size_stepS)
         F0nz=F0[F0!=0]
         Jitter=jitter_env(F0nz, len(F0nz))
         nF=int((len(data_audio)/size_frameS/overlap))-1
@@ -189,75 +187,73 @@ class Phonation:
         DDF0=np.diff(DF0,1)
         lnz=0
         for l in range(nF):
+            if F0[l]==0:
+                continue
             data_frame=data_audio[int(l*size_stepS):int(l*size_stepS+size_frameS)]
-            energy=10*logEnergy(data_frame)
-            if F0[l]!=0:
-                Amp.append(np.max(np.abs(data_frame)))
-                logE.append(energy)
-                if lnz>=12: # TODO:
-                    amp_arr=np.asarray([Amp[j] for j in range(lnz-12, lnz)])
-                    #print(amp_arr)
-                    apq.append(APQ(amp_arr))
-                if lnz>=6: # TODO:
-                    f0arr=np.asarray([F0nz[j] for j in range(lnz-6, lnz)])
-                    ppq.append(PPQ(1/f0arr))
-                lnz=lnz+1
-
+            energy=10*get_log_energy(data_frame)
+            Amp.append(np.max(np.abs(data_frame)))
+            logE.append(energy)
+            if lnz>=12:
+                amp_arr=np.asarray([Amp[j] for j in range(lnz-12, lnz)])
+                apq.append(APQ(amp_arr))
+            if lnz>=6:
+                f0arr=np.asarray([F0nz[j] for j in range(lnz-6, lnz)])
+                ppq.append(PPQ(1./f0arr))
+            lnz=lnz+1
+        
         Shimmer=shimmer_env(Amp, len(Amp))
         apq=np.asarray(apq)
         ppq=np.asarray(ppq)
         logE=np.asarray(logE)
 
-
         if len(apq)==0:
-            print("warning, there is not enough long voiced segments to compute the APQ, in this case APQ=shimmer")
             apq=Shimmer
 
         if plots:
             self.plot_phon(data_audio,fs,F0,logE)
 
-        if len(Shimmer)==len(apq):
-            feat_mat=np.vstack((DF0[5:], DDF0[4:], Jitter[6:], Shimmer[6:], apq[6:], ppq, logE[6:])).T
+        if static:
+            feat=dynamic2statict([DF0, DDF0, Jitter, Shimmer, apq, ppq, logE])
+            feat=np.expand_dims(feat, axis=0)
+            head = self.head_st
         else:
-            feat_mat=np.vstack((DF0[11:], DDF0[10:], Jitter[12:], Shimmer[12:], apq, ppq[6:], logE[12:])).T
-
-        feat_v=dynamic2statict([DF0, DDF0, Jitter, Shimmer, apq, ppq, logE])
-
+            if len(Shimmer)==len(apq):
+                feat=np.vstack((DF0[5:], DDF0[4:], Jitter[6:], Shimmer[6:], apq[6:], ppq, logE[6:])).T
+            else:
+                feat=np.vstack((DF0[11:], DDF0[10:], Jitter[12:], Shimmer[12:], apq, ppq[6:], logE[12:])).T
+            head=self.head_dyn
 
         if fmt in("npy","txt"):
-            if static:
-                return feat_v
-            return feat_mat
-        if fmt in("dataframe","csv"):
-            if static:
-                head_st=[]
-                df={}
-                for k in ["avg", "std", "skewness", "kurtosis"]:
-                    for h in self.head:
-                        head_st.append(k+" "+h)
-                for e, k in enumerate(head_st):
-                    df[k]=[feat_v[e]]
-                            
-                return pd.DataFrame(df)
-            else:
-                df={}
-                for e, k in enumerate(self.head):
-                    df[k]=feat_mat[:,e]
-                return pd.DataFrame(df)
-        if fmt=="torch":
-            if static:
-                feat_t=torch.from_numpy(feat_v)
-                return feat_t
-            return torch.from_numpy(feat_mat)
+            return feat
 
-        if fmt=="kaldi":
-            if static:
-                raise ValueError("Kaldi is only supported for dynamic features")
+        elif fmt in("dataframe","csv"):
+            df = {}
+            for e, k in enumerate(head):
+                df[k] = feat[:, e]
+            return pd.DataFrame(df)
+        elif fmt=="torch":
+            return torch.from_numpy(feat)
+        elif fmt=="kaldi":
             name_all=audio.split('/')
-            dictX={name_all[-1]:feat_mat}
+            dictX={name_all[-1]:feat}
             save_dict_kaldimat(dictX, kaldi_file)
         else:
             raise ValueError(fmt+" is not supported")
+
+    def get_F0(self, audio, fs, data_audio, size_stepS):
+        if self.pitch_method == 'praat':
+            name_audio=audio.split('/')
+            temp_uuid='phon'+name_audio[-1][0:-4]
+            temp_filename_vuv=PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
+            temp_filename_f0=PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
+            praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=self.size_step, minf0=self.minf0, maxf0=self.maxf0)
+            F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),self.size_step)
+            os.remove(temp_filename_vuv)
+            os.remove(temp_filename_f0)
+        elif self.pitch_method == 'rapt':
+            data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
+            F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=self.minf0, max=self.maxf0, voice_bias=self.voice_bias, otype='f0')
+        return F0
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
         """Extract the phonation features for audios inside a path
@@ -295,32 +291,29 @@ class Phonation:
         
         Features=np.vstack(Features)
         ids=np.hstack(ids)
-        if fmt in("npy","txt"):
-            return Features
-        if fmt in("dataframe","csv"):
-            if static:
-                head_st=[]
-                df={}
-                for k in ["avg", "std", "skewness", "kurtosis"]:
-                    for h in self.head:
-                        head_st.append(k+" "+h)
-                for e, k in enumerate(head_st):
-                    df[k]=Features[:,e]
-            else:
-                df={}
-                for e, k in enumerate(self.head):
-                    df[k]=Features[:,e]
-            df["id"]=ids
-            return pd.DataFrame(df)
-        if fmt=="torch":
-            return torch.from_numpy(Features)
-        if fmt=="kaldi":
-            if static:
-                raise ValueError("Kaldi is only supported for dynamic features")
-            dictX=get_dict(Features, ids)
-            save_dict_kaldimat(dictX, kaldi_file)
+        return self.save_features(Features, ids, fmt, static, kaldi_file)
+
+
+
+    def save_features(self, Features, ids, fmt, static, kaldi_file):
+        if static:
+            head = self.head_st
         else:
-            raise ValueError(fmt+" is not supported")
+            head = self.head_dyn
+        
+        if fmt in ("npy", "txt"):
+            return Features
+        if fmt in ("dataframe", "csv"):
+            df = {}
+            for e, k in enumerate(head):
+                df[k] = Features[:, e]
+            df["id"] = ids
+            return pd.DataFrame(df)
+        if fmt == "torch":
+            return torch.from_numpy(Features)
+        if fmt == "kaldi":
+            dictX = get_dict(Features, ids)
+            save_dict_kaldimat(dictX, kaldi_file)
 
 if __name__=="__main__":
 

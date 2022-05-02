@@ -23,9 +23,9 @@ path_app = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(path_app+'/../')
 plt.rcParams["font.family"] = "Times New Roman"
 try:
-    from .prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
+    from .prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, get_energy_segment
 except:
-    from prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, E_cont
+    from prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, get_energy_segment
 
 from script_mananger import script_manager
 from utils import save_dict_kaldimat, get_dict
@@ -423,7 +423,7 @@ class Prosody:
                 z = np.poly1d(np.polyfit(x, temp, self.P))
                 f0v.append(temp)
                 tempvec.extend(z.coeffs)
-                temp = E_cont(VoicedSeg, size_frameS, size_stepS, overlap)
+                temp=get_energy_segment(size_frameS, size_stepS, VoicedSeg, overlap)
                 Ev.append(temp)
                 x = np.arange(0, len(temp))
                 z = np.poly1d(np.polyfit(x, temp, self.P))
@@ -448,7 +448,7 @@ class Prosody:
             z = np.poly1d(np.polyfit(x, temp, self.P))
             tempvec.extend(z.coeffs)
             # Energy coefficients
-            temp = E_cont(VoicedSeg, size_frameS, size_stepS, overlap)
+            temp=get_energy_segment(size_frameS, size_stepS, VoicedSeg, overlap)
             x = np.arange(0, len(temp))
             z = np.poly1d(np.polyfit(x, temp, self.P))
             tempvec.extend(z.coeffs)

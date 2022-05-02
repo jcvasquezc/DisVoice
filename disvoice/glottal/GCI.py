@@ -13,7 +13,15 @@ except:
     from peakdetect import peakdetect
     from utils_gci import create_continuous_smooth_f0, GetLPCresidual, get_MBS, get_MBS_GCI_intervals, search_res_interval_peaks, RESON_dyProg_mat, calc_residual
 
-def SE_VQ_varF0(x,fs, f0=None):
+
+T0_num=3 #Number of local glottal pulses to be used for harmonic spectrum
+min_harm_num=5
+HRF_freq_max=5000 # Maximum frequency used for harmonic measurement
+qoq_level=0.5 # threhold for QOQ estimation
+F0min=20
+F0max=500
+
+def se_vq_varf0(x,fs, f0=None):
     """
     Function to extract GCIs using an adapted version of the SEDREAMS 
     algorithm which is optimised for non-modal voice qualities (SE-VQ). Ncand maximum
@@ -53,13 +61,9 @@ def SE_VQ_varF0(x,fs, f0=None):
     AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
     JCAMILO.VASQUEZ@UDEA.EDU.CO
     https//jcvasquezc.github.io
-
-
     """
     if f0 is None:
         f0 = []
-    F0min=20
-    F0max=500
     if len(f0)==0 or sum(f0)==0:
         size_stepS=0.01*fs
         voice_bias=-0.2
@@ -74,19 +78,14 @@ def SE_VQ_varF0(x,fs, f0=None):
     VUV=np.zeros(len(f0))
     VUV[F0nz]=1
     if F0mean<70:
-        print('Utterance likely to contain creak')
         F0mean=80
 
     # Interpolate f0 over unvoiced regions and heavily smooth the contour
-
     ptos=np.linspace(0,len(x),len(VUV))
     VUV_inter=np.interp(np.arange(len(x)), ptos, VUV)
-
     VUV_inter[np.where(VUV_inter>0.5)[0]]=1
     VUV_inter[np.where(VUV_inter<=0.5)[0]]=0
-
     f0_int, f0_samp=create_continuous_smooth_f0(f0,VUV,x)
-
     T0mean = fs/f0_samp
     winLen = 25 # window length in ms
     winShift = 5 # window shift in ms
@@ -95,26 +94,19 @@ def SE_VQ_varF0(x,fs, f0=None):
     trans_wgt=1 # Transition cost weight
     relAmp_wgt=0.3 # Local cost weight
 
-    
     #Calculate LP-residual and extract N maxima per mean-based signal determined intervals
-
     res = GetLPCresidual(x,winLen*fs/1000,winShift*fs/1000,LPC_ord, VUV_inter) # Get LP residual
-
     MBS = get_MBS(x,fs,T0mean) # Extract mean based signal
-
     interval = get_MBS_GCI_intervals(MBS,fs,T0mean,F0max) # Define search intervals
-
     [GCI_N,GCI_relAmp] = search_res_interval_peaks(res,interval,Ncand, VUV_inter) # Find residual peaks
-
     if len(np.asarray(GCI_N).shape) > 1:
         GCI = RESON_dyProg_mat(GCI_relAmp,GCI_N,F0mean,x,fs,trans_wgt,relAmp_wgt, plots=False) # Do dynamic programming
     else:
-        print("------------- warning -------------------, not enough pitch periods to reconstruct the residual and glottal signals")        
         GCI = None
 
     return GCI
 
-def IAIF(x,fs,GCI):
+def iaif(x,fs,GCI):
     """
     Function to carry out iterative and adaptive inverse filtering (Alku et al 1992).
     
@@ -198,11 +190,8 @@ def get_vq_params(gf, gfd, fs, GCI):
         
      [5] Childers, D. G. and Lee, C. K. Voice quality factors: Analysis, synthesis and perception. Journal of the Acoustical Society of  America, 90(5):2394-2410, 1991.
     
-
-
     Function Coded by John Kane @ The Phonetics and Speech Lab
     Trinity College Dublin, August 2012
-
 
     THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
     AT PATTERN RECOGNITION LAB UNIVERSITY OF ERLANGEN NUREMBERGER- GERMANY
@@ -211,8 +200,7 @@ def get_vq_params(gf, gfd, fs, GCI):
     https//jcvasquezc.github.io
     """
 
-    F0min=20
-    F0max=500
+
     NAQ=np.zeros(len(GCI))
     QOQ=np.zeros(len(GCI))
     H1H2=np.zeros(len(GCI))
@@ -220,106 +208,108 @@ def get_vq_params(gf, gfd, fs, GCI):
     T1=np.zeros(len(GCI))
     T2=np.zeros(len(GCI))
     glot_shift=np.round(0.5/1000*fs)
-    qoq_level=0.5 # threhols for QOQ estimation
-    T0_num=3 #Number of local glottal pulses to be used for harmonic spectrum
-    min_harm_num=5
-    HRF_freq_max=5000 # Maximum frequency used for harmonic measurement
-
+    
     if len(GCI) <= 1:
-        print("------------- warning -------------------, not enough voiced segments were found to compute GCI")
-    else:
-        for n in range(len(GCI)):
-            # Get glottal pulse compensated for zero-line drift
-            if n==0:
-                start=0
-                stop=int(GCI[n])
-                T0=GCI[n+1]-GCI[n]
-            else:
-                start=int(GCI[n-1])
-                stop=int(GCI[n])
-                T0=GCI[n]-GCI[n-1]
-                if T0==0 and n>2:
-                    T0=GCI[n]-GCI[n-2]
-                    start=int(GCI[n-2])
-            F0=fs/T0
+        sys.warn("not enough voiced segments were found to compute GCI")
+        return NAQ, QOQ, T1, T2, H1H2, HRF
+    start=0
+    stop=int(GCI[0])
+    T0=GCI[1]-GCI[0]
 
-            if T0>0 and F0>F0min and F0<F0max:
-                gf_comb=[gf[start], gf[stop]]
-                if start!=stop:
-                    if len(gf_comb)>1:
-                        line=np.interp(np.arange(stop-start), np.linspace(0,stop-start,2), gf_comb)
-                    else:
-                        line=gf_comb
-                else:
-                    line=0
-                gf_seg=gf[start:stop]
-                gf_seg_comp=gf_seg-line
-                if stop+glot_shift<=len(gfd):
-                    stop2=int(stop+glot_shift)
-                else:
-                    stop2=stop
-                gfd_seg=gfd[start:stop2]
+    for n in range(len(GCI)):
+        # Get glottal pulse compensated for zero-line drift
+        if n>0:
+            start=int(GCI[n-1])
+            stop=int(GCI[n])
+            T0=GCI[n]-GCI[n-1]
+            if T0==0 and n>=2:
+                T0=GCI[n]-GCI[n-2]
+                start=int(GCI[n-2])
+        F0=fs/T0
 
-                # get NAQ and QOQ
-                d_peak=np.max(np.abs(gfd_seg))
-                f_ac=np.max(gf_seg_comp)
-                max_idx=np.argmax(gf_seg_comp)
-                Amid=f_ac*qoq_level
+        if T0<=0 or F0<=F0min or F0>=F0max:
+            continue
 
-                T1[n],T2[n] = findAmid_t(gf_seg_comp,Amid,max_idx)
-                NAQ[n]=(f_ac/d_peak)/T0
-                QOQ[n]=(T2[n]-T1[n])/(fs/F0)
+        gf_comb=[gf[start], gf[stop]]
+        line=0
+        if start!=stop and len(gf_comb)>1:
+            line=np.interp(np.arange(stop-start), np.linspace(0,stop-start,2), gf_comb)
+        elif start!=stop and len(gf_comb)<=1:
+            line=gf_comb
+        gf_seg=gf[start:stop]
+        gf_seg_comp=gf_seg-line
+        f_ac=np.max(gf_seg_comp)
+        Amid=f_ac*qoq_level
+        max_idx=np.argmax(gf_seg_comp)
+        T1[n],T2[n] = find_amid_t(gf_seg_comp,Amid,max_idx)
 
-                #Get frame positions for H1-H2 parameter
-                if GCI[n]-int((T0*T0_num)/2)>0:
-                    f_start=int(GCI[n]-int((T0*T0_num)/2))
-                else:
-                    f_start=0
-                if GCI[n]+int((T0*T0_num)/2)<=len(gfd):
-                    f_stop=int(GCI[n]+int((T0*T0_num)/2))
-                else:
-                    f_stop=len(gfd)
-                f_frame=gfd[f_start:f_stop]
-                f_win=f_frame*np.hamming(len(f_frame))
-                f_spec=20*np.log10(np.abs(np.fft.fft(f_win, fs)))
+        if stop+glot_shift<=len(gfd):
+            stop=int(stop+glot_shift)
+        gfd_seg=gfd[start:stop]
 
-                f_spec=f_spec[0:int(len(f_spec)/2)]
-                # get H1-H2 and HRF
-                [max_peaks, min_peaks]=peakdetect(f_spec,lookahead = int(T0))
-                if len(max_peaks)==0:
-                    H1H2[n]=0
-                    HRF[n]=0
-                    continue
-                h_idx, h_amp=zip(*max_peaks)
+        # get NAQ and QOQ
+        d_peak=np.max(np.abs(gfd_seg))
+        
+        NAQ[n]=(f_ac/d_peak)/T0
+        QOQ[n]=(T2[n]-T1[n])/T0
+        #Get frame positions for H1-H2 parameter
+        H1H2[n], HRF[n]=compute_h1h2_hrf_frame(GCI[n], T0, T0_num, gfd, F0, fs)
 
-
-                HRF_harm_num=np.fix(HRF_freq_max/F0)
-
-                if len(h_idx)>=min_harm_num:
-                    temp1=np.arange(HRF_harm_num)*F0
-                    f0_idx=np.zeros(len(h_idx))
-                    for mp in range(len(h_idx)):
-
-                        temp2=h_idx[mp]-temp1
-                        temp2=np.abs(temp2)
-                        posmin=np.where(temp2==min(temp2))[0]
-                        if len(posmin)>1:
-                            posmin=posmin[0]
-
-                        if posmin<len(h_idx):
-                            f0_idx[mp]=posmin
-                        else:
-                            f0_idx[mp]=len(h_idx)-1
-
-                    f0_idx=[int(mm) for mm in f0_idx]
-
-                    H1H2[n]=h_amp[f0_idx[0]]-h_amp[f0_idx[1]]
-                    harms=[h_amp[mm] for mm in f0_idx[1:]]
-                    HRF[n]=sum(harms)/h_amp[f0_idx[0]]
 
     return NAQ, QOQ, T1, T2, H1H2, HRF
 
-def findAmid_t(glot_adj, Amid, Tz):
+def compute_h1h2_hrf_frame(GCIn, T0, T0_num, gfd, F0, fs):
+    H1H2=0
+    HRF=0
+
+    if GCIn-int((T0*T0_num)/2)>0:
+        f_start=int(GCIn-int((T0*T0_num)/2))
+    else:
+        f_start=0
+    if GCIn+int((T0*T0_num)/2)<=len(gfd):
+        f_stop=int(GCIn+int((T0*T0_num)/2))
+    else:
+        f_stop=len(gfd)
+    f_frame=gfd[f_start:f_stop]
+    f_win=f_frame*np.hamming(len(f_frame))
+    f_spec=20*np.log10(np.abs(np.fft.fft(f_win, fs)))
+
+    f_spec=f_spec[0:int(len(f_spec)/2)]
+    # get H1-H2 and HRF
+    [max_peaks, min_peaks]=peakdetect(f_spec,lookahead = int(T0))
+
+
+    if len(max_peaks)==0:
+        return 0, 0
+    h_idx, h_amp=zip(*max_peaks)
+    HRF_harm_num=np.fix(HRF_freq_max/F0)
+    if len(h_idx)>=min_harm_num:
+        temp1=np.arange(HRF_harm_num)*F0
+        f0_idx=np.zeros(len(h_idx))
+        for mp in range(len(h_idx)):
+
+            temp2=h_idx[mp]-temp1
+            temp2=np.abs(temp2)
+            posmin=np.where(temp2==min(temp2))[0]
+            if len(posmin)>1:
+                posmin=posmin[0]
+
+            if posmin<len(h_idx):
+                f0_idx[mp]=posmin
+            else:
+                f0_idx[mp]=len(h_idx)-1
+
+        f0_idx=[int(mm) for mm in f0_idx]
+
+        H1H2=h_amp[f0_idx[0]]-h_amp[f0_idx[1]]
+        harms=[h_amp[mm] for mm in f0_idx[1:]]
+        HRF=sum(harms)/h_amp[f0_idx[0]]
+
+    return H1H2, HRF
+
+
+
+def find_amid_t(glot_adj, Amid, Tz):
     #Function to find the start and stop positions of the quasi-open phase.
     T1=0
     T2=0
@@ -342,9 +332,9 @@ if __name__=="__main__":
         audio=sys.argv[1]
 
     fsi, data_audio=read(audio)
-    GCIi=SE_VQ_varF0(data_audio,fsi)
+    GCIi=se_vq_varf0(data_audio,fsi)
     print('Glottal inverse filtering using IAIF algorithm (Alku et al. 1992)')
-    g_iaif=IAIF(data_audio,fsi,GCIi)
+    g_iaif=iaif(data_audio,fsi,GCIi)
     g_iaif=g_iaif-np.mean(g_iaif)
     g_iaif=g_iaif/max(abs(g_iaif))
 

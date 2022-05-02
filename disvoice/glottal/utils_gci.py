@@ -210,8 +210,6 @@ def search_res_interval_peaks(res,interval,Ncand,VUV):
         if stop<=start or np.sum(VUV[start:stop])!=len(VUV[start:stop]):
             continue
         if stop-start<Ncand:
-            amp=np.max(res[start:stop])
-            idx=np.argmax(res[start:stop])
             GCI_cur=GCI_cur+start-1
             GCI[n,:]=GCI_cur
             rel_amp[n,:]=0
@@ -276,41 +274,9 @@ def RESON_dyProg_mat(GCI_relAmp,GCI_N,F0mean,x,fs,trans_wgt,relAmp_wgt, plots=Tr
     #print(ncands, nframe, cost.shape)
     prev=np.zeros((nframe,ncands))
     pulseLen = int(fs/F0mean)
-    GCI_opt=np.zeros(nframe)
 
-    for n in range(nframe):
-
-        if n<1:
-            continue
-
-        costm=np.zeros((ncands,ncands))
-
-        for c in range(ncands):
-            #Transitions TO states in current frame
-            start=int(GCI_N[n,c]-pulseLen/2)
-            stop=int(GCI_N[n,c]+pulseLen/2)
-            if stop>len(x):
-                stop=len(x)
-            pulse_cur=x[start:stop]
-
-            for p in range(ncands):
-                #Transitions FROM states in previous frame
-                start=int(GCI_N[n-1,p]-pulseLen/2)
-                stop=int(GCI_N[n-1,p]+pulseLen/2)
-                if start<1:
-                    start=1
-                if stop>len(x):
-                    stop=len(x)
-                pulse_prev=x[start:stop]
-                if len(pulse_cur)==0 or np.isnan(pulse_cur[0]) or np.isnan(pulse_prev[0]):
-                    costm[p,c]=0
-                else:
-                    if len(pulse_cur)!=len(pulse_prev):
-                        cor_cur=0
-                    else:
-                        cor_cur=pearsonr(pulse_cur,pulse_prev)[0]
-                    costm[p,c]=(1-np.abs(cor_cur))*trans_wgt
-
+    for n in range(1,nframe):
+        costm = get_costm_matrix(GCI_N, x, trans_wgt, ncands, pulseLen, n)
         costm=costm+np.tile(cost[n-1,0:ncands],(ncands,1))
         costm=np.asarray(costm)
         costi=np.min(costm,0)
@@ -320,30 +286,48 @@ def RESON_dyProg_mat(GCI_relAmp,GCI_N,F0mean,x,fs,trans_wgt,relAmp_wgt, plots=Tr
 
     best=np.zeros(n+1)
     best[n]=np.argmin(cost[n,0:ncands])
+
+
+
     for i in range(n-1,1,-1):
 
         best[i-1]=prev[i,int(best[i])]
 
-    for n in range(nframe):
-        #print(n,int(best[n]))
-        GCI_opt[n]=GCI_N[n,int(best[n])]
+    GCI_opt=np.asarray([GCI_N[n,int(best[n])] for n in range(nframe)])
 
     if plots:
-        GCI_norm=np.zeros((nframe,ncands))
-        GCI_opt_norm=np.zeros((nframe,ncands))
-        for n in range(nframe):
-            GCI_norm[n,:]=GCI_N[n,:]-GCI_N[n,0]
-            GCI_opt_norm[n]=GCI_opt[n]-GCI_N[n,0]
-
+        GCI_opt_norm=np.asarray([GCI_opt[n]-GCI_N[n,0] for n in range(nframe)])
         plt.subplot(211)
         plt.plot(x)
         plt.stem(GCI_N[:,0], -0.1*np.ones(len(GCI_N[:,0])), 'r')
         plt.stem(GCI_opt, -0.1*np.ones(len(GCI_opt)), 'k')
         plt.subplot(212)
-        #plt.plot(GCI_opt, GCI_norm)
         plt.plot(GCI_opt, GCI_opt_norm, 'bo')
         plt.show()
     return GCI_opt
+
+def get_costm_matrix(GCI_N, x, trans_wgt, ncands, pulseLen, n):
+    costm=np.zeros((ncands,ncands))
+
+    for c in range(ncands):
+            #Transitions TO states in current frame
+        start=int(GCI_N[n,c]-pulseLen/2)
+        stop=min([int(GCI_N[n,c]+pulseLen/2), len(x)])
+        pulse_cur=x[start:stop]
+
+        for p in range(ncands):
+                #Transitions FROM states in previous frame
+            start=max([1,int(GCI_N[n-1,p]-pulseLen/2)])
+            stop=min([len(x),int(GCI_N[n-1,p]+pulseLen/2)])
+            pulse_prev=x[start:stop]
+            if len(pulse_cur)==0 or np.isnan(pulse_cur[0]) or np.isnan(pulse_prev[0]):
+                continue
+            if len(pulse_cur)!=len(pulse_prev):
+                cor_cur=0
+            else:
+                cor_cur=pearsonr(pulse_cur,pulse_prev)[0]
+            costm[p,c]=(1-np.abs(cor_cur))*trans_wgt
+    return costm
 
 
 def lpcauto(s,p):
@@ -360,7 +344,6 @@ def lpcauto(s,p):
     nf=1
     ar=np.zeros(p+1)
     ar[0]=1
-    e=np.zeros(nf)
     dd=s[:]
     nc=len(s)
     pp=min(p,nc)
@@ -411,42 +394,41 @@ def calc_residual(x,x_lpc,ord_lpc,GCI):
     vector_res=np.zeros(len(x))
     ze_lpc=np.zeros(ord_lpc)
     ar_lpc=np.zeros((ord_lpc+1, len(GCI)))
-
     for n in range(len(GCI)-1):
         if n>1:
             T0_cur=GCI[n]-GCI[n-1]
         else:
-            T0_cur=GCI[n+1]-GCI[n]
+            T0_cur=GCI[1]-GCI[0]
 
-        if GCI[n]-T0_cur>0 and GCI[n]+T0_cur<=len(x) and T0_cur>0:
-            start=int(GCI[n]-T0_cur)
-            stop=int(GCI[n]+T0_cur)
+        if GCI[n]-T0_cur<=0 or GCI[n]+T0_cur>len(x) or T0_cur<=0:
+            continue
 
-            frame_lpc=x_lpc[start:stop]
-            if len(frame_lpc)>ord_lpc*1.5:
-                frame_wind=frame_lpc*hamming(len(frame_lpc))
-                ar,e=lpcauto(frame_wind, ord_lpc)
-                ar_par=np.real(ar)
-                #ar_par[0]=1
-                ar_lpc[:,n]=ar_par
+        start=int(GCI[n]-T0_cur)
+        stop=int(GCI[n]+T0_cur)
+        frame_res=x[start:stop]
 
-            # inverse filtering
-            try:
-                if n>1 and ('frame_res' in locals()) and ('residual' in locals()):
-                    last_input=frame_res[::-1]
-                    last_output=residual[::-1]
+        frame_lpc=x_lpc[start:stop]
+        if len(frame_lpc)>ord_lpc*1.5:
+            frame_wind=frame_lpc*hamming(len(frame_lpc))
+            ar,e=lpcauto(frame_wind, ord_lpc)
+            ar_par=np.real(ar)
+            ar_lpc[:,n]=ar_par
 
-                    ze_lpc=lfiltic(ar_par, np.sqrt(e), last_output, last_input)
-                frame_res=x[start:stop]
-
-                residual=lfilter(b=ar_par,a=np.sqrt(e), x=frame_res, zi=ze_lpc)
-
-            except:
-                residual=[frame_res]
-            residual_win=residual[0]*hamming(len(residual[0]))
-            try:
-                vector_res[start:stop]=vector_res[start:stop]+residual_win
-            except:
-                vector_res[start:start+len(residual_win)]=vector_res[start:start+len(residual_win)]+residual_win
+        # inverse filtering
+        try:
+            
+            if n>1:
+                last_input=frame_res[::-1]
+                last_output=residual[::-1]
+                ze_lpc=lfiltic(ar_par, np.sqrt(e), last_output, last_input)
+            residual=lfilter(b=ar_par,a=np.sqrt(e), x=frame_res, zi=ze_lpc)
+        
+        except:
+            residual=[frame_res]
+        residual_win=residual[0]*hamming(len(residual[0]))
+        try:
+            vector_res[start:stop]=vector_res[start:stop]+residual_win
+        except:
+            vector_res[start:start+len(residual_win)]=vector_res[start:start+len(residual_win)]+residual_win
 
     return vector_res

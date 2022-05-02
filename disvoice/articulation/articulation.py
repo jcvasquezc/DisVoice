@@ -14,19 +14,17 @@ import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
 import matplotlib.mlab as mlab
 import pysptk
-try:
-    from .articulation_functions import extractTrans, V_UV
-except: 
-    from articulation_functions import extractTrans, V_UV
 import pandas as pd
 import torch
 from tqdm import tqdm
-path_app = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(path_app+'/../')
+PATH = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(PATH, '..'))
+sys.path.append(PATH)
 import praat.praat_functions as praat_functions
 from script_mananger import script_manager
+from articulation_functions import extract_transitions, get_transition_segments
 
-from utils import dynamic2statict_artic, save_dict_kaldimat, get_dict
+from utils import dynamic2statict_artic, save_dict_kaldimat, get_dict, fill_when_empty
 
 
 
@@ -113,7 +111,6 @@ class Articulation:
         self.maxf0=350
         self.voice_bias=-0.2
         self.len_thr_miliseconds=270.0
-        self.PATH = os.path.dirname(os.path.abspath(__file__))
         self.head=["BBEon_"+str(j) for j in range(1,23)]
         self.head+=["MFCCon_"+str(j) for j in range(1,13)]
         self.head+=["DMFCCon_"+str(j) for j in range(1,13)]
@@ -127,6 +124,12 @@ class Articulation:
         self.head_dyn+=["MFCCon_"+str(j) for j in range(1,13)]
         self.head_dyn+=["DMFCCon_"+str(j) for j in range(1,13)]
         self.head_dyn+=["DDMFCCon_"+str(j) for j in range(1,13)]
+        self.head_st=[]
+        for k in ["avg", "std", "skewness", "kurtosis"]:
+            for h in self.head:
+                self.head_st.append(k+" "+h)
+        if not os.path.exists(PATH+'/../../tempfiles/'):
+            os.makedirs(PATH+'/../../tempfiles/')
 
     def plot_art(self, data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
         """Plots of the articulation features
@@ -140,6 +143,8 @@ class Articulation:
         :param segmentsOff: list with the offset segments
         :returns: plots of the articulation features.
         """
+        x_axis='Time (s)'
+        y_axis='Frequency (Hz)'
         plt.figure(1)
         plt.subplot(311)
         t=np.arange(0, float(len(data_audio))/fs, 1.0/fs)
@@ -155,8 +160,8 @@ class Articulation:
         plt.subplot(312)
         t0=np.linspace(0.0,t[-1],len(F0))
         plt.plot(t0, F0, color='r', linewidth=2.0, label='F0')
-        plt.xlabel('Time (s)', fontsize=14)
-        plt.ylabel('Frequency (Hz)', fontsize=14)
+        plt.xlabel(x_axis, fontsize=14)
+        plt.ylabel(y_axis, fontsize=14)
         plt.ylim([0,np.max(F0)+10])
         plt.xlim([0, t0[-1]])
         plt.grid(True)
@@ -173,8 +178,8 @@ class Articulation:
 
         plt.plot(t2, F1, color='k', linewidth=2.0, label='F1')
         plt.plot(t2, F2, color='g', linewidth=2.0, label='F2')
-        plt.xlabel('Time (s)', fontsize=14)
-        plt.ylabel('Frequency (Hz)', fontsize=14)
+        plt.xlabel(x_axis, fontsize=14)
+        plt.ylabel(y_axis, fontsize=14)
         plt.ylim([0,np.max(F2)+10])
         plt.xlim([0, t2[-1]])
         plt.grid(True)
@@ -201,8 +206,8 @@ class Articulation:
             spec, freqs, t, im=plt.specgram(segmentsOn[j], NFFT=128, Fs=fs, window=mlab.window_hanning, noverlap=100, detrend=mlab.detrend_mean)
             a1.imshow(np.log10(np.abs(np.flipud(spec))), extent=[0, .08, 1, 4000], aspect='auto', cmap=plt.cm.viridis,
                     vmax=np.log10(np.abs(spec).max()), vmin=np.log10(np.abs(spec).min()), interpolation="bilinear")
-            a1.set_ylabel('Frequency (Hz)', fontsize=12)
-            a1.set_xlabel('Time (s)', fontsize=12)
+            a1.set_ylabel(y_axis, fontsize=12)
+            a1.set_xlabel(x_axis, fontsize=12)
             a1.set_xlim([0,0.08])
             a02 = a1.twinx()
             fsp=len(F0on[j])/0.086
@@ -225,8 +230,8 @@ class Articulation:
             spec, freqs, t, im=plt.specgram(segmentsOff[j], NFFT=128, Fs=fs, window=mlab.window_hanning, noverlap=100, detrend=mlab.detrend_mean)
             a1.imshow(np.log10(np.abs(np.flipud(spec))), extent=[0, .08, 1, 4000], aspect='auto', cmap=plt.cm.viridis,
                     vmax=np.log10(np.abs(spec).max()), vmin=np.log10(np.abs(spec).min()), interpolation="bilinear")
-            a1.set_ylabel('Frequency (Hz)', fontsize=12)
-            a1.set_xlabel('Time (s)', fontsize=12)
+            a1.set_ylabel(y_axis, fontsize=12)
+            a1.set_xlabel(x_axis, fontsize=12)
             a02 = a1.twinx()
             fsp=len(F0off[j])/0.086
             t2=np.arange(len(F0off[j]))/fsp
@@ -267,27 +272,13 @@ class Articulation:
         size_frameS=self.sizeframe*float(fs)
         size_stepS=self.step*float(fs)
 
-        if self.pitch_method == 'praat':
-            name_audio=audio.split('/')
-            temp_uuid='articulation'+name_audio[-1][0:-4]
-            if not os.path.exists(self.PATH+'/../tempfiles/'):
-                os.makedirs(self.PATH+'/../tempfiles/')
-            temp_filename_vuv=self.PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
-            temp_filename_f0=self.PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
-            praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=self.step, minf0=self.minf0, maxf0=self.maxf0)
-            F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),self.step)
-            segmentsFull,segmentsOn,segmentsOff=praat_functions.read_textgrid_trans(temp_filename_vuv,data_audio,fs,self.sizeframe)
-            os.remove(temp_filename_vuv)
-            os.remove(temp_filename_f0)
-        elif self.pitch_method == 'rapt':
-            data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-            F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=self.minf0, max=self.maxf0, voice_bias=self.voice_bias, otype='f0')
+        if static and fmt=="kaldi":
+            raise ValueError("Kaldi is only supported for dynamic features")
 
-            segmentsOn=V_UV(F0, data_audio, fs, 'onset')
-            segmentsOff=V_UV(F0, data_audio, fs, 'offset')
+        F0, segmentsOn, segmentsOff = self.extract_transition_segments(audio, fs, data_audio, size_stepS)
 
-        BBEon, MFCCon=extractTrans(segmentsOn, fs, size_frameS, size_stepS, self.nB, self.nMFCC)
-        BBEoff, MFCCoff=extractTrans(segmentsOff, fs, size_frameS, size_stepS, self.nB, self.nMFCC)
+        BBEon, MFCCon=extract_transitions(segmentsOn, fs, size_frameS, size_stepS, self.nB, self.nMFCC)
+        BBEoff, MFCCoff=extract_transitions(segmentsOff, fs, size_frameS, size_stepS, self.nB, self.nMFCC)
 
         DMFCCon=np.asarray([np.diff(MFCCon[:,nf], n=1) for nf in range(MFCCon.shape[1])]).T
         DDMFCCon=np.asarray([np.diff(MFCCon[:,nf], n=2) for nf in range(MFCCon.shape[1])]).T
@@ -298,9 +289,8 @@ class Articulation:
 
         name_audio=audio.split('/')
         temp_uuid='artic'+name_audio[-1][0:-4]
-        if not os.path.exists(self.PATH+'/../tempfiles/'):
-            os.makedirs(self.PATH+'/../tempfiles/')
-        temp_filename=self.PATH+'/../tempfiles/tempFormants'+temp_uuid+'.txt'
+
+        temp_filename=PATH+'/../../tempfiles/tempFormants'+temp_uuid+'.txt'
         praat_functions.praat_formants(audio, temp_filename,self.sizeframe,self.step)
         [F1, F2]=praat_functions.decodeFormants(temp_filename)
         os.remove(temp_filename)
@@ -313,6 +303,7 @@ class Articulation:
             DDF1=np.zeros((0,1))
             DF2=np.zeros((0,1))
             DDF2=np.zeros((0,1))
+
         else:
             F1=np.hstack((F1, np.zeros(len(F0)-len(F1))))
             F2=np.hstack((F2, np.zeros(len(F0)-len(F2))))
@@ -323,14 +314,10 @@ class Articulation:
 
             thr_sil=int(self.len_thr_miliseconds/self.step)
 
-            sil_seg=[]
-            for l in range(len(f0u)):
-                if len(f0u[l])>=thr_sil:
-                    F1[f0u[l]]=0
-                    F2[f0u[l]]=0
-                sil_seg.append(f0u)
-
-            sil_seg=np.hstack(sil_seg)
+            len_segments=np.array([len(segment) for segment in f0u])
+            index_silence=np.where(len_segments>=thr_sil)[0]
+            F1[index_silence]=0
+            F2[index_silence]=0
 
             F1nz=F1[F1!=0]
             F2nz=F2[F2!=0]
@@ -343,55 +330,54 @@ class Articulation:
             if plots:
                 self.plot_art(data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff)
 
-            if len(F1nz)==0:
-                F1nz=np.zeros((0,1))
-            if len(F2nz)==0:
-                F2nz=np.zeros((0,1))
-            if len(DF1)==0:
-                DF1=np.zeros((0,1))
-            if len(DDF1)==0:
-                DDF1=np.zeros((0,1))
-            if len(DF2)==0:
-                DF2=np.zeros((0,1))
-            if len(DDF2)==0:
-                DDF2=np.zeros((0,1))
+            F1nz=fill_when_empty(F1nz)
+            F2nz=fill_when_empty(F2nz)
+            DF1=fill_when_empty(DF1)
+            DDF1=fill_when_empty(DDF1)
+            DF2=fill_when_empty(DF2)
+            DDF2=fill_when_empty(DDF2)
 
-        feat_v=dynamic2statict_artic([BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1nz, DF1, DDF1, F2nz, DF2, DDF2])
-        feat_mat=np.hstack((BBEon[2:,:], MFCCon[2:,:], DMFCCon[1:,:], DDMFCCon))
+        if static:
+            feat_mat=dynamic2statict_artic([BBEon, MFCCon, DMFCCon, DDMFCCon, BBEoff, MFCCoff, DMFCCoff, DDMFCCoff, F1nz, DF1, DDF1, F2nz, DF2, DDF2])
+            feat_mat=np.expand_dims(feat_mat,0)
+            head=self.head_st
+        else:
+            feat_mat=np.hstack((BBEon[2:,:], MFCCon[2:,:], DMFCCon[1:,:], DDMFCCon))
+            head=self.head_dyn
 
         if fmt in("npy","txt"):
-            if static:
-                return feat_v
             return feat_mat
-        if fmt in("dataframe","csv"):
-            if static:
-                head_st=[]
-                df={}
-                for k in ["avg", "std", "skewness", "kurtosis"]:
-                    for h in self.head:
-                        head_st.append(k+" "+h)
-                for e, k in enumerate(head_st):
-                    #print(feat_v.shape, len(head_st), e, k)
-                    df[k]=[feat_v[e]]
-                            
-                return pd.DataFrame(df)
-            else:
-                df={}
-                for e, k in enumerate(self.head_dyn):
-                    df[k]=feat_mat[:,e]
-                return pd.DataFrame(df)
-        if fmt=="torch":
-            if static:
-                feat_t=torch.from_numpy(feat_v)
-                return feat_t
-            return torch.from_numpy(feat_mat)
-
-        if fmt=="kaldi":
-            if static:
-                raise ValueError("Kaldi is only supported for dynamic features")
+        elif fmt in("dataframe","csv"):
+            df={}
+            for e, k in enumerate(head):
+                df[k]=feat_mat[:,e]
+            return pd.DataFrame(df)
+        elif fmt=="torch":
+            feat_t=torch.from_numpy(feat_mat)
+            return feat_t
+        elif fmt=="kaldi":
             name_all=audio.split('/')
             dictX={name_all[-1]:feat_mat}
             save_dict_kaldimat(dictX, kaldi_file)
+
+    def extract_transition_segments(self, audio, fs, data_audio, size_stepS):
+        if self.pitch_method == 'praat':
+            name_audio=audio.split('/')
+            temp_uuid='articulation'+name_audio[-1][0:-4]
+            temp_filename_vuv=PATH+'/../../tempfiles/tempVUV'+temp_uuid+'.txt'
+            temp_filename_f0=PATH+'/../../tempfiles/tempF0'+temp_uuid+'.txt'
+            praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=self.step, minf0=self.minf0, maxf0=self.maxf0)
+            F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),self.step)
+            segmentsFull,segmentsOn,segmentsOff=praat_functions.read_textgrid_trans(temp_filename_vuv,data_audio,fs,self.sizeframe)
+            os.remove(temp_filename_vuv)
+            os.remove(temp_filename_f0)
+        elif self.pitch_method == 'rapt':
+            data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
+            F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=self.minf0, max=self.maxf0, voice_bias=self.voice_bias, otype='f0')
+
+            segmentsOn=get_transition_segments(F0, data_audio, fs, 'onset')
+            segmentsOff=get_transition_segments(F0, data_audio, fs, 'offset')
+        return F0,segmentsOn,segmentsOff
 
 
     def extract_features_path(self, path_audio, static=True, plots=False, fmt="npy", kaldi_file=""):
@@ -418,6 +404,9 @@ class Articulation:
         pbar=tqdm(range(len(hf)))
         ids=[]
 
+        if static and fmt=="kaldi":
+            raise ValueError("Kaldi is only supported for dynamic features")        
+
         Features=[]
         for j in pbar:
             pbar.set_description("Processing %s" % hf[j])
@@ -434,25 +423,19 @@ class Articulation:
         if fmt in("npy","txt"):
             return Features
         if fmt in("dataframe","csv"):
+            df={}
             if static:
-                head_st=[]
-                df={}
-                for k in ["avg", "std", "skewness", "kurtosis"]:
-                    for h in self.head:
-                        head_st.append(k+" "+h)
-                for e, k in enumerate(head_st):
-                    df[k]=Features[:,e]
+                head=self.head_st
             else:
-                df={}
-                for e, k in enumerate(self.head_dyn):
-                    df[k]=Features[:,e]
+                head=self.head_dyn
+            for e, k in enumerate(head):
+                df[k]=Features[:,e]
+
             df["id"]=ids
             return pd.DataFrame(df)
         if fmt=="torch":
             return torch.from_numpy(Features)
         if fmt=="kaldi":
-            if static:
-                raise ValueError("Kaldi is only supported for dynamic features")
             dictX=get_dict(Features, ids)
             save_dict_kaldimat(dictX, kaldi_file)
 

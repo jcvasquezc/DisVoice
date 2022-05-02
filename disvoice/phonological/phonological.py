@@ -16,8 +16,9 @@ import scipy.stats as st
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
 
-path_app = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(path_app+'/../')
+PATH = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(PATH, '..'))
+sys.path.append(PATH)
 from utils import save_dict_kaldimat, get_dict
 
 from script_mananger import script_manager
@@ -101,7 +102,11 @@ class Phonological:
         >>> phonological.extract_features_path(path_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
 
         """
+        if static and fmt=="kaldi":
+            raise ValueError("Kaldi is only supported for dynamic features")
 
+        if audio.find('.wav') == -1 and audio.find('.WAV') == -1:
+            raise ValueError(audio+" is not a valid wav file")
         
         df=self.phon.get_PLLR(audio, plot_flag=plots)
 
@@ -109,47 +114,34 @@ class Phonological:
         keys.remove('time')
 
         if static:
-            dff={}
-            feat_vec=[]
+            feat=[]
             functions=[np.mean, np.std, st.skew, st.kurtosis, np.max, np.min]
-
             for j in keys:
-                for l, function in zip(self.statistics, functions):
-
-                    if fmt in("npy","txt","torch"):
-                        feat_vec.append(function(df[j]))
-                    if fmt in("dataframe","csv"):
-
-                        feat_name=j+"_"+l
-
-                        dff[feat_name]=[function(df[j])]
-            if fmt in("npy","txt"):
-                return np.hstack(feat_vec)
-            if fmt in("dataframe","csv"):
-                return pd.DataFrame(dff)
-            if fmt=="torch":
-                return torch.from_numpy(np.hstack(feat_vec))
-            if fmt=="kaldi":
-                raise ValueError("Kaldi is only supported for dynamic features")
-            raise ValueError(fmt+" is not supported")
+                for function in functions:
+                    feat.append(function(df[j]))
+            feat=np.expand_dims(feat, axis=0)
 
         else:
+            feat=np.stack([df[k] for k in keys], axis=1)
 
-            if fmt in("npy","txt"):
-                featmat=np.stack([df[k] for k in keys], axis=1)
-                return featmat
-            if fmt in("dataframe","csv"):
-                return df
-            if fmt=="torch":
-                featmat=np.stack([df[k] for k in keys], axis=1)
-                return torch.from_numpy(featmat)
-            if fmt=="kaldi":
-                featmat=np.stack([df[k] for k in keys], axis=1)
-                name_all=audio.split('/')
-                dictX={name_all[-1]:featmat}
-                save_dict_kaldimat(dictX, kaldi_file)
-            else:
-                raise ValueError(fmt+" is not supported")
+        if fmt in("npy","txt"):
+            return feat
+        elif fmt in("dataframe","csv") and static:
+            dff = {}
+            for e, k in enumerate(self.head_st):
+                dff[k] = feat[:, e]
+            return pd.DataFrame(df)
+        elif fmt in("dataframe","csv") and not static:
+            return df
+        elif fmt=="torch":
+            return torch.from_numpy(feat)
+        elif fmt=="kaldi":
+            featmat=np.stack([df[k] for k in keys], axis=1)
+            name_all=audio.split('/')
+            dictX={name_all[-1]:featmat}
+            save_dict_kaldimat(dictX, kaldi_file)
+        else:
+            raise ValueError(fmt+" is not supported")
 
 
 
@@ -190,24 +182,29 @@ class Phonological:
         
         Features=np.vstack(Features)
         ids=np.hstack(ids)
+
+        return self.save_features(Features, ids, fmt, static, kaldi_file)
+
+
+
+    def save_features(self, Features, ids, fmt, static, kaldi_file):
+
+        if static:
+            head = self.head_st
+        else:
+            head = self.head_dyn
+    
         if fmt in("npy","txt"):
             return Features
-        if fmt in("dataframe","csv"):
-            if static:
-                df={}
-                for e, k in enumerate(self.head_st):
-                    df[k]=Features[:,e]
-            else:
-                df={}
-                for e, k in enumerate(self.head_dyn):
-                    df[k]=Features[:,e]
-            df["id"]=ids
+        elif fmt in("dataframe","csv"):
+            df = {}
+            for e, k in enumerate(head):
+                df[k] = Features[:, e]
+            df["id"] = ids
             return pd.DataFrame(df)
-        if fmt=="torch":
+        elif fmt=="torch":
             return torch.from_numpy(Features)
-        if fmt=="kaldi":
-            if static:
-                raise ValueError("Kaldi is only supported for dynamic features")
+        elif fmt=="kaldi":
             dictX=get_dict(Features, ids)
             save_dict_kaldimat(dictX, kaldi_file)
         else:

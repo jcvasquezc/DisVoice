@@ -5,12 +5,7 @@ Feature extraction from speech signals based on representation learning strategi
 """
 
 import os
-try:
-    from .CAE import CAEn
-    from .RAE import RAEn
-except:
-    from CAE import CAEn
-    from RAE import RAEn
+import sys
 from scipy.io.wavfile import read
 import torch
 from librosa.feature import melspectrogram
@@ -21,6 +16,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.stats as st
 
+PATH = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(PATH, '..'))
+sys.path.append(PATH)
+from CAE import CAEn
+from RAE import RAEn
 class AEspeech:
 
     def __init__(self, model, units):
@@ -34,29 +34,28 @@ class AEspeech:
         """
         self.model_type=model
         self.units=units
-        self.PATH=os.path.dirname(os.path.abspath(__file__))
         self.min_scaler=-50.527256
         self.max_scaler=6.8561997
         if model=="CAE":
             self.AE=CAEn(units)
             if torch.cuda.is_available():
                 
-                self.AE.load_state_dict(torch.load(self.PATH+"/"+str(units)+'_CAE.pt'))
+                self.AE.load_state_dict(torch.load(PATH+"/"+str(units)+'_CAE.pt'))
                 self.AE.cuda()
             else:
-                self.AE.load_state_dict(torch.load(self.PATH+"/"+str(units)+'_CAE.pt', map_location='cpu'))
+                self.AE.load_state_dict(torch.load(PATH+"/"+str(units)+'_CAE.pt', map_location='cpu'))
         elif model=="RAE":
             self.AE=RAEn(units)
             if torch.cuda.is_available():
-                self.AE.load_state_dict(torch.load(self.PATH+"/"+str(units)+'_RAE.pt'))
+                self.AE.load_state_dict(torch.load(PATH+"/"+str(units)+'_RAE.pt'))
                 self.AE.cuda()
             else:
-                self.AE.load_state_dict(torch.load(self.PATH+"/"+str(units)+'_RAE.pt', map_location='cpu'))
+                self.AE.load_state_dict(torch.load(PATH+"/"+str(units)+'_RAE.pt', map_location='cpu'))
 
         else:
             raise ValueError("Model "+model+" is not valid. Please choose only CAE or RAE")
 
-
+        self.feat_names_bottle_all, self.feat_names_error_all = self.get_feature_names()
     
     def compute_spectrograms(self, wav_file):
         """
@@ -88,7 +87,7 @@ class AEspeech:
             for k in range(nf):
                 try:
                     frame=signal[init:endi]
-                    imag=melspectrogram(frame, sr=fs, n_fft=NFFT, hop_length=HOP, n_mels=NMELS, fmax=fs/2)
+                    imag=melspectrogram(y=frame, sr=fs, n_fft=NFFT, hop_length=HOP, n_mels=NMELS, fmax=fs/2)
                     init=init+int(TIME_SHIFT*fs)
                     endi=endi+int(TIME_SHIFT*fs)
                     if np.min(np.min(imag))<=0:
@@ -238,7 +237,7 @@ class AEspeech:
         encspec=np.concatenate(encall,axis=1)
 
         mmax=2595*np.log10(1+8000/700)
-        m=np.linspace(0,mmax,11)
+        m=np.linspace(0,mmax,6)
 
         f=np.round(700*(10**(m/2595)-1))
         f=f[::-1]
@@ -336,28 +335,16 @@ class AEspeech:
         if wav_directory[-1]!='/':
             wav_directory=wav_directory+"/"
 
-        feat_names_bottle=["bottleneck_"+str(k) for k in range(self.units)]
-        feat_names_error=["error_"+str(k) for k in range(128)]
-
-        stat_names=["avg", "std", "skewness", "kurtosis"]
-
-        feat_names_bottle_all=[]
-        feat_names_error_all=[]
-
-        for k in stat_names:
-            for j in feat_names_bottle:
-                feat_names_bottle_all.append(k+"_"+j)
-            for j in feat_names_error:
-                feat_names_error_all.append(k+"_"+j)
+        
 
         if stack_feat:
-            feat_names_all=feat_names_bottle_all+feat_names_error_all
+            feat_names_all=self.feat_names_bottle_all+self.feat_names_error_all
 
-        bottle_feat=np.zeros((len(hf), len(feat_names_bottle_all)))
-        error_feat=np.zeros((len(hf), len(feat_names_error_all)))
+        bottle_feat=np.zeros((len(hf), len(self.feat_names_bottle_all)))
+        error_feat=np.zeros((len(hf), len(self.feat_names_error_all)))
         
         if stack_feat:
-            feat_all=np.zeros((len(hf),len(feat_names_bottle_all)+len(feat_names_error_all) ))
+            feat_all=np.zeros((len(hf),len(self.feat_names_bottle_all)+len(self.feat_names_error_all) ))
 
         for i, wav_file in enumerate(hf):
             try:
@@ -372,12 +359,12 @@ class AEspeech:
         dict_feat_bottle={}
         dict_feat_bottle["ID"]=hf
         for j in range(bottle_feat.shape[1]):
-            dict_feat_bottle[feat_names_bottle_all[j]]=bottle_feat[:,j]
+            dict_feat_bottle[self.feat_names_bottle_all[j]]=bottle_feat[:,j]
 
         dict_feat_error={}
         dict_feat_error["ID"]=hf
         for j in range(error_feat.shape[1]):
-            dict_feat_error[feat_names_error_all[j]]=error_feat[:,j]
+            dict_feat_error[self.feat_names_error_all[j]]=error_feat[:,j]
 
         df1=pd.DataFrame(dict_feat_bottle)
         df2=pd.DataFrame(dict_feat_error)
@@ -395,4 +382,20 @@ class AEspeech:
             return df1, df2, df3
 
         return df1, df2
+
+    def get_feature_names(self):
+        feat_names_bottle=["bottleneck_"+str(k) for k in range(self.units)]
+        feat_names_error=["error_"+str(k) for k in range(128)]
+
+        stat_names=["avg", "std", "skewness", "kurtosis"]
+
+        feat_names_bottle_all=[]
+        feat_names_error_all=[]
+
+        for k in stat_names:
+            for j in feat_names_bottle:
+                feat_names_bottle_all.append(k+"_"+j)
+            for j in feat_names_error:
+                feat_names_error_all.append(k+"_"+j)
+        return feat_names_bottle_all,feat_names_error_all
 

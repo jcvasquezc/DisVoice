@@ -65,11 +65,7 @@ def fftsolp(x,nfft):
     rowindex = rowindex.astype(int)
     rowindex = rowindex[np.newaxis]
     rowindex = rowindex.T
-
-    y = np.zeros((nwind,ncol),dtype=np.int)
     d = np.ones((nwind,ncol),dtype=np.int)
-
-
     y = x[d*(rowindex+colindex)]
     window = window.astype(float)
     window = window[np.newaxis]
@@ -83,7 +79,7 @@ def fftsolp(x,nfft):
     return y
 
     
-def extractTrans(segments, fs, size_frameS, size_stepS, nB=22, nMFCC=12, nfft=2048):
+def extract_transitions(segments, fs, size_frameS, size_stepS, nB=22, nMFCC=12, nfft=2048):
     frames=[]
     size_frame_full=int(2**np.ceil(np.log2(size_frameS)))
     fill=int(size_frame_full-size_frameS)
@@ -103,21 +99,18 @@ def extractTrans(segments, fs, size_frameS, size_stepS, nB=22, nMFCC=12, nfft=20
     return BarkEn, MFCC
 
 
-def V_UV(F0, data_audio, fs, transition, size_tran=0.04):
+def get_transition_segments(F0, data_audio, fs, transition, size_tran=0.04):
     segment=[]
     time_stepF0=int(len(data_audio)/len(F0))
-    #print(F0)
+
     for j in range(2, len(F0)):
-        if transition=='onset':
-            if F0[j-1]==0 and F0[j]!=0:
-                border=j*time_stepF0
-                initframe=int(border-size_tran*fs)
-                endframe=int(border+size_tran*fs)
-                segment.append(data_audio[initframe:endframe])
-        elif transition=='offset':
-            if F0[j-1]!=0 and F0[j]==0:
-                border=j*time_stepF0
-                initframe=int(border-size_tran*fs)
-                endframe=int(border+size_tran*fs)
-                segment.append(data_audio[initframe:endframe])
+        if transition=="onset":
+            condition=F0[j-1]==0 and F0[j]!=0
+        elif transition=="offset":
+            condition=F0[j-1]!=0 and F0[j]==0
+        if condition:
+            border=j*time_stepF0
+            initframe=int(border-size_tran*fs)
+            endframe=int(border+size_tran*fs)
+            segment.append(data_audio[initframe:endframe])
     return segment

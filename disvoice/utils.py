@@ -95,3 +95,7 @@ def multi_find(s, r):
     return _complete
 
 
+def fill_when_empty(array):
+    if len(array) == 0:
+        return np.zeros((0,1))
+    return array

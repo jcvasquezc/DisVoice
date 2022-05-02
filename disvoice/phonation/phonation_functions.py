@@ -8,23 +8,21 @@ Created on Jul 21 2017
 
 
 import numpy as np
+import sys
 
 def jitter_env(vPPS, iNumPuntos):
 
     iLongSec=len(vPPS)
 
     if (iLongSec < 2):
-        print( 'Pitch sequence is too short' )
+        sys.warn('Pitch sequence is too short' )
         vJitta=np.zeros(iNumPuntos)
         return vJitta
 
     vJitta=np.zeros(iNumPuntos)
     iIndiceIni=0
-
     iDesplazamiento=iLongSec/iNumPuntos
-
     rFoMed=np.max(vPPS)
-
     for n in range(iNumPuntos-1):
         indice=int( iIndiceIni+n*iDesplazamiento )
         if ( n>0 ) and (indice==int( iIndiceIni+(n-1)*iDesplazamiento )):
@@ -38,14 +36,14 @@ def jitter_env(vPPS, iNumPuntos):
 
     return vJitta
 
-def logEnergy(sig):
+def get_log_energy(sig):
     sig2=np.asarray(sig)**2
     sumsig2=np.sum(np.absolute(sig2))/len(sig2)
     logE=np.log10(sumsig2)
     return logE
 
 
-def Power(sig):
+def get_power(sig):
     sig2=np.square(sig)
     sumsig2=np.sum(sig2)/len(sig)
     return sumsig2
@@ -56,7 +54,7 @@ def shimmer_env(vPPS, iNumPuntos):
     iLongSec=len(vPPS)
 
     if (iLongSec < 2):
-        print( 'Sequence is too short' )
+        sys.warn( 'Sequence is too short' )
         vShimm=np.zeros(iNumPuntos)
         return vShimm
 

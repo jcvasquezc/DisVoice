@@ -12,13 +12,11 @@ from tqdm import tqdm
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(PATH, '..'))
+sys.path.append(PATH)
 from script_mananger import script_manager
 from utils import dynamic2static, get_dict, save_dict_kaldimat
 plt.rcParams["font.family"] = "Times New Roman"
-try:
-    from .GCI import IAIF, SE_VQ_varF0, get_vq_params
-except:
-    from GCI import IAIF, SE_VQ_varF0, get_vq_params
+from GCI import iaif, se_vq_varf0, get_vq_params
 
 
 class Glottal:
@@ -49,14 +47,14 @@ class Glottal:
 
     1. The fundamental frequency is computed using the RAPT algorithm.
 
-    >>> python Glottal.py <file_or_folder_audio> <file_features> <dynamic_or_static> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>
+    >>> python glottal.py <file_or_folder_audio> <file_features> <dynamic_or_static> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>
 
     Examples command line:
 
-    >>> python Glottal.py "../audios/001_a1_PCGITA.wav" "glottalfeaturesAst.txt" "static" "true" "txt"
-    >>> python Glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.csv" "static" "true" "csv"
-    >>> python Glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.ark" "dynamic" "true" "kaldi"
-    >>> python Glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.pt" "dynamic" "true" "torch"
+    >>> python glottal.py "../audios/001_a1_PCGITA.wav" "glottalfeaturesAst.txt" "static" "true" "txt"
+    >>> python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.csv" "static" "true" "csv"
+    >>> python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.ark" "dynamic" "true" "kaldi"
+    >>> python glottal.py "../audios/098_u1_PCGITA.wav" "glottalfeaturesUst.pt" "dynamic" "true" "torch"
 
 
     Examples directly in Python
@@ -153,7 +151,7 @@ class Glottal:
         winshift = int(0.005*fs)
         x = x-np.mean(x)
         x = x/float(np.max(np.abs(x)))
-        GCIs = SE_VQ_varF0(x, fs)
+        GCIs = se_vq_varf0(x, fs)
         g_iaif = np.zeros(len(x))
         glottal = np.zeros(len(x))
 
@@ -171,7 +169,7 @@ class Glottal:
             pGCIt = np.where((GCIs > start) & (GCIs < stop))[0]
             GCIt = GCIs[pGCIt]-start
 
-            g_iaif_f = IAIF(x_frame, fs, GCIt)
+            g_iaif_f = iaif(x_frame, fs, GCIt)
             glottal_f = cumtrapz(g_iaif_f, dx=1/fs)
             glottal_f = np.hstack((glottal[start], glottal_f))
             g_iaif[start:stop] = g_iaif[start:stop]+g_iaif_f*win
@@ -205,6 +203,10 @@ class Glottal:
         >>> features3=glottal.extract_features_file(file_audio, static=False, plots=True, fmt="torch")
         >>> glottal.extract_features_file(file_audio, static=False, plots=False, fmt="kaldi", kaldi_file="./test.ark")
         """
+
+        if static and fmt=="kaldi":
+            raise ValueError("Kaldi is only supported for dynamic features")
+
         if audio.find('.wav') == -1 and audio.find('.WAV') == -1:
             raise ValueError(audio+" is not a valid wav file")
         fs, data_audio = read(audio)
@@ -241,13 +243,10 @@ class Glottal:
         for l in range(nF):
             init = int(l*size_stepS)
             endi = int(l*size_stepS+size_frameS)
-
             gframe = glottal[init:endi]
             dgframe = glottal[init:endi]
-
             pGCIt = np.where((GCI > init) & (GCI < endi))[0]
             gci_s = GCI[pGCIt]-init
-
             f0_frame = f0[startf0:stopf0]
             pf0framez = np.where(f0_frame != 0)[0]
             f0nzframe = f0_frame[pf0framez]
@@ -259,7 +258,6 @@ class Glottal:
 
             startf0 = startf0+stepf0
             stopf0 = stopf0+stepf0
-
             GCId = np.diff(gci_s)
             avgGCIt[l] = np.mean(GCId/fs)
             varGCIt[l] = np.std(GCId/fs)
@@ -287,33 +285,24 @@ class Glottal:
 
         feat = np.stack((varGCIt, avgNAQt, varNAQt, avgQOQt,
                         varQOQt, avgH1H2t, varH1H2t, avgHRFt, varHRFt), axis=1)
+        if static:
+            feat=dynamic2static(feat)
+            feat=np.expand_dims(feat, axis=0)
+            head = self.head_st
+        else:
+            head=self.head_dyn
 
         if fmt in ("npy", "txt"):
-            if static:
-                return dynamic2static(feat)
             return feat
 
-        if fmt in ("dataframe", "csv"):
-            if static:
-                feat = dynamic2static(feat)
-                feat=np.expand_dims(feat, axis=0)
-                head = self.head_st
-            else:
-                head = self.head_dyn
+        elif fmt in ("dataframe", "csv"):
             df = {}
             for e, k in enumerate(head):
                 df[k] = feat[:, e]
             return pd.DataFrame(df)
-        if fmt == "torch":
-            if static:
-                feat_s = dynamic2static(feat)
-                feat_t = torch.from_numpy(feat_s)
-                return feat_t
+        elif fmt == "torch":
             return torch.from_numpy(feat)
-        if fmt == "kaldi":
-            if static:
-                raise ValueError(
-                    "Kaldi is only supported for dynamic features")
+        elif fmt == "kaldi":
             name_all = audio.split('/')
             dictX = {name_all[-1]: feat}
             save_dict_kaldimat(dictX, kaldi_file)
@@ -359,26 +348,22 @@ class Glottal:
         return self.save_features(Features, ids, fmt, static, kaldi_file)
 
     def save_features(self, Features, ids, fmt, static, kaldi_file):
+        if static:
+            head = self.head_st
+        else:
+            head = self.head_dyn
+        
         if fmt in ("npy", "txt"):
             return Features
         if fmt in ("dataframe", "csv"):
             df = {}
-            if static:
-                head = self.head_st
-            else:
-                head = self.head_dyn
-
             for e, k in enumerate(head):
                 df[k] = Features[:, e]
-
             df["id"] = ids
             return pd.DataFrame(df)
         if fmt == "torch":
             return torch.from_numpy(Features)
         if fmt == "kaldi":
-            if static:
-                raise ValueError(
-                    "Kaldi is only supported for dynamic features")
             dictX = get_dict(Features, ids)
             save_dict_kaldimat(dictX, kaldi_file)
 
@@ -386,7 +371,7 @@ class Glottal:
 if __name__ == "__main__":
 
     if len(sys.argv) != 6:
-        print("python Glottal.py <file_or_folder_audio> <file_features> <static (true, false)> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>")
+        print("python glottal.py <file_or_folder_audio> <file_features> <static (true, false)> <plots (true,  false)> <format (csv, txt, npy, kaldi, torch)>")
         sys.exit()
 
     glottal_o = Glottal()
