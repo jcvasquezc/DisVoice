@@ -20,8 +20,8 @@ from tqdm import tqdm
 PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(PATH, '..'))
 sys.path.append(PATH)
-import praat.praat_functions as praat_functions
-from script_mananger import script_manager
+import disvoice.praat.praat_functions as praat_functions
+from disvoice.script_mananger import script_manager
 from articulation_functions import extract_transitions, get_transition_segments
 
 from utils import dynamic2statict_artic, save_dict_kaldimat, get_dict, fill_when_empty

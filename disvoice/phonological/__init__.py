@@ -1,3 +1,5 @@
 # -*- coding: utf-8 -*-
 
-__all__=['phonological']
+from .phonological import Phonological
+
+__all__=["Phonological"]

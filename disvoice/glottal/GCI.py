@@ -4,14 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import pysptk
-
+import os
 from scipy.integrate import cumtrapz
-try:
-    from .peakdetect import peakdetect
-    from .utils_gci import create_continuous_smooth_f0, GetLPCresidual, get_MBS, get_MBS_GCI_intervals, search_res_interval_peaks, RESON_dyProg_mat, calc_residual
-except:
-    from peakdetect import peakdetect
-    from utils_gci import create_continuous_smooth_f0, GetLPCresidual, get_MBS, get_MBS_GCI_intervals, search_res_interval_peaks, RESON_dyProg_mat, calc_residual
+PATH = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(PATH)
+
+from peakdetect import peakdetect
+from utils_gci import create_continuous_smooth_f0, GetLPCresidual, get_MBS, get_MBS_GCI_intervals, search_res_interval_peaks, RESON_dyProg_mat, calc_residual
 
 
 T0_num=3 #Number of local glottal pulses to be used for harmonic spectrum

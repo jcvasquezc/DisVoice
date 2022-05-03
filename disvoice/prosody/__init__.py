@@ -1,3 +1,7 @@
 # -*- coding: utf-8 -*-
 
-__all__=['prosody']
+from .prosody import Prosody
+from .prosody_functions import *
+
+
+__all__=["Prosody"]
