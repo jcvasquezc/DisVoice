@@ -22,11 +22,15 @@ For additional details about each feature type, and how to use DisVoice, please 
 
 ### Install
 
-To install the requeriments, please run
+Praat should be installed first. Then
 
-```sh
-install.sh
-```
+
+```pip install disvoice```
+
+or
+
+```python setup.py install```
+
 
 Kaldi must be installed beforehand for Kaldi output  
 
