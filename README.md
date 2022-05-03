@@ -22,14 +22,35 @@ For additional details about each feature type, and how to use DisVoice, please 
 
 ### Install
 
-Praat should be installed first. Then
+Praat should be installed first, and the executable file should be added as an environmental variable. 
 
+For linux
 
-```pip install disvoice```
+```
+apt-get install praat
+pip install disvoice
+```
 
 or
 
 ```python setup.py install```
+
+For Windows
+
+Donwload the latest version of Praat from https://www.fon.hum.uva.nl/praat/download_win.html
+
+and add the path file to the environment variables
+
+Then
+
+```
+pip install disvoice
+```
+
+or
+
+```python setup.py install```
+
 
 
 Kaldi must be installed beforehand for Kaldi output  

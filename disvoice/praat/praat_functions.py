@@ -2,8 +2,9 @@
 import os
 import numpy as np
 import sys
-path_praat_script=os.path.dirname(os.path.realpath(__file__))
-sys.path.append(path_praat_script)
+PATH = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(PATH)
 
 def multi_find(s, r):
 	"""
@@ -38,9 +39,9 @@ def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0
 	:returns: nothing
 	"""
 	if sys.platform.find('win')>=0:
-		command=path_praat_script+'/praat.exe --run '+path_praat_script+'/vuv_praat.praat '
+		command='/praat.exe --run '+PATH+'/vuv_praat.praat '
 	else:
-		command='praat '+path_praat_script+'/vuv_praat.praat '
+		command='praat '+PATH+'/vuv_praat.praat '
 	command+=audio_filaname+' '+resultsp +' '+  resultst+' '
 	command+=str(minf0)+' '+str(maxf0)+' '
 	command+=str(time_stepF0)+' '+str(maxVUVPeriod)+' '+str(averageVUVPeriod)
@@ -62,9 +63,9 @@ def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5
 	"""
 
 	if sys.platform.find('win')>=0:
-		command=path_praat_script+'/praat.exe --run '+path_praat_script+'/FormantsPraat.praat '
+		command='praat.exe --run '+PATH+'/FormantsPraat.praat '
 	else:
-		command='praat '+path_praat_script+'/FormantsPraat.praat '
+		command='praat '+PATH+'/FormantsPraat.praat '
 	command+=audio_filename + ' '+results_filename+' '
 	command+=str(n_formants)+' '+ str(max_formant) + ' '
 	command+=str(float(sizeframe)/2)+' '

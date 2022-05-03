@@ -102,7 +102,7 @@ class Articulation:
     """
 
     def __init__(self):
-        self.pitch_method="praat"
+        self.pitch_method="rapt"
         self.sizeframe=0.04
         self.step=0.02
         self.nB=22

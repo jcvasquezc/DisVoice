@@ -120,13 +120,12 @@ class Prosody:
     """
 
     def __init__(self):
-        self.pitch_method = "praat"
+        self.pitch_method = "rapt"
         self.size_frame = 0.02
         self.step = 0.01
         self.thr_len = 0.14
         self.minf0 = 60
         self.maxf0 = 350
-        self.PATH = os.path.dirname(os.path.abspath(__file__))
         self.voice_bias = -0.2
         self.P = 5
         self.namefeatf0 = ["F0avg", "F0std", "F0max", "F0min",
@@ -317,10 +316,10 @@ class Prosody:
         if self.pitch_method == 'praat':
             name_audio = audio.split('/')
             temp_uuid = 'prosody'+name_audio[-1][0:-4]
-            if not os.path.exists(self.PATH+'/../tempfiles/'):
-                os.makedirs(self.PATH+'/../tempfiles/')
-            temp_filename_f0 = self.PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
-            temp_filename_vuv = self.PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
+            if not os.path.exists(PATH+'/../tempfiles/'):
+                os.makedirs(PATH+'/../tempfiles/')
+            temp_filename_f0 = PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
+            temp_filename_vuv = PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
             praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv,
                                       time_stepF0=self.step, minf0=self.minf0, maxf0=self.maxf0)
 
@@ -382,10 +381,10 @@ class Prosody:
         if self.pitch_method == 'praat':
             name_audio = audio.split('/')
             temp_uuid = 'prosody'+name_audio[-1][0:-4]
-            if not os.path.exists(self.PATH+'/../tempfiles/'):
-                os.makedirs(self.PATH+'/../tempfiles/')
-            temp_filename_f0 = self.PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
-            temp_filename_vuv = self.PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
+            if not os.path.exists(PATH+'/../tempfiles/'):
+                os.makedirs(PATH+'/../tempfiles/')
+            temp_filename_f0 = PATH+'/../tempfiles/tempF0'+temp_uuid+'.txt'
+            temp_filename_vuv = PATH+'/../tempfiles/tempVUV'+temp_uuid+'.txt'
             praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv,
                                       time_stepF0=self.step, minf0=self.minf0, maxf0=self.maxf0)
 
