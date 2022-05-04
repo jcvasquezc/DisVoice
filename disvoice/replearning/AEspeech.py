@@ -15,6 +15,8 @@ import warnings
 import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.stats as st
+from scipy import signal as sig
+
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(PATH, '..'))
@@ -78,7 +80,10 @@ class AEspeech:
         if len(signal.shape)>1:
             signal = signal.mean(1)
         if fs!=16000:
-            raise ValueError(str(fs)+" is not a valid sampling frequency")
+            num_samples=int(len(signal)*16000/fs)
+            signal=sig.resample(signal, num_samples)
+            fs=16000
+
         signal=signal-np.mean(signal)
         signal=signal/np.max(np.abs(signal))
         init=0

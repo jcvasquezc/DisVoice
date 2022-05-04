@@ -14,9 +14,7 @@ class RAEenc(nn.Module):
         x=x[:,0,:,:]
         x=x.permute(0,2,1)
         x,(hn,cn)=self.lstm1(x)
-        #print(hn.size())
         hn=hn.permute(1,0,2)
-        #print(hn.size()) 
         x=x[:,-1,:]
         hn=hn.contiguous().view(hn.size(0),-1)
         x = x.view(x.size(0), -1)
