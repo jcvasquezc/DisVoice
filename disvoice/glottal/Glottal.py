@@ -210,6 +210,10 @@ class Glottal:
         if audio.find('.wav') == -1 and audio.find('.WAV') == -1:
             raise ValueError(audio+" is not a valid wav file")
         fs, data_audio = read(audio)
+
+        if len(data_audio.shape)>1:
+            data_audio = data_audio.mean(1)
+
         data_audio = data_audio-np.mean(data_audio)
         data_audio = data_audio/float(np.max(np.abs(data_audio)))
         size_frameS = self.size_frame*float(fs)

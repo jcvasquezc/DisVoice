@@ -74,6 +74,9 @@ class AEspeech:
         if wav_file.find('.wav')==-1 and wav_file.find('.WAV')==-1:
             raise ValueError(wav_file+" is not a valid audio file")
         fs, signal=read(wav_file)
+
+        if len(signal.shape)>1:
+            signal = signal.mean(1)
         if fs!=16000:
             raise ValueError(str(fs)+" is not a valid sampling frequency")
         signal=signal-np.mean(signal)
