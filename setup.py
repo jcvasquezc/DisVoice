@@ -24,7 +24,7 @@ LONG_DESC_TYPE = "text/markdown"
 
 setup(
     name='disvoice',
-    version='0.1.5',
+    version='0.1.7',
     packages=find_packages(),
     description='Python framework designed to compute different types of features from speech files',
     author='J. C. Vasquez-Correa',
@@ -40,7 +40,7 @@ setup(
     },
     license='MIT',
     install_requires=install_requires,
-    package_data={'': ['audios/*', "*.praat"]},
+    package_data={'': ['audios/*', "*.praat", "*.pt"]},
     keywords = ['speech', 'speech features', 'articulatory features', 'phoneme recognition', 'prosody', 'praat'],
     dependency_links=['git+git://github.com/jameslyons/python_speech_features'],
     classifiers=[
