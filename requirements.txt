@@ -9,3 +9,4 @@ pysptk==0.1.18
 phonet==0.3.7
 scipy==1.8.0
 scikit_learn==1.0.2
+tensorflow>=2.10.1 # not directly required, pinned by Snyk to avoid a vulnerability
