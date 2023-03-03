@@ -12,12 +12,12 @@ The features are also suitable to evaluate mood problems like depression based o
 
 For additional details about each feature type, and how to use DisVoice, please check
 
-- [glottal](https://github.com/jcvasquezc/DisVoice/tree/master/glottal)
-- [phonation](https://github.com/jcvasquezc/DisVoice/tree/master/phonation)
-- [articulaton](https://github.com/jcvasquezc/DisVoice/tree/master/articulation)
-- [prosody](https://github.com/jcvasquezc/DisVoice/tree/master/prosody) 
-- [phonological](https://github.com/jcvasquezc/DisVoice/tree/master/phonological)
-- [Representation learning](https://github.com/jcvasquezc/DisVoice/tree/master/replearning)
+- [glottal](https://github.com/jcvasquezc/DisVoice/tree/master/disvoice/glottal)
+- [phonation](https://github.com/jcvasquezc/DisVoice/tree/master/disvoice/phonation)
+- [articulaton](https://github.com/jcvasquezc/DisVoice/tree/master/disvoice/articulation)
+- [prosody](https://github.com/jcvasquezc/DisVoice/tree/master/disvoice/prosody) 
+- [phonological](https://github.com/jcvasquezc/DisVoice/tree/master/disvoice/phonological)
+- [Representation learning](https://github.com/jcvasquezc/DisVoice/tree/master/disvoice/replearning)
 
 
 ### Install
