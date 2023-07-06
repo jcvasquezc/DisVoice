@@ -130,7 +130,7 @@ class Phonological:
             dff = {}
             for e, k in enumerate(self.head_st):
                 dff[k] = feat[:, e]
-            return pd.DataFrame(df)
+            return pd.DataFrame(dff)
         elif fmt in("dataframe","csv") and not static:
             return df
         elif fmt=="torch":
