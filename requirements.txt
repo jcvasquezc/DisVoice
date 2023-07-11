@@ -7,5 +7,5 @@ librosa==0.9.1
 pandas==1.2.4
 pysptk==0.1.18
 phonet==0.3.7
-scipy==1.8.0
+scipy==1.10.0
 scikit_learn==1.0.2
