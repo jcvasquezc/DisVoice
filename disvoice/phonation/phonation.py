@@ -90,14 +90,14 @@ class Phonation:
     >>> features3=phonation.extract_features_path(path_audios, static, plots=False, fmt="dataframe")
 
     """
-    def __init__(self):
-        self.pitch_method="rapt"
-        self.size_frame=0.04
-        self.size_step=0.02
-        self.minf0=60
-        self.maxf0=350
-        self.voice_bias=-0.2
-        self.energy_thr_percent=0.025
+    def __init__(self, pitch_method="rept", size_frame=0.04, size_step=0.02, minf0=60, maxf0=350, voice_bias=-0.2, energy_thr_percent=0.025):
+        self.pitch_method=pitch_method
+        self.size_frame=size_frame
+        self.size_step=size_step
+        self.minf0=minf0
+        self.maxf0=maxf0
+        self.voice_bias=voice_bias
+        self.energy_thr_percent=energy_thr_percent
         self.head_dyn=["DF0", "DDF0", "Jitter", "Shimmer", "apq", "ppq", "logE"]
         
         if not os.path.exists(PATH+'/../tempfiles/'):
