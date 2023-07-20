@@ -9,13 +9,14 @@ Created on Jul 21 2017
 
 import numpy as np
 import sys
+import warnings
 
 def jitter_env(vPPS, iNumPuntos):
 
     iLongSec=len(vPPS)
 
     if (iLongSec < 2):
-        sys.warn('Pitch sequence is too short' )
+        warnings.warn('Pitch sequence is too short' )
         vJitta=np.zeros(iNumPuntos)
         return vJitta
 
@@ -54,7 +55,7 @@ def shimmer_env(vPPS, iNumPuntos):
     iLongSec=len(vPPS)
 
     if (iLongSec < 2):
-        sys.warn( 'Sequence is too short' )
+        warnings.warn( 'Sequence is too short' )
         vShimm=np.zeros(iNumPuntos)
         return vShimm
 

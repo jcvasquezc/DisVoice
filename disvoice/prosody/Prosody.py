@@ -27,7 +27,7 @@ plt.rcParams["font.family"] = "Times New Roman"
 from prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, get_energy_segment
 
 from script_mananger import script_manager
-from utils import save_dict_kaldimat, get_dict
+from ..utils import save_dict_kaldimat, get_dict
 import praat.praat_functions as praat_functions
 class Prosody:
     """
@@ -119,15 +119,15 @@ class Prosody:
 
     """
 
-    def __init__(self):
-        self.pitch_method = "rapt"
-        self.size_frame = 0.02
-        self.step = 0.01
-        self.thr_len = 0.14
-        self.minf0 = 60
-        self.maxf0 = 350
-        self.voice_bias = -0.2
-        self.P = 5
+    def __init__(self, pitch_method = "rapt",size_frame = 0.02,step = 0.01,thr_len = 0.14,minf0 = 60,maxf0 = 350,voice_bias = -0.2, P = 5):
+        self.pitch_method = pitch_method
+        self.size_frame = size_frame
+        self.step = step
+        self.thr_len = thr_len
+        self.minf0 = minf0
+        self.maxf0 = maxf0
+        self.voice_bias = voice_bias
+        self.P = P
         self.namefeatf0 = ["F0avg", "F0std", "F0max", "F0min",
                            "F0skew", "F0kurt", "F0tiltavg", "F0mseavg",
                            "F0tiltstd", "F0msestd", "F0tiltmax", "F0msemax",

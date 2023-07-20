@@ -24,7 +24,7 @@ import disvoice.praat.praat_functions as praat_functions
 from disvoice.script_mananger import script_manager
 from articulation_functions import extract_transitions, get_transition_segments
 
-from utils import dynamic2statict_artic, save_dict_kaldimat, get_dict, fill_when_empty
+from ..utils import dynamic2statict_artic, save_dict_kaldimat, get_dict, fill_when_empty
 
 
 

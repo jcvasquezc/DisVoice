@@ -1,8 +1,22 @@
 # DisVoice
-
 [![Documentation Status](https://readthedocs.org/projects/disvoice/badge/?version=latest)](https://disvoice.readthedocs.io/en/latest/?badge=latest)
 
 ![Image](https://github.com/jcvasquezc/DisVoice/blob/master/docs/logos/disvoice_logo.png?raw=true)
+
+---
+## 🔥 This is a version I modified for my convenience.
+2023-07-20
+* Fix bug: sys.warn not found
+* Update source for using config in extracting acoustic features
+
+
+
+#### Setup
+```
+cd DisVoice
+pip install .
+```
+---
 
 DisVoice is a python framework designed to compute features from speech files. Disvoice computes glottal, phonation, articulation, prosody, phonological, and features representation learnig strategies using autoencders. The features can be computed both from sustained vowels and continuous speech utterances with the aim to recognize praliguistic aspects from speech.
 

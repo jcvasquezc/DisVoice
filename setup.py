@@ -31,10 +31,10 @@ setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type=LONG_DESC_TYPE,
     author_email='juan.vasquez@fau.de',
-    url='https://github.com/jcvasquezc/disvoice',
-    download_url='https://github.com/jcvasquezc/disvoice/#files',
+    url='https://github.com/hwang9u/disvoice',
+    download_url='https://github.com/hwang9u/disvoice/#files',
     project_urls={
-        "Source code": "https://github.com/jcvasquezc/disvoice",
+        "Source code": "https://github.com/hwang9u/disvoice",
         "Documentation": "https://disvoice.readthedocs.io/en/latest/",
         "Bug Tracker": "https://github.com/jcvasquezc/DisVoice/issues"
     },

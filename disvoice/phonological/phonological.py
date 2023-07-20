@@ -19,7 +19,7 @@ plt.rcParams["font.family"] = "Times New Roman"
 PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(PATH, '..'))
 sys.path.append(PATH)
-from utils import save_dict_kaldimat, get_dict
+from ..utils import save_dict_kaldimat, get_dict
 
 from script_mananger import script_manager
 import torch
