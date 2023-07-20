@@ -21,7 +21,7 @@ sys.path.append(os.path.join(PATH, '..'))
 sys.path.append(PATH)
 from phonation_functions import jitter_env, get_log_energy, shimmer_env, APQ, PPQ
 
-from utils import dynamic2statict, save_dict_kaldimat,get_dict
+from ..utils import dynamic2statict, save_dict_kaldimat,get_dict
 import praat.praat_functions as praat_functions
 from script_mananger import script_manager
 import torch
