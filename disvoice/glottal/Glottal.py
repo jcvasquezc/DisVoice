@@ -9,6 +9,7 @@ import torch
 from scipy.integrate import cumtrapz
 from scipy.io.wavfile import read
 from tqdm import tqdm
+import warnings
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(PATH, '..'))
@@ -156,7 +157,7 @@ class Glottal:
         glottal = np.zeros(len(x))
 
         if GCIs is None:
-            sys.warn("not enought voiced segments were found to compute GCI")
+            warnings.warn("not enought voiced segments were found to compute GCI")
             return glottal, g_iaif, GCIs
 
         start = 0
