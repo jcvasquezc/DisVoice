@@ -293,7 +293,7 @@ class Articulation:
         name_audio=audio.split('/')
         temp_uuid='artic'+name_audio[-1][0:-4]
 
-        temp_filename=PATH+'/../../tempfiles/tempFormants'+temp_uuid+'.txt'
+        temp_filename=PATH+'/../tempfiles/tempFormants'+temp_uuid+'.txt'
         praat_functions.praat_formants(audio, temp_filename,self.sizeframe,self.step)
         [F1, F2]=praat_functions.decodeFormants(temp_filename)
         os.remove(temp_filename)

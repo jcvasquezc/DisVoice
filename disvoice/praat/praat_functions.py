@@ -65,7 +65,7 @@ def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5
 	if sys.platform.find('win')>=0:
 		command='praat.exe --run '+PATH+'/FormantsPraat.praat '
 	else:
-		command='praat '+PATH+'/FormantsPraat.praat '
+		command='praat --run '+PATH+'/FormantsPraat.praat '
 	command+=audio_filename + ' '+results_filename+' '
 	command+=str(n_formants)+' '+ str(max_formant) + ' '
 	command+=str(float(sizeframe)/2)+' '

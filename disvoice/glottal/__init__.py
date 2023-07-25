@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .glottal import Glottal
+from .Glottal import Glottal
 from .GCI import *
 from .peakdetect import *
 from .utils_gci import *
