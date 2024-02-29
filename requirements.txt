@@ -1,7 +1,7 @@
 kaldi_io==0.9.4
 tqdm==4.62.3
 matplotlib==3.3.4
-numpy==1.21.6
+numpy==1.22.2
 torch==1.13.1
 librosa==0.9.1
 pandas==1.2.4
@@ -9,3 +9,5 @@ pysptk==0.1.18
 phonet==0.3.7
 scipy==1.10.0
 scikit_learn==1.0.2
+pillow>=10.2.0 # not directly required, pinned by Snyk to avoid a vulnerability
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
