@@ -2,7 +2,7 @@ kaldi_io==0.9.4
 tqdm==4.62.3
 matplotlib==3.3.4
 numpy==1.21.6
-torch==1.13.1
+torch==2.2.0
 librosa==0.9.1
 pandas==1.2.4
 pysptk==0.1.18
