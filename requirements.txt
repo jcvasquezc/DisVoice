@@ -1,5 +1,5 @@
 kaldi_io==0.9.4
-tqdm==4.62.3
+tqdm==4.66.3
 matplotlib==3.3.4
 numpy==1.21.6
 torch==1.13.1
