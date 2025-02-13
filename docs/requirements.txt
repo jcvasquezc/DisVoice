@@ -3,7 +3,7 @@ sphinx-rtd-theme
 myst-parser
 matplotlib
 numpy
-scipy==1.13.1
+scipy==1.11.4
 pysptk
 pandas
 tqdm
