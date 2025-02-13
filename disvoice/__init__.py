@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from .utils import *
+from .disvoice_utils import *
 from .script_mananger import script_manager
 
 

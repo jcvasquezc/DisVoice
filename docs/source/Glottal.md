@@ -11,8 +11,13 @@ Glottal features
 
    .. autoclass:: Glottal
       :members:
-      
-.. autofunction:: SE_VQ_varF0
-.. autofunction:: IAIF
+
+.. automodule:: GCI
+   :no-members:
+   :no-inherited-members:
+
+
+.. autofunction:: se_vq_varf0
+.. autofunction:: iaif
 .. autofunction:: get_vq_params
 

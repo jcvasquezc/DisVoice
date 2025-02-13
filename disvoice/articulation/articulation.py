@@ -20,11 +20,11 @@ from tqdm import tqdm
 PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(PATH, '..'))
 sys.path.append(PATH)
-import disvoice.praat.praat_functions as praat_functions
-from disvoice.script_mananger import script_manager
+import praat.praat_functions as praat_functions
+from script_mananger import script_manager
 from articulation_functions import extract_transitions, get_transition_segments
 
-from utils import dynamic2statict_artic, save_dict_kaldimat, get_dict, fill_when_empty
+from disvoice_utils import dynamic2statict_artic, save_dict_kaldimat, get_dict, fill_when_empty
 
 
 
@@ -128,8 +128,7 @@ class Articulation:
         for k in ["avg", "std", "skewness", "kurtosis"]:
             for h in self.head:
                 self.head_st.append(k+" "+h)
-        if not os.path.exists(PATH+'/../../tempfiles/'):
-            os.makedirs(PATH+'/../../tempfiles/')
+
 
     def plot_art(self, data_audio,fs,F0,F1,F2,segmentsOn,segmentsOff):
         """Plots of the articulation features
@@ -278,7 +277,7 @@ class Articulation:
         if static and fmt=="kaldi":
             raise ValueError("Kaldi is only supported for dynamic features")
 
-        F0, segmentsOn, segmentsOff = self.extract_transition_segments(audio, fs, data_audio, size_stepS)
+        F0, segmentsOn, segmentsOff = self.extract_transition_segments(fs, data_audio, size_stepS)
 
         BBEon, MFCCon=extract_transitions(segmentsOn, fs, size_frameS, size_stepS, self.nB, self.nMFCC)
         BBEoff, MFCCoff=extract_transitions(segmentsOff, fs, size_frameS, size_stepS, self.nB, self.nMFCC)
@@ -290,13 +289,8 @@ class Articulation:
         DDMFCCoff=np.asarray([np.diff(MFCCoff[:,nf], n=2) for nf in range(MFCCoff.shape[1])]).T
 
 
-        name_audio=audio.split('/')
-        temp_uuid='artic'+name_audio[-1][0:-4]
+        F1, F2 = praat_functions.praat_formants(audio)
 
-        temp_filename=PATH+'/../../tempfiles/tempFormants'+temp_uuid+'.txt'
-        praat_functions.praat_formants(audio, temp_filename,self.sizeframe,self.step)
-        [F1, F2]=praat_functions.decodeFormants(temp_filename)
-        os.remove(temp_filename)
 
         if len(F0)<len(F1):
             F0=np.hstack((F0, np.zeros(len(F1)-len(F0))))
@@ -363,23 +357,13 @@ class Articulation:
             dictX={name_all[-1]:feat_mat}
             save_dict_kaldimat(dictX, kaldi_file)
 
-    def extract_transition_segments(self, audio, fs, data_audio, size_stepS):
-        if self.pitch_method == 'praat':
-            name_audio=audio.split('/')
-            temp_uuid='articulation'+name_audio[-1][0:-4]
-            temp_filename_vuv=PATH+'/../../tempfiles/tempVUV'+temp_uuid+'.txt'
-            temp_filename_f0=PATH+'/../../tempfiles/tempF0'+temp_uuid+'.txt'
-            praat_functions.praat_vuv(audio, temp_filename_f0, temp_filename_vuv, time_stepF0=self.step, minf0=self.minf0, maxf0=self.maxf0)
-            F0,_=praat_functions.decodeF0(temp_filename_f0,len(data_audio)/float(fs),self.step)
-            segmentsFull,segmentsOn,segmentsOff=praat_functions.read_textgrid_trans(temp_filename_vuv,data_audio,fs,self.sizeframe)
-            os.remove(temp_filename_vuv)
-            os.remove(temp_filename_f0)
-        elif self.pitch_method == 'rapt':
-            data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
-            F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=self.minf0, max=self.maxf0, voice_bias=self.voice_bias, otype='f0')
+    def extract_transition_segments(self, fs, data_audio, size_stepS):
 
-            segmentsOn=get_transition_segments(F0, data_audio, fs, 'onset')
-            segmentsOff=get_transition_segments(F0, data_audio, fs, 'offset')
+        data_audiof=np.asarray(data_audio*(2**15), dtype=np.float32)
+        F0=pysptk.sptk.rapt(data_audiof, fs, int(size_stepS), min=self.minf0, max=self.maxf0, voice_bias=self.voice_bias, otype='f0')
+
+        segmentsOn=get_transition_segments(F0, data_audio, fs, 'onset')
+        segmentsOff=get_transition_segments(F0, data_audio, fs, 'offset')
         return F0,segmentsOn,segmentsOff
 
 

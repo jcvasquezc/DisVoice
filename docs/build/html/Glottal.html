@@ -1,74 +1,41 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Glottal features &mdash; DisVoice 0.1.1 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glottal features &mdash; DisVoice 0.1.9 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="_static/disvoice_favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Phonation features" href="Phonation.html" />
     <link rel="prev" title="Welcome to Disvoice’s documentation!" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
+        <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> DisVoice
-          
-
-          
-            
             <img src="_static/disvoice_logo.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                0.1.1
+                0.1.9
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,19 +43,21 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Glottal features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Glottal features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#glottal.Glottal"><code class="docutils literal notranslate"><span class="pre">Glottal</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#glottal.Glottal.extract_features_file"><code class="docutils literal notranslate"><span class="pre">Glottal.extract_features_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#glottal.Glottal.extract_features_path"><code class="docutils literal notranslate"><span class="pre">Glottal.extract_features_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#glottal.Glottal.extract_glottal_signal"><code class="docutils literal notranslate"><span class="pre">Glottal.extract_glottal_signal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#glottal.Glottal.plot_glottal"><code class="docutils literal notranslate"><span class="pre">Glottal.plot_glottal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#GCI.se_vq_varf0"><code class="docutils literal notranslate"><span class="pre">se_vq_varf0()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GCI.iaif"><code class="docutils literal notranslate"><span class="pre">iaif()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GCI.get_vq_params"><code class="docutils literal notranslate"><span class="pre">get_vq_params()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="Phonation.html">Phonation features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Articulation.html">Articulation features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Prosody.html">Prosody features</a></li>
@@ -98,107 +67,69 @@
 <li class="toctree-l1"><a class="reference internal" href="reference.html">References</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">DisVoice</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Glottal features</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/Glottal.md.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="glottal-features">
-<h1>Glottal features<a class="headerlink" href="#glottal-features" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="glottal-features">
+<h1>Glottal features<a class="headerlink" href="#glottal-features" title="Permalink to this heading"></a></h1>
 <a class="reference internal image-reference" href="_images/glottal_vowel.png"><img alt="Glottal features" src="_images/glottal_vowel.png" style="width: 800px;" /></a>
-<span class="target" id="module-glottal"></span><dl class="class">
-<dt id="glottal.Glottal">
-<em class="property">class </em><code class="descclassname">glottal.</code><code class="descname">Glottal</code><a class="headerlink" href="#glottal.Glottal" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-glottal"></span><dl class="py class">
+<dt class="sig sig-object py" id="glottal.Glottal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">glottal.</span></span><span class="sig-name descname"><span class="pre">Glottal</span></span><a class="headerlink" href="#glottal.Glottal" title="Permalink to this definition"></a></dt>
 <dd><p>Compute features based on the glottal source reconstruction from sustained vowels and continuous speech.</p>
 <p>For continuous speech, the features are computed over voiced segments</p>
 <p>Nine descriptors are computed:</p>
 <ol class="arabic simple">
-<li>Variability of time between consecutive glottal closure instants (GCI)</li>
-<li>Average opening quotient (OQ) for consecutive glottal cycles-&gt; rate of opening phase duration / duration of glottal cycle</li>
-<li>Variability of opening quotient (OQ) for consecutive glottal cycles-&gt; rate of opening phase duration /duration of glottal cycle</li>
-<li>Average normalized amplitude quotient (NAQ) for consecutive glottal cycles-&gt; ratio of the amplitude quotient and the duration of the glottal cycle</li>
-<li>Variability of normalized amplitude quotient (NAQ) for consecutive glottal cycles-&gt; ratio of the amplitude quotient and the duration of the glottal cycle</li>
-<li>Average H1H2: Difference between the first two harmonics of the glottal flow signal</li>
-<li>Variability H1H2: Difference between the first two harmonics of the glottal flow signal</li>
-<li>Average of Harmonic richness factor (HRF): ratio of the sum of the harmonics amplitude and the amplitude of the fundamental frequency</li>
-<li>Variability of HRF</li>
+<li><p>Variability of time between consecutive glottal closure instants (GCI)</p></li>
+<li><p>Average opening quotient (OQ) for consecutive glottal cycles-&gt; rate of opening phase duration / duration of glottal cycle</p></li>
+<li><p>Variability of opening quotient (OQ) for consecutive glottal cycles-&gt; rate of opening phase duration /duration of glottal cycle</p></li>
+<li><p>Average normalized amplitude quotient (NAQ) for consecutive glottal cycles-&gt; ratio of the amplitude quotient and the duration of the glottal cycle</p></li>
+<li><p>Variability of normalized amplitude quotient (NAQ) for consecutive glottal cycles-&gt; ratio of the amplitude quotient and the duration of the glottal cycle</p></li>
+<li><p>Average H1H2: Difference between the first two harmonics of the glottal flow signal</p></li>
+<li><p>Variability H1H2: Difference between the first two harmonics of the glottal flow signal</p></li>
+<li><p>Average of Harmonic richness factor (HRF): ratio of the sum of the harmonics amplitude and the amplitude of the fundamental frequency</p></li>
+<li><p>Variability of HRF</p></li>
 </ol>
 <p>Static or dynamic matrices can be computed:</p>
 <p>Static matrix is formed with 36 features formed with (9 descriptors) x (4 functionals: mean, std, skewness, kurtosis)</p>
 <p>Dynamic matrix is formed with the 9 descriptors computed for frames of 200 ms length with a time-shift of 50 ms.</p>
 <p>Notes:</p>
 <ol class="arabic simple">
-<li>The fundamental frequency is computed using the RAPT algorithm.</li>
+<li><p>The fundamental frequency is computed using the RAPT algorithm.</p></li>
 </ol>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">glottal</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">file_or_folder_audio</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">file_features</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">dynamic_or_static</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">plots</span> <span class="p">(</span><span class="n">true</span><span class="p">,</span>  <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nb">format</span> <span class="p">(</span><span class="n">csv</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">npy</span><span class="p">,</span> <span class="n">kaldi</span><span class="p">,</span> <span class="n">torch</span><span class="p">)</span><span class="o">&gt;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">glottal</span><span class="o">.</span><span class="n">py</span> <span class="o">&lt;</span><span class="n">file_or_folder_audio</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">file_features</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">dynamic_or_static</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">plots</span> <span class="p">(</span><span class="n">true</span><span class="p">,</span>  <span class="n">false</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nb">format</span> <span class="p">(</span><span class="n">csv</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">npy</span><span class="p">,</span> <span class="n">kaldi</span><span class="p">,</span> <span class="n">torch</span><span class="p">)</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>Examples command line:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">glottal</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_a1_PCGITA.wav&quot;</span> <span class="s2">&quot;glottalfeaturesAst.txt&quot;</span> <span class="s2">&quot;static&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;txt&quot;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">glottal</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/001_a1_PCGITA.wav&quot;</span> <span class="s2">&quot;glottalfeaturesAst.txt&quot;</span> <span class="s2">&quot;static&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;txt&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">glottal</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/098_u1_PCGITA.wav&quot;</span> <span class="s2">&quot;glottalfeaturesUst.csv&quot;</span> <span class="s2">&quot;static&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;csv&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">glottal</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/098_u1_PCGITA.wav&quot;</span> <span class="s2">&quot;glottalfeaturesUst.ark&quot;</span> <span class="s2">&quot;dynamic&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;kaldi&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">glottal</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;../audios/098_u1_PCGITA.wav&quot;</span> <span class="s2">&quot;glottalfeaturesUst.pt&quot;</span> <span class="s2">&quot;dynamic&quot;</span> <span class="s2">&quot;true&quot;</span> <span class="s2">&quot;torch&quot;</span>
 </pre></div>
 </div>
 <p>Examples directly in Python</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">disvoice.glottal</span> <span class="kn">import</span> <span class="n">Glottal</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">disvoice.glottal</span> <span class="kn">import</span> <span class="n">Glottal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">glottal</span><span class="o">=</span><span class="n">Glottal</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_a1_PCGITA.wav&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
@@ -206,35 +137,31 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path_audios</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path_audios</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audios</span><span class="p">,</span> <span class="n">static</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audios</span><span class="p">,</span> <span class="n">static</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features3</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audios</span><span class="p">,</span> <span class="n">static</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="method">
-<dt id="glottal.Glottal.extract_features_file">
-<code class="descname">extract_features_file</code><span class="sig-paren">(</span><em>audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.extract_features_file" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="glottal.Glottal.extract_features_file">
+<span class="sig-name descname"><span class="pre">extract_features_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kaldi_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.extract_features_file" title="Permalink to this definition"></a></dt>
 <dd><p>Extract the glottal features from an audio file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>audio</strong> &#8211; .wav audio file.</li>
-<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
-<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
-<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
-<li><strong>kaldi_file</strong> &#8211; file to store kaldi features, only valid when fmt==&#8221;kaldi&#8221;</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>audio</strong> – .wav audio file.</p></li>
+<li><p><strong>static</strong> – whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</p></li>
+<li><p><strong>plots</strong> – timeshift to extract the features</p></li>
+<li><p><strong>fmt</strong> – format to return the features (npy, dataframe, torch, kaldi)</p></li>
+<li><p><strong>kaldi_file</strong> – file to store kaldi features, only valid when fmt==”kaldi”</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">glottal</span><span class="o">=</span><span class="n">Glottal</span><span class="p">()</span>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>features computed from the audio file.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">glottal</span><span class="o">=</span><span class="n">Glottal</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_a1_PCGITA.wav&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_file</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
@@ -244,29 +171,25 @@
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="glottal.Glottal.extract_features_path">
-<code class="descname">extract_features_path</code><span class="sig-paren">(</span><em>path_audio</em>, <em>static=True</em>, <em>plots=False</em>, <em>fmt='npy'</em>, <em>kaldi_file=''</em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.extract_features_path" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="glottal.Glottal.extract_features_path">
+<span class="sig-name descname"><span class="pre">extract_features_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_audio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kaldi_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.extract_features_path" title="Permalink to this definition"></a></dt>
 <dd><p>Extract the glottal features for audios inside a path</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>path_audio</strong> &#8211; directory with (.wav) audio files inside, sampled at 16 kHz</li>
-<li><strong>static</strong> &#8211; whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</li>
-<li><strong>plots</strong> &#8211; timeshift to extract the features</li>
-<li><strong>fmt</strong> &#8211; format to return the features (npy, dataframe, torch, kaldi)</li>
-<li><strong>kaldi_file</strong> &#8211; file to store kaldifeatures, only valid when fmt==&#8221;kaldi&#8221;</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_audio</strong> – directory with (.wav) audio files inside, sampled at 16 kHz</p></li>
+<li><p><strong>static</strong> – whether to compute and return statistic functionals over the feature matrix, or return the feature matrix computed over frames</p></li>
+<li><p><strong>plots</strong> – timeshift to extract the features</p></li>
+<li><p><strong>fmt</strong> – format to return the features (npy, dataframe, torch, kaldi)</p></li>
+<li><p><strong>kaldi_file</strong> – file to store kaldifeatures, only valid when fmt==”kaldi”</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">features computed from the audio file.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">glottal</span><span class="o">=</span><span class="n">Glottal</span><span class="p">()</span>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>features computed from the audio file.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">glottal</span><span class="o">=</span><span class="n">Glottal</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path_audio</span><span class="o">=</span><span class="s2">&quot;../audios/&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features1</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npy&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">features2</span><span class="o">=</span><span class="n">glottal</span><span class="o">.</span><span class="n">extract_features_path</span><span class="p">(</span><span class="n">path_audio</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
@@ -276,32 +199,28 @@
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="glottal.Glottal.extract_glottal_signal">
-<code class="descname">extract_glottal_signal</code><span class="sig-paren">(</span><em>x</em>, <em>fs</em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.extract_glottal_signal" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="glottal.Glottal.extract_glottal_signal">
+<span class="sig-name descname"><span class="pre">extract_glottal_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.extract_glottal_signal" title="Permalink to this definition"></a></dt>
 <dd><p>Extract the glottal flow and the glottal flow derivative signals</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; data from the speech signal.</li>
-<li><strong>fs</strong> &#8211; sampling frequency</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – data from the speech signal.</p></li>
+<li><p><strong>fs</strong> – sampling frequency</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">glottal signal</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">derivative  of the glottal signal</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">glottal closure instants</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.io.wavfile</span> <span class="kn">import</span> <span class="n">read</span>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>glottal signal</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>derivative  of the glottal signal</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>glottal closure instants</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.io.wavfile</span> <span class="kn">import</span> <span class="n">read</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">glottal</span><span class="o">=</span><span class="n">Glottal</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="s2">&quot;../audios/001_a1_PCGITA.wav&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span><span class="p">,</span> <span class="n">data_audio</span><span class="o">=</span><span class="n">read</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
@@ -310,35 +229,31 @@
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="glottal.Glottal.plot_glottal">
-<code class="descname">plot_glottal</code><span class="sig-paren">(</span><em>data_audio</em>, <em>fs</em>, <em>GCI</em>, <em>glottal_flow</em>, <em>glottal_sig</em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.plot_glottal" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="glottal.Glottal.plot_glottal">
+<span class="sig-name descname"><span class="pre">plot_glottal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_audio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GCI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glottal_flow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glottal_sig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.Glottal.plot_glottal" title="Permalink to this definition"></a></dt>
 <dd><p>Plots of the glottal features</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_audio</strong> &#8211; speech signal.</li>
-<li><strong>fs</strong> &#8211; sampling frequency</li>
-<li><strong>GCI</strong> &#8211; glottal closure instants</li>
-<li><strong>glottal_flow</strong> &#8211; glottal flow</li>
-<li><strong>glottal_sig</strong> &#8211; reconstructed glottal signal</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_audio</strong> – speech signal.</p></li>
+<li><p><strong>fs</strong> – sampling frequency</p></li>
+<li><p><strong>GCI</strong> – glottal closure instants</p></li>
+<li><p><strong>glottal_flow</strong> – glottal flow</p></li>
+<li><p><strong>glottal_sig</strong> – reconstructed glottal signal</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plots of the glottal features.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>plots of the glottal features.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="glottal.SE_VQ_varF0">
-<code class="descclassname">glottal.</code><code class="descname">SE_VQ_varF0</code><span class="sig-paren">(</span><em>x</em>, <em>fs</em>, <em>f0=None</em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.SE_VQ_varF0" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-GCI"></span><dl class="py function">
+<dt class="sig sig-object py" id="GCI.se_vq_varf0">
+<span class="sig-prename descclassname"><span class="pre">GCI.</span></span><span class="sig-name descname"><span class="pre">se_vq_varf0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GCI.se_vq_varf0" title="Permalink to this definition"></a></dt>
 <dd><p>Function to extract GCIs using an adapted version of the SEDREAMS 
 algorithm which is optimised for non-modal voice qualities (SE-VQ). Ncand maximum
 peaks are selected from the LP-residual signal in the interval defined by
@@ -352,27 +267,23 @@ length.</p>
 <p>This is set using an f0 contour interpolated over unvoiced
 regions and heavily smoothed. This is particularly useful for speech
 involving large f0 excursions (i.e. very expressive speech).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; speech signal (in samples)</li>
-<li><strong>fs</strong> &#8211; sampling frequency (Hz)</li>
-<li><strong>f0</strong> &#8211; f0 contour (optional), otherwise its computed  using the RAPT algorithm</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – speech signal (in samples)</p></li>
+<li><p><strong>fs</strong> – sampling frequency (Hz)</p></li>
+<li><p><strong>f0</strong> – f0 contour (optional), otherwise its computed  using the RAPT algorithm</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">GCI Glottal closure instants (in samples)</p>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>References:</dt>
-<dd>Kane, J., Gobl, C., (2013) <a href="#id1"><span class="problematic" id="id2">`</span></a>Evaluation of glottal closure instant 
-detection in a range of voice qualities&#8217;, Speech Communication
-55(2), pp. 295-314.</dd>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>GCI Glottal closure instants (in samples)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>References:</dt><dd><p>Kane, J., Gobl, C., (2013) <a href="#id1"><span class="problematic" id="id2">`</span></a>Evaluation of glottal closure instant 
+detection in a range of voice qualities’, Speech Communication
+55(2), pp. 295-314.</p>
+</dd>
 </dl>
 <p>ORIGINAL FUNCTION WAS CODED BY JOHN KANE AT THE PHONETICS AND SPEECH LAB IN 
 TRINITY COLLEGE DUBLIN ON 2013.</p>
@@ -384,26 +295,22 @@ AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
 https//jcvasquezc.github.io</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="glottal.IAIF">
-<code class="descclassname">glottal.</code><code class="descname">IAIF</code><span class="sig-paren">(</span><em>x</em>, <em>fs</em>, <em>GCI</em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.IAIF" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="GCI.iaif">
+<span class="sig-prename descclassname"><span class="pre">GCI.</span></span><span class="sig-name descname"><span class="pre">iaif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GCI</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GCI.iaif" title="Permalink to this definition"></a></dt>
 <dd><p>Function to carry out iterative and adaptive inverse filtering (Alku et al 1992).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; speech signal (in samples)</li>
-<li><strong>fs</strong> &#8211; sampling frequency (in Hz)</li>
-<li><strong>GCI</strong> &#8211; Glottal closure instants (in samples)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – speech signal (in samples)</p></li>
+<li><p><strong>fs</strong> – sampling frequency (in Hz)</p></li>
+<li><p><strong>GCI</strong> – Glottal closure instants (in samples)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">glottal flow derivative estimate</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>glottal flow derivative estimate</p>
+</dd>
+</dl>
 <p>Function Coded by John Kane &#64; The Phonetics and Speech Lab
 Trinity College Dublin, August 2012</p>
 <p>THE CODE WAS TRANSLATED TO PYTHON AND ADAPTED BY J. C. Vasquez-Correa
@@ -413,48 +320,43 @@ AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
 https//jcvasquezc.github.io</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="glottal.get_vq_params">
-<code class="descclassname">glottal.</code><code class="descname">get_vq_params</code><span class="sig-paren">(</span><em>gf</em>, <em>gfd</em>, <em>fs</em>, <em>GCI</em><span class="sig-paren">)</span><a class="headerlink" href="#glottal.get_vq_params" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="GCI.get_vq_params">
+<span class="sig-prename descclassname"><span class="pre">GCI.</span></span><span class="sig-name descname"><span class="pre">get_vq_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GCI</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GCI.get_vq_params" title="Permalink to this definition"></a></dt>
 <dd><p>Function to estimate the glottal parameters: NAQ, QOQ, H1-H2, and HRF</p>
 <p>This function can be used to estimate a range of conventional glottal
 source parameters often used in the literature. This includes: the
 normalized amplitude quotient (NAQ), the quasi-open quotient (QOQ), the
 difference in amplitude of the first two harmonics of the differentiated
 glottal source spectrum (H1-H2), and the harmonic richness factor (HRF)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>gf</strong> &#8211; [samples] [N] Glottal flow estimation</li>
-<li><strong>gfd</strong> &#8211; [samples] [N] Glottal flow derivative estimation</li>
-<li><strong>fs</strong> &#8211; [Hz] [1] sampling frequency</li>
-<li><strong>GCI</strong> &#8211; [samples] [M] Glottal closure instants</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gf</strong> – [samples] [N] Glottal flow estimation</p></li>
+<li><p><strong>gfd</strong> – [samples] [N] Glottal flow derivative estimation</p></li>
+<li><p><strong>fs</strong> – [Hz] [1] sampling frequency</p></li>
+<li><p><strong>GCI</strong> – [samples] [M] Glottal closure instants</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">NAQ [s,samples] [Mx2] Normalised amplitude quotient</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">QOQ[s,samples] [Mx2] Quasi-open quotient</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">H1H2[s,dB] [Mx2] Difference in glottal harmonic amplitude</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">HRF[s,samples] [Mx2] Harmonic richness factor</p>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>References:</dt>
-<dd><p class="first">[1] Alku, P., B ackstrom, T., and Vilkman, E. Normalized amplitude quotient for parameterization of the glottal flow. Journal of the Acoustical Society of America, 112(2):701-710, 2002.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>NAQ [s,samples] [Mx2] Normalised amplitude quotient</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>QOQ[s,samples] [Mx2] Quasi-open quotient</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>H1H2[s,dB] [Mx2] Difference in glottal harmonic amplitude</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>HRF[s,samples] [Mx2] Harmonic richness factor</p>
+</dd>
+</dl>
+<dl>
+<dt>References:</dt><dd><p>[1] Alku, P., B ackstrom, T., and Vilkman, E. Normalized amplitude quotient for parameterization of the glottal flow. Journal of the Acoustical Society of America, 112(2):701-710, 2002.</p>
 <p>[2] Hacki, T. Klassifizierung von glottisdysfunktionen mit hilfe der elektroglottographie. Folia Phoniatrica, pages 43-48, 1989.</p>
 <p>[3] Alku, P., Strik, H., and Vilkman, E. Parabolic spectral parameter - A new method for quantification of the glottal flow. Speech Communication, 22(1):67-79, 1997.</p>
 <p>[4] Hanson, H. M. Glottal characteristics of female speakers: Acoustic correlates. Journal of the Acoustical Society of America, 10(1):466-481, 1997.</p>
-<p class="last">[5] Childers, D. G. and Lee, C. K. Voice quality factors: Analysis, synthesis and perception. Journal of the Acoustical Society of  America, 90(5):2394-2410, 1991.</p>
+<p>[5] Childers, D. G. and Lee, C. K. Voice quality factors: Analysis, synthesis and perception. Journal of the Acoustical Society of  America, 90(5):2394-2410, 1991.</p>
 </dd>
 </dl>
 <p>Function Coded by John Kane &#64; The Phonetics and Speech Lab
@@ -466,67 +368,33 @@ AND UNIVERSTY OF ANTIOQUIA, COLOMBIA
 https//jcvasquezc.github.io</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="Phonation.html" class="btn btn-neutral float-right" title="Phonation features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="Welcome to Disvoice’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Disvoice’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Phonation.html" class="btn btn-neutral float-right" title="Phonation features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, Camilo Vasquez.
-
-    </p>
+    <p>&#169; Copyright 2020, Camilo Vasquez.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.1.1',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

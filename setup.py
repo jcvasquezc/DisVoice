@@ -24,7 +24,7 @@ LONG_DESC_TYPE = "text/markdown"
 
 setup(
     name='disvoice',
-    version='0.1.8',
+    version='0.1.9',
     packages=find_packages(),
     description='Python framework designed to compute different types of features from speech files',
     author='J. C. Vasquez-Correa',
@@ -55,6 +55,7 @@ setup(
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
     "Programming Language :: Python",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
