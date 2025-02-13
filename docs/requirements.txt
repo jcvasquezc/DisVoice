@@ -3,8 +3,13 @@ sphinx-rtd-theme
 myst-parser
 matplotlib
 numpy
-scipy
+scipy==1.13.1
 pysptk
 pandas
 tqdm
 torch
+praat-parselmouth
+kaldi_io
+phonet
+scikit_learn
+librosa
