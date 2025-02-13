@@ -4,3 +4,7 @@ myst-parser
 matplotlib
 numpy
 scipy
+pysptk
+pandas
+tqdm
+torch
