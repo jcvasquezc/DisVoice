@@ -91,6 +91,7 @@ def praat_formants(audio_filename):
 	return f1_filtered, f2_filtered
 
 
+
 def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 	"""
 	This function reads a text file with the text grid with voiced/unvoiced

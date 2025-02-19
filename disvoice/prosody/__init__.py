@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .prosody import Prosody
+from .Prosody import Prosody
 from .prosody_functions import *
 
 
