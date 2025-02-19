@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pysptk
 import torch
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid
 from scipy.io.wavfile import read
 from tqdm import tqdm
 
@@ -14,7 +14,7 @@ PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(PATH, '..'))
 sys.path.append(PATH)
 from script_mananger import script_manager
-from utils import dynamic2static, get_dict, save_dict_kaldimat
+from disvoice_utils import dynamic2static, get_dict, save_dict_kaldimat
 plt.rcParams["font.family"] = "Times New Roman"
 from GCI import iaif, se_vq_varf0, get_vq_params
 
@@ -170,7 +170,7 @@ class Glottal:
             GCIt = GCIs[pGCIt]-start
 
             g_iaif_f = iaif(x_frame, fs, GCIt)
-            glottal_f = cumtrapz(g_iaif_f, dx=1/fs)
+            glottal_f = cumulative_trapezoid(g_iaif_f, dx=1/fs)
             glottal_f = np.hstack((glottal[start], glottal_f))
             g_iaif[start:stop] = g_iaif[start:stop]+g_iaif_f*win
             glottal[start:stop] = glottal[start:stop]+glottal_f*win

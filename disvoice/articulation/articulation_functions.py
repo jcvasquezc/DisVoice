@@ -65,7 +65,7 @@ def fftsolp(x,nfft):
     rowindex = rowindex.astype(int)
     rowindex = rowindex[np.newaxis]
     rowindex = rowindex.T
-    d = np.ones((nwind,ncol),dtype=np.int)
+    d = np.ones((nwind,ncol),dtype=np.int64)
     y = x[d*(rowindex+colindex)]
     window = window.astype(float)
     window = window[np.newaxis]

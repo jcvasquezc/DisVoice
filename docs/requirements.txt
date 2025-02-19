@@ -1,0 +1,15 @@
+sphinx
+sphinx-rtd-theme
+myst-parser
+matplotlib
+numpy
+scipy==1.11.4
+pysptk
+pandas
+tqdm
+torch
+praat-parselmouth
+kaldi_io
+phonet
+scikit_learn
+librosa

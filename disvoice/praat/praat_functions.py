@@ -2,7 +2,9 @@
 import os
 import numpy as np
 import sys
+import parselmouth
 PATH = os.path.dirname(os.path.realpath(__file__))
+
 
 sys.path.append(PATH)
 
@@ -35,42 +37,60 @@ def praat_vuv(audio_filaname, resultsp, resultst, time_stepF0=0, minf0=75, maxf0
 	:param minf0: minimum frequency for the pitch in Hz, default is 75Hz
 	:param maxf0: maximum frequency for the pitch in Hz, default is 600
 	:param maxVUVPeriod: maximum interval that considered part of a larger voiced interval, default 0.02
-	:param averageVUVPeriod: half of this value will be taken to be the amount to which a voiced interval will extend 							beyond its initial and final points, default is 0.01
+	:param averageVUVPeriod: half of this value will be taken to be the amount to which a voiced interval will extend beyond its initial and final points, default is 0.01
 	:returns: nothing
 	"""
 	if sys.platform.find('win')>=0:
 		command='/praat.exe --run '+PATH+'/vuv_praat.praat '
 	else:
-		command='praat '+PATH+'/vuv_praat.praat '
+		command='praat --run '+PATH+'/vuv_praat.praat '
 	command+=audio_filaname+' '+resultsp +' '+  resultst+' '
 	command+=str(minf0)+' '+str(maxf0)+' '
 	command+=str(time_stepF0)+' '+str(maxVUVPeriod)+' '+str(averageVUVPeriod)
 	os.system(command)
 
-def praat_formants(audio_filename, results_filename,sizeframe,step, n_formants=5, max_formant=5500):
-	"""
-	runs FormantsPraat script to obtain the formants for a wav file.
-	It writes the results into a text file.
-	These results can then be read using the function decodeFormants.
 
-	:param audio_filaname: Full path to the wav file, string
-	:param results_filename: Full path to the resulting file with the formants
-	:param sizeframe: window size 
-	:param step: time step to compute formants
-	:param n_formants: number of formants to look for
-	:param max_formant: maximum frequencyof formants to look for
-	:returns: nothing
-	"""
 
-	if sys.platform.find('win')>=0:
-		command='praat.exe --run '+PATH+'/FormantsPraat.praat '
-	else:
-		command='praat --run '+PATH+'/FormantsPraat.praat '
-	command+=audio_filename + ' '+results_filename+' '
-	command+=str(n_formants)+' '+ str(max_formant) + ' '
-	command+=str(float(sizeframe)/2)+' '
-	command+=str(float(step))
-	os.system(command) #formant extraction praat
+
+def praat_formants(audio_filename):
+	"""
+	Extract F1 and F2 formants from the given audio file using Praat (via Parselmouth).
+	
+	:param audio_file: Path to the audio file (WAV format).
+	:returns: Tuple of F1 and F2 arrays
+	"""
+	# Load the sound
+	snd = parselmouth.Sound(audio_filename)
+	
+	# Extract the formant object using Burg's method
+	formant = snd.to_formant_burg(time_step=0.02, max_number_of_formants=5, maximum_formant=5500)
+
+	# Prepare arrays to store the formant frequencies
+	formant_list_f1 = []
+	formant_list_f2 = []
+	
+	# Loop over the duration of the sound to get formants for each time slice
+	for t in np.arange(0, snd.duration, 0.02):  # 0.02 is the time step
+		try:
+			f1 = formant.get_value_at_time(1, t)  # F1 (first formant)
+			f2 = formant.get_value_at_time(2, t)  # F2 (second formant)
+			formant_list_f1.append(f1)
+			formant_list_f2.append(f2)
+		except:
+			formant_list_f1.append(None)
+			formant_list_f2.append(None)
+
+	# Convert to numpy arrays, handling possible None values
+	f1_array = np.array([f if f is not None else np.nan for f in formant_list_f1])
+	f2_array = np.array([f if f is not None else np.nan for f in formant_list_f2])
+
+	# Filter out NaN values in F1 and F2
+	f1_filtered = f1_array[np.isfinite(f1_array)]
+	f2_filtered = f2_array[np.isfinite(f2_array)]
+
+	return f1_filtered, f2_filtered
+
+
 
 def read_textgrid_trans(file_textgrid, data_audio, fs, win_trans=0.04):
 	"""
@@ -144,29 +164,3 @@ def decodeF0(fileTxt,len_signal=0, time_stepF0=0):
 			pitch_zeros[argmin]=pitch
 		return pitch_zeros, t
 	return pitch, time_voiced
-
-def decodeFormants(fileTxt):
-	"""
-	Read the praat textgrid file for formants and return the array
-	
-	:param fileTxt: File with the formants, which can be generated using the '''praat_formants'''
-	:returns F1: Numpy array containing the values for the first formant
-	:returns F2: Numpy array containing the values for the second formant
-	"""
-	with open(fileTxt, 'r') as fid:
-		datam=fid.read()
-	fid.close()
-	end_line1=multi_find(datam, '\n')
-	F1=[]
-	F2=[]
-	ji=10
-	while (ji<len(end_line1)-1):
-		line1=datam[end_line1[ji]+1:end_line1[ji+1]]
-		cond=(line1 in ('3', '4', '5'))
-		if (cond):
-			F1.append(float(datam[end_line1[ji+1]+1:end_line1[ji+2]]))
-			F2.append(float(datam[end_line1[ji+3]+1:end_line1[ji+4]]))
-		ji=ji+1
-	F1=np.asarray(F1)
-	F2=np.asarray(F2)
-	return F1, F2

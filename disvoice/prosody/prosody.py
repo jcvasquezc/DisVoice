@@ -27,7 +27,7 @@ plt.rcParams["font.family"] = "Times New Roman"
 from prosody_functions import V_UV, F0feat, energy_cont_segm, polyf0, energy_feat, dur_seg, duration_feat, get_energy_segment
 
 from script_mananger import script_manager
-from utils import save_dict_kaldimat, get_dict
+from disvoice_utils import save_dict_kaldimat, get_dict
 import praat.praat_functions as praat_functions
 class Prosody:
     """

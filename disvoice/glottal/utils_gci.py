@@ -9,10 +9,11 @@ except:
 
 from scipy.stats import pearsonr
 from scipy.linalg import toeplitz
-try:
-    from scipy.signal.windows import medfilt, hann, filtfilt, blackman, hamming, buttord, butter, lfiltic, lfilter
-except:
-    from scipy.signal import medfilt, hann, filtfilt, blackman, hamming, buttord, butter, lfiltic, lfilter
+
+from scipy.signal import medfilt, filtfilt, buttord, butter, lfiltic, lfilter
+from scipy.signal.windows import blackman, hamming, hann
+
+
 
 
 def smooth(a,WSZ):
