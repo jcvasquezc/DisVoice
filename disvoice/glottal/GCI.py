@@ -5,7 +5,7 @@ import numpy as np
 
 import pysptk
 import os
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid
 PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(PATH)
 
@@ -143,7 +143,7 @@ def iaif(x,fs,GCI):
 
     # integration of the glottal source derivative to calculate the glottal
     # source pulse - PART 6 (cancelling lip radiation)
-    ug1=cumtrapz(residual1)
+    ug1=cumulative_trapezoid(residual1)
     # ------------------------------------------------
     # elimination of the source effect from the speech spectrum - PART 7 & 8
 
@@ -345,7 +345,7 @@ if __name__=="__main__":
 
     plt.show()
 
-    glottal=cumtrapz(g_iaif)
+    glottal=cumulative_trapezoid(g_iaif)
     glottal=glottal-np.mean(glottal)
     glottal=glottal/max(abs(glottal))
 
