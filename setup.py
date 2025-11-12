@@ -12,6 +12,7 @@ install_requires = [
                     'torch',
                     'librosa',
                     'pandas',
+                    'praat-parselmouth',
                     'pysptk',
                     'phonet',
                     'scipy',
@@ -19,7 +20,7 @@ install_requires = [
                     ]
 
 HERE = pathlib.Path(__file__).parent
-LONG_DESCRIPTION = (HERE / "README.md").read_text()
+LONG_DESCRIPTION = (HERE / "README.md").read_text(encoding = 'utf8')
 LONG_DESC_TYPE = "text/markdown"
 
 setup(
